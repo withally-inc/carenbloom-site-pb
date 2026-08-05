@@ -135,6 +135,11 @@ try {
   );
   assert.equal(await page.locator(".chip").count(), 5);
   assert.equal(await page.locator(".chip .face-b").count(), 5);
+  assert.equal(
+    await page.locator(".chip-2 .face-b .lab").textContent(),
+    "9 figures",
+    "the revenue chip should state the confirmed nine-figure milestone",
+  );
   assert.equal(await page.locator(".cb-mark").count(), 11);
   assert.equal(await page.locator(".chip .casetify").count(), 1);
 
@@ -204,7 +209,7 @@ try {
   assert.deepEqual(await statBands.locator(".stat-support strong").allTextContents(), ["Customers", "Revenue", "Elapsed"]);
   assert.deepEqual(
     await statBands.locator(".stat-value").evaluateAll((values) => values.map((value) => value.textContent.trim())),
-    ["1,000,000+", "8 figures", "18months"],
+    ["1,000,000+", "9 figures", "18months"],
   );
   assert.equal(await statBands.getByText(/source/i).count(), 0, "decorative Source markup should be absent");
   assert.equal(await page.locator('[aria-label="Elapsed: Under 18 months"]').count(), 1);
