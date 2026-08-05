@@ -120,10 +120,15 @@ try {
   assert.equal(await page.locator("#heroGrowVideo").count(), 1, "the hero should have one GROW video owner");
   assert.equal(await page.locator(".hero-frame-start").count(), 1, "the exact bud still should own zero progress");
   assert.equal(await page.locator(".hero-frame-end").count(), 1, "the exact bloom still should own full progress");
+  assert.equal(
+    await page.locator(".claim h1").textContent(),
+    "We move fast. We experiment. We build enormous brands.",
+    "the hero claim should use the captain-approved operating statement",
+  );
 
   const approvedChipCopy = [
     "Actively recruiting",
-    "8 figures in sexual health",
+    "9 figures in sexual health",
     "2 consumer brands",
     "Led by experienced operators",
     "1,000,000 customers",
@@ -137,8 +142,8 @@ try {
   assert.equal(await page.locator(".chip .face-b").count(), 5);
   assert.equal(
     await page.locator(".chip-2 .face-b .lab").textContent(),
-    "9 figures",
-    "the revenue chip should state the confirmed nine-figure milestone",
+    "Expanding into 3 verticals",
+    "the revenue chip should retain its original expansion flip face",
   );
   assert.equal(await page.locator(".cb-mark").count(), 11);
   assert.equal(await page.locator(".chip .casetify").count(), 1);
