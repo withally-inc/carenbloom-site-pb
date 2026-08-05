@@ -198,8 +198,16 @@ import {
     const imgs = lemons.map((lemon) => lemon.querySelector('img'));
     const SPRITE_SRC = 'assets/lemon-march/lemon-rotation-sprite.png';
     const PHASE_COUNT = 10;
-    const PHASE_OFFSETS = [0, 2, 4, 6, 8];
-    const START_FRACTIONS = [0, 250 / 1400, 535 / 1400, 835 / 1400, 1135 / 1400];
+    /* the markup owns the composition: each lemon's `--x` is its start fraction of the band
+       and its img's object-position is its phase offset, so the running march and the
+       static no-JS/reduced-motion fallback can never drift apart */
+    const readNumber = (value, fallback) => {
+      const parsed = Number.parseFloat(value);
+      return Number.isFinite(parsed) ? parsed : fallback;
+    };
+    const startFractions = lemons.map(() => 0);
+    const PHASE_OFFSETS = imgs.map((img) =>
+      Math.round((readNumber(getComputedStyle(img).objectPosition, 0) / 100) * (PHASE_COUNT - 1)));
     const PHASE_HOLD_MS = 200;
     const BAND_WIDTHS_PER_SECOND = 0.5;
     const phasePosition = (phase) => `${((phase / (PHASE_COUNT - 1)) * 100).toFixed(4)}% 50%`;
@@ -217,6 +225,9 @@ import {
       bandWidth = lemonBand.clientWidth;
       lemonHalf = bandWidth > 0 ? lemons[0].offsetWidth / bandWidth / 2 : 0;
       wrapSpan = 1 + lemonHalf * 2;
+      lemons.forEach((lemon, i) => {
+        startFractions[i] = readNumber(getComputedStyle(lemon).getPropertyValue('--x'), 0);
+      });
     };
     measureBand();
     addEventListener('resize', measureBand);
@@ -236,8 +247,9 @@ import {
         lemons.forEach((lemon, i) => {
           const position = phasePosition((rotationStep + PHASE_OFFSETS[i]) % PHASE_COUNT);
           if (imgs[i].style.objectPosition !== position) imgs[i].style.objectPosition = position;
-          const u = (((START_FRACTIONS[i] + march + lemonHalf) % wrapSpan) + wrapSpan) % wrapSpan - lemonHalf;
-          lemon.style.transform = `translateX(calc(-50% + ${((u - START_FRACTIONS[i]) * bandWidth).toFixed(2)}px))`;
+          const origin = startFractions[i];
+          const u = (((origin + march + lemonHalf) % wrapSpan) + wrapSpan) % wrapSpan - lemonHalf;
+          lemon.style.transform = `translateX(calc(-50% + ${((u - origin) * bandWidth).toFixed(2)}px))`;
         });
         rafId = requestAnimationFrame(step);
       };

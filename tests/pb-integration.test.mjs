@@ -664,7 +664,15 @@ try {
   // captain 2026-08-05: the lemon band's height is capped so the first stat row's numbers
   // are above the fold when the record section enters (section top at viewport top),
   // while the band still reads as a full band — every lemon fully inside it.
-  for (const entryViewport of [{ width: 1440, height: 900 }, { width: 1280, height: 800 }, { width: 390, height: 844 }]) {
+  // 1366x768 and 1280x720 are the short-laptop heights where a bare viewport-proportional
+  // cap stops covering the fixed-pixel lead-in, trailing margin and stat-band number row.
+  for (const entryViewport of [
+    { width: 1440, height: 900 },
+    { width: 1366, height: 768 },
+    { width: 1280, height: 800 },
+    { width: 1280, height: 720 },
+    { width: 390, height: 844 },
+  ]) {
     const entryPage = await browser.newPage({ viewport: entryViewport });
     await openPage(entryPage, `${baseUrl}/`);
     const entryGeometry = await entryPage.evaluate(() => {

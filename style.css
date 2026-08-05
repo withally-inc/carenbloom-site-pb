@@ -350,11 +350,27 @@ section, footer { position: relative; }
   aspect-ratio: 1400 / 500;
   /* captain 2026-08-05: cap the vertical footprint so the first stat row's numbers
      are above the fold when the record enters at desktop (1440x900, 1280x800).
-     40vh leaves 166px record lead-in + 72px trailing margin + the 320px first
-     stat band's number row inside the viewport; the 1400/500 proof proportion
-     still governs wherever the viewport is tall enough (mobile included). */
+     40vh is the approved cap, but it is the only viewport-proportional term in a
+     column of fixed-pixel geometry, so on short desktops it stops being enough on
+     its own (1366x768 and 1280x720 both push the number row past the fold). The
+     entry reserve below states that column explicitly, and the desktop rule takes
+     whichever of the two caps is tighter; the 1400/500 proof proportion still
+     governs wherever the viewport is tall enough (mobile included). */
+  --band-entry-reserve: calc(
+    var(--space-xl) + 19px + var(--space-md)      /* record padding, label line, collapsed label margin */
+    + var(--space-lg)                             /* the band's own trailing margin */
+    + 160px + 0.43 * clamp(84px, 11.25vw, 162px)  /* first stat band's number-row bottom:
+                                                     half its 320px min-height + half the
+                                                     0.86-line-height value */
+  );
   max-height: 40vh;
   margin: var(--space-xs) 0 var(--space-lg);
+}
+/* the reserve above describes the desktop stat-band layout, so the short-height cap is
+   scoped to it; the 84px floor keeps every lemon at or above the 60px legibility floor
+   (lemons are 72% of band height) on viewports too short for the fold guarantee at all */
+@media (min-width: 768px) {
+  .lemon-band { max-height: max(84px, min(40vh, calc(100vh - var(--band-entry-reserve)))); }
 }
 .lemon-band .lemon {
   position: absolute;
