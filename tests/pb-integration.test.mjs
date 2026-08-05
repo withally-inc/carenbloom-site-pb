@@ -577,6 +577,52 @@ try {
     "reduced motion should render exact terminal reveals immediately",
   );
   await mobileReducedPage.close();
+
+  // regression (captain report 2026-08-05): the split band's sun fill terminally covers only
+  // the left 70%, and the mobile rule right-aligned the ink “18 months” value onto the
+  // remaining ink ground, where it was invisible. The value must stay inside the sun field
+  // and inside the viewport at mobile widths.
+  const splitGeometry = async (target) => target.locator(".stat-band-split").evaluate((band) => {
+    const bandRect = band.getBoundingClientRect();
+    const valueRect = band.querySelector(".stat-value").getBoundingClientRect();
+    return {
+      bandLeft: bandRect.left,
+      bandWidth: bandRect.width,
+      valueLeft: valueRect.left,
+      valueRight: valueRect.right,
+      valueWidth: valueRect.width,
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    };
+  });
+  const assertValueOnSun = (geometry, width) => {
+    const sunEdge = geometry.bandLeft + geometry.bandWidth * 0.7;
+    assert.ok(geometry.valueWidth > 0, `${width}px: the Elapsed value must render`);
+    assert.ok(geometry.valueLeft >= geometry.bandLeft - 1, `${width}px: the value must not bleed left of the band`);
+    assert.ok(
+      geometry.valueRight <= sunEdge + 1,
+      `${width}px: “18 months” must sit inside the 70% sun field, not ink-on-ink (right ${geometry.valueRight.toFixed(1)} vs sun edge ${sunEdge.toFixed(1)})`,
+    );
+    assert.ok(geometry.valueRight <= geometry.clientWidth + 1, `${width}px: the value must not be viewport-clipped`);
+    assert.ok(geometry.scrollWidth <= geometry.clientWidth + 1, `${width}px: no horizontal overflow`);
+  };
+  for (const splitViewport of [{ width: 390, height: 844 }, { width: 320, height: 720 }]) {
+    // reduced motion renders the exact terminal fill immediately, so geometry is deterministic
+    const splitPage = await browser.newPage({ viewport: splitViewport, reducedMotion: "reduce" });
+    await splitPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+    assertValueOnSun(await splitGeometry(splitPage), splitViewport.width);
+    await splitPage.close();
+  }
+  // the reported path: real scroll at 390px to the terminal reveal
+  const splitScrollPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await splitScrollPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  const splitTop = await splitScrollPage.locator(".stat-band-split").evaluate((band) => scrollY + band.getBoundingClientRect().top);
+  await scrollInstant(splitScrollPage, splitTop - 844 * 0.2);
+  await splitScrollPage.waitForFunction(() =>
+    Number.parseFloat(document.querySelector(".stat-band-split")?.style.getPropertyValue("--band-reveal")) > 0.999);
+  assertValueOnSun(await splitGeometry(splitScrollPage), 390);
+  await splitScrollPage.close();
+
   assert.deepEqual(pageErrors, [], "the integrated natural-scroll journey should have no console, page, or request errors");
 } finally {
   await browser.close();

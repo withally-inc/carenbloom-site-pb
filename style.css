@@ -606,7 +606,7 @@ section, footer { position: relative; }
 .p-img {
   width: 100%;
   height: auto;
-  aspect-ratio: 1 / 2;
+  aspect-ratio: 1 / 1; /* captain 2026-08-05: true square portraits supersede the 1/2 crop */
   object-fit: cover;
   align-self: start;
   border: 1px solid var(--color-rule-dark);
@@ -879,6 +879,11 @@ section, footer { position: relative; }
     flex-direction: row;
     width: auto;
   }
+  /* the sun fill terminally covers only the left 70% (--band-target: 0.7), so the
+     content box must end at the sun edge minus the standard inset: a band-width
+     right alignment would park the ink value on the remaining ink ground, where
+     it is invisible (reproduced at 390px and 500px before this fix) */
+  .stat-band-split .stat-band-inner { padding-right: calc(30% + var(--pad-x)); }
   .stat-band-split .stat-value {
     width: auto;
     justify-self: end;
