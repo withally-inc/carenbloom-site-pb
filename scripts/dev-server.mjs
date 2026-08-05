@@ -119,5 +119,6 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(port, host, () => {
-  console.log(`Care & Bloom dev server: http://localhost:${port}`);
+  // PORT=0 asks the kernel for a free port, so the bound address is the only truthful one to print.
+  console.log(`Care & Bloom dev server: http://localhost:${server.address().port}`);
 });
