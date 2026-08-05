@@ -52,6 +52,16 @@ The focused browser commands expect `npm run serve` to be running separately.
 
 No automated test performs a real application or Notion write.
 
+## Operating-record lemon band
+
+The (01) Operating record section carries the captain-approved Candidate 03 stepped lemon march (decision: five whole leafless lemons on exact `--color-sun` `#FDFF6D`, distinct stepped rotational phases, left-to-right), replacing the earlier dot-field mechanism.
+
+`assets/lemon-march/lemon-rotation-sprite.png` holds all ten stepped rotational keyframes in one 3600×360 sheet (50.7 KB), derived from the approved motion proof with the baked contact-shadow fringe removed at the alpha source. Each lemon picks its phase with `object-position` on a square `object-fit: cover` frame, so a phase step is a paint-only change with no refetch; translation is delta-time-based and transform-only, and the loop pauses offscreen and when the document is hidden.
+
+The markup's default `object-position` values hold the five distinct phase offsets `[0,2,4,6,8]`, so a script failure leaves the static five-phase composition intact. `prefers-reduced-motion: reduce` swaps every lemon to `assets/lemon-march/lemon-print-master-static.png` (the static Candidate 03 print master) via `<picture>` sources, with no translation, rotation, or autoplaying media. The band has one concise `role="img"` description; the five lemons are `aria-hidden`.
+
+Focused behavioral coverage lives in `tests/lemon-band.test.mjs` (distinct phases, pause/resume, offscreen and hidden-document suspension, reduced-motion and failure fallbacks, exact yellow, overflow, stat-band preservation) and runs inside `npm test` and `npm run test:browser`.
+
 ## Role-location metadata
 
 `scripts/careers-roles.js` is the authoritative owner of all eleven role records.

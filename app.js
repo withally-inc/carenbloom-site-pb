@@ -6,7 +6,7 @@ import {
 } from './hero-scroll.js';
 
 // Direction D6 — one pinned inversion, one reversible heading reveal (inherited, unchanged),
-// plus PBv2's physical number: the dot-field fill and one honest clock (a customer ≈ every 47 seconds).
+// plus the captain-approved Candidate 03 stepped lemon march on the evidence band (lemon-stopmotion-a1).
 (function () {
   const pin = document.getElementById('heroPin');
   const stage = document.getElementById('heroStage');
@@ -182,77 +182,81 @@ import {
       .then(() => stage.classList.add('arrived'));
   }
 
-  /* ---------- the field: 1,000 marks = 1,000,000 customers (PBv2, landed on the evidence band) ---------- */
-  const TOTAL_MARKS = 1000;
-  const field = document.getElementById('dotfield');
+  /* ---------- the record made physical: five stepped Candidate 03 lemons (captain-approved 2026-08-05) ----------
+     Proof geometry (carenbloom-pb-lemon-stopmotion-a1): ten rotational keyframes held 200ms each
+     (a 2s stepped turn), five lemons at phase offsets [0,2,4,6,8] so no two turn in synchrony,
+     marching left-to-right at 0.5 band-widths per second (70px per 100ms frame on the 1400px
+     proof canvas). One shared 3600×360 sprite carries all ten phases: a step is an
+     object-position change (paint-only, no refetch), translation is delta-time based and
+     transform-only, and the loop pauses offscreen and when the document is hidden. Under reduced
+     motion nothing here runs: the markup's <picture> sources already show the static print
+     master. If the sprite fails to load, the animation stands down and the page keeps the
+     markup's static composition. */
+  const lemonBand = document.getElementById('lemonBand');
+  if (lemonBand && !reduced) {
+    const lemons = Array.from(lemonBand.querySelectorAll('.lemon'));
+    const imgs = lemons.map((lemon) => lemon.querySelector('img'));
+    const SPRITE_SRC = 'assets/lemon-march/lemon-rotation-sprite.png';
+    const PHASE_COUNT = 10;
+    const PHASE_OFFSETS = [0, 2, 4, 6, 8];
+    const START_FRACTIONS = [0, 250 / 1400, 535 / 1400, 835 / 1400, 1135 / 1400];
+    const PHASE_HOLD_MS = 200;
+    const BAND_WIDTHS_PER_SECOND = 0.5;
+    const phasePosition = (phase) => `${((phase / (PHASE_COUNT - 1)) * 100).toFixed(4)}% 50%`;
+    let bandWidth = 0;
+    let elapsed = 0;
+    let lastTick = 0;
+    let rafId = 0;
+    let inView = false;
 
-  function buildField() {
-    if (!field) return;
-    const W = field.clientWidth;
-    if (W < 40) return;
-    const cell = W >= 900 ? 24 : 14;
-    const size = Math.round(cell * 0.62);
-    const cols = Math.floor(W / cell);
-    const rows = Math.ceil(TOTAL_MARKS / cols);
-    const headroom = 3; // rows of scatter space above the filled edge
-    field.style.height = (rows + headroom) * cell + 'px';
-    field.textContent = '';
-    const frag = document.createDocumentFragment();
-    const noiseZone = Math.floor(TOTAL_MARKS * 0.15); // the growing edge dissolves into noise
-    for (let i = 0; i < TOTAL_MARKS; i++) {
-      const row = Math.floor(i / cols);          // 0 = bottom row
-      const col = i % cols;
-      const m = document.createElement('span');
-      m.className = 'mark';
-      let x = col * cell;
-      let y = (rows + headroom - 1 - row) * cell; // fill bottom-up
-      const fromEnd = TOTAL_MARKS - 1 - i;
-      if (fromEnd < noiseZone) {
-        // dissolve: the newest marks scatter off the grid, like a bar top breaking into dither
-        const t = 1 - fromEnd / noiseZone; // 0..1, 1 = newest
-        x += (Math.random() - 0.5) * cell * 2.4 * t;
-        y -= Math.random() * cell * 2.6 * t;
-      }
-      m.style.width = size + 'px';
-      m.style.height = size + 'px';
-      m.style.left = Math.max(0, Math.min(W - size, x)) + 'px';
-      m.style.top = Math.max(0, y) + 'px';
-      // bottom rows land first; a little noise so the fill reads as printing, not wiping
-      m.style.setProperty('--md', Math.round((i / TOTAL_MARKS) * 1100 + Math.random() * 250) + 'ms');
-      frag.appendChild(m);
-    }
-    field.appendChild(frag);
-  }
+    const measureBand = () => { bandWidth = lemonBand.clientWidth; };
+    measureBand();
+    addEventListener('resize', measureBand);
 
-  buildField();
-  let rT;
-  addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(buildField, 150); });
-
-  if (field) {
-    if (reduced) {
-      field.classList.add('in');
-    } else {
-      new IntersectionObserver((entries, io) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) { field.classList.add('in'); io.disconnect(); }
+    new Promise((resolve, reject) => {
+      const probe = new Image();
+      probe.onload = () => (probe.naturalWidth === 3600 ? resolve() : reject());
+      probe.onerror = reject;
+      probe.src = SPRITE_SRC;
+    }).then(() => {
+      const step = () => {
+        const now = performance.now();
+        elapsed += now - lastTick;
+        lastTick = now;
+        const rotationStep = Math.floor(elapsed / PHASE_HOLD_MS);
+        const march = (elapsed / 1000) * BAND_WIDTHS_PER_SECOND;
+        lemons.forEach((lemon, i) => {
+          const position = phasePosition((rotationStep + PHASE_OFFSETS[i]) % PHASE_COUNT);
+          if (imgs[i].style.objectPosition !== position) imgs[i].style.objectPosition = position;
+          const u = (START_FRACTIONS[i] + march) % 1;
+          lemon.style.transform = `translateX(calc(-50% + ${((u - START_FRACTIONS[i]) * bandWidth).toFixed(2)}px))`;
         });
-      }, { threshold: 0.15 }).observe(field);
-    }
-  }
-
-  /* ---------- the honest clock: +1 customer ≈ every 47s (1,000,000 / 18 months) ---------- */
-  const liveChip = document.getElementById('liveChip');
-  if (liveChip) {
-    let n = 0;
-    setInterval(() => {
-      n += 1;
-      liveChip.textContent = 'Since you arrived +' + n;
-      if (!reduced) {
-        liveChip.classList.remove('tick');
-        void liveChip.offsetWidth;
-        liveChip.classList.add('tick');
-      }
-    }, 47000);
+        rafId = requestAnimationFrame(step);
+      };
+      const start = () => {
+        if (rafId || !inView || document.hidden) return;
+        lemonBand.classList.add('is-running');
+        lastTick = performance.now();
+        rafId = requestAnimationFrame(step);
+      };
+      const stop = () => {
+        if (!rafId) return;
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+        lemonBand.classList.remove('is-running');
+      };
+      new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          inView = entry.isIntersecting;
+          if (inView) start(); else stop();
+        });
+      }, { threshold: 0 }).observe(lemonBand);
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) stop(); else start();
+      });
+    }).catch(() => {
+      /* the sprite failed to load: keep the static five-phase composition from the markup */
+    });
   }
 
   // Reversible heading reveal (reference: play none none reverse)

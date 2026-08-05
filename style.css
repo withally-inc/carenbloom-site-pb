@@ -340,61 +340,34 @@ section, footer { position: relative; }
   padding: var(--space-xl) 0 0;
 }
 
-/* the million made physical — PBv2 dot field, on the evidence ground.
-   Marks are cobalt: cobalt-on-sun 7.49:1, already ledger-cleared. */
-.field-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-2xs);
-  font-family: var(--font-mono);
-  font-size: var(--text-mono-s);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border-top: 1px solid var(--color-rule-sun);
-  padding: var(--space-2xs) 0;
-}
-.live-chip {
-  display: inline-block;
-  background: var(--color-accent);
-  color: var(--color-paper);
-  border-radius: var(--radius-chip);
-  padding: 6px 10px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-.live-chip.tick { animation: chip-tick 600ms var(--ease-out); }
-@keyframes chip-tick {
-  0% { transform: translateY(0); }
-  30% { transform: translateY(-4px); }
-  100% { transform: translateY(0); }
-}
-.dotfield {
+/* the record made physical — five Candidate 03 lemons in a stepped stop-motion march
+   (lemon-stopmotion-a1). Geometry is the captain-approved proof: a 1400×500 canvas, lemons
+   360/1400 of the width at 70/500 from the top, marching on the exact sun ground. The band
+   scales proportionally at every viewport instead of cropping a fixed artboard. */
+.lemon-band {
   position: relative;
-  width: 100%;
-  margin: var(--space-xs) 0;
+  overflow: clip;
+  aspect-ratio: 1400 / 500;
+  margin: var(--space-xs) 0 var(--space-lg);
 }
-.dotfield .mark {
+.lemon-band .lemon {
   position: absolute;
-  background: var(--color-accent);
-  transform: scale(0);
+  top: 14%; /* 70/500 */
+  left: calc(var(--x) * 100%);
+  width: 25.714%; /* 360/1400 */
+  transform: translateX(-50%);
 }
-.dotfield.in .mark { transform: scale(1); transition: transform 500ms var(--ease-out); transition-delay: var(--md, 0ms); }
-.field-foot {
-  font-family: var(--font-mono);
-  font-size: var(--text-mono-s);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  opacity: 0.8;
-  max-width: 60ch;
-  border-top: 1px solid var(--color-rule-sun);
-  padding-top: var(--space-2xs);
-  margin-bottom: var(--space-lg);
+.lemon-band .lemon img {
+  display: block;
+  width: 100%;
+  height: auto; /* overrides the height-attribute hint so aspect-ratio governs the box */
+  aspect-ratio: 1;
+  object-fit: cover; /* the 3600×360 sprite covers the square frame; object-position picks the phase */
+  image-rendering: pixelated; /* 1-bit print language stays crisp when scaled */
 }
+.lemon-band.is-running .lemon { will-change: transform; }
 
-/* The field keeps its established height and 72px foot-to-stats pause.
-   The record figures then leave the wrap as full-bleed, normal-flow bands. */
+/* The record figures leave the wrap as full-bleed, normal-flow bands. */
 .stat-bands { position: relative; }
 .stat-bands::after {
   content: "";
@@ -921,7 +894,6 @@ section, footer { position: relative; }
   .p-img { max-width: 240px; }
   .contact-foot { flex-direction: column; align-items: flex-start; gap: var(--space-2xs); }
   .tilerow { grid-auto-columns: minmax(140px, 36vw); }
-  .field-head { align-items: flex-start; }
 }
 @media (max-width: 479px) {
   .email-link { font-size: 22px; }
@@ -943,8 +915,6 @@ section, footer { position: relative; }
   .progress span.running i { animation: none; }
   .tile-marquee { width: 100%; animation: none; transform: none; will-change: auto; }
   .tile-marquee > .tilerow:nth-child(2) { display: none; }
-  .dotfield.in .mark { transition-duration: 1ms; transition-delay: 0ms; }
-  .live-chip.tick { animation: none; }
   .stat-band { --band-reveal: 1 !important; }
   .hero-pin { height: auto; }
   .hero-stage { position: relative; height: auto; min-height: 100vh; }
