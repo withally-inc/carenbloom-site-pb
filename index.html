@@ -256,8 +256,21 @@
 
     <div class="brand-grid">
       <article class="brand-card">
-        <img class="brand-img" src="images/carenbloom-v3/nancy-lem.jpg" width="1080" height="1080" loading="lazy"
-             alt="Hello Nancy's Lem product photographed on a bright yellow set with lemon slices">
+        <div class="brand-carousel" data-brand-carousel data-interval="4500" data-active-slide="0"
+             role="group" aria-label="Hello Nancy product gallery" aria-live="off">
+          <div class="brand-slide is-active" aria-hidden="false">
+            <img class="brand-img" src="images/carenbloom-v3/nancy-lem.jpg" width="1080" height="1080" loading="lazy"
+                 alt="Hello Nancy's Lem product photographed on a bright yellow set with lemon slices">
+          </div>
+          <div class="brand-slide brand-slide-halftone" aria-hidden="true">
+            <img class="brand-img" src="assets/tile-nancy-sharp.png" width="640" height="640" loading="lazy"
+                 alt="Hello Nancy product rendered as a cobalt halftone print">
+          </div>
+          <div class="brand-slide brand-slide-halftone" aria-hidden="true">
+            <img class="brand-img" src="assets/tile-nancy2-sharp.png" width="640" height="640" loading="lazy"
+                 alt="A second Hello Nancy product rendered as a cobalt halftone print">
+          </div>
+        </div>
         <div class="brand-meta">
           <span class="b-index">01/02</span>
           <h3 class="b-name">Hello Nancy</h3>
@@ -270,8 +283,21 @@
       </article>
 
       <article class="brand-card">
-        <img class="brand-img" src="images/carenbloom-v3/biird-ohwii-branch.jpg" width="1080" height="1080" loading="lazy"
-             alt="Biird's blue glass object resting on a bare branch against a blue backdrop">
+        <div class="brand-carousel" data-brand-carousel data-interval="4500" data-active-slide="0"
+             role="group" aria-label="Biird product gallery" aria-live="off">
+          <div class="brand-slide is-active" aria-hidden="false">
+            <img class="brand-img" src="images/carenbloom-v3/biird-ohwii-branch.jpg" width="1080" height="1080" loading="lazy"
+                 alt="Biird's blue glass object resting on a bare branch against a blue backdrop">
+          </div>
+          <div class="brand-slide brand-slide-halftone" aria-hidden="true">
+            <img class="brand-img" src="assets/tile-biird-sharp.png" width="640" height="640" loading="lazy"
+                 alt="Biird product rendered as a cobalt halftone print">
+          </div>
+          <div class="brand-slide brand-slide-halftone" aria-hidden="true">
+            <img class="brand-img" src="assets/tile-biird2-sharp.png" width="640" height="640" loading="lazy"
+                 alt="A second Biird product rendered as a cobalt halftone print">
+          </div>
+        </div>
         <div class="brand-meta">
           <span class="b-index">02/02</span>
           <h3 class="b-name">Biird</h3>
@@ -287,15 +313,27 @@
 
   <!-- the products, printed in the page's own ink: halftone tile field on a cobalt band (PBv2 material) -->
   <div class="tile-band">
-    <div class="tilerow" aria-hidden="true">
-      <img src="assets/tile-nancy-sharp.png"  width="640" height="640" alt="" loading="lazy">
-      <img src="assets/tile-biird-blur.png"   width="640" height="640" alt="" loading="lazy">
-      <img src="assets/tile-nancy2-sharp.png" width="640" height="640" alt="" loading="lazy">
-      <img src="assets/tile-biird-sharp.png"  width="640" height="640" alt="" loading="lazy">
-      <img src="assets/tile-nancy-blur.png"   width="640" height="640" alt="" loading="lazy">
-      <img src="assets/tile-biird2-sharp.png" width="640" height="640" alt="" loading="lazy">
-      <img src="assets/tile-nancy-sharp.png"  width="640" height="640" alt="" loading="lazy">
-      <img src="assets/tile-biird-blur.png"   width="640" height="640" alt="" loading="lazy">
+    <div class="tile-marquee" aria-hidden="true">
+      <div class="tilerow">
+        <img src="assets/tile-nancy-sharp.png"  width="640" height="640" alt="" loading="lazy">
+        <img src="assets/tile-biird-blur.png"   width="640" height="640" alt="" loading="lazy">
+        <img src="assets/tile-nancy2-sharp.png" width="640" height="640" alt="" loading="lazy">
+        <img src="assets/tile-biird-sharp.png"  width="640" height="640" alt="" loading="lazy">
+        <img src="assets/tile-nancy-blur.png"   width="640" height="640" alt="" loading="lazy">
+        <img src="assets/tile-biird2-sharp.png" width="640" height="640" alt="" loading="lazy">
+        <img src="assets/tile-nancy-sharp.png"  width="640" height="640" alt="" loading="lazy">
+        <img src="assets/tile-biird-blur.png"   width="640" height="640" alt="" loading="lazy">
+      </div>
+      <div class="tilerow">
+        <img src="assets/tile-nancy-sharp.png"  width="640" height="640" alt="" loading="lazy">
+        <img src="assets/tile-biird-blur.png"   width="640" height="640" alt="" loading="lazy">
+        <img src="assets/tile-nancy2-sharp.png" width="640" height="640" alt="" loading="lazy">
+        <img src="assets/tile-biird-sharp.png"  width="640" height="640" alt="" loading="lazy">
+        <img src="assets/tile-nancy-blur.png"   width="640" height="640" alt="" loading="lazy">
+        <img src="assets/tile-biird2-sharp.png" width="640" height="640" alt="" loading="lazy">
+        <img src="assets/tile-nancy-sharp.png"  width="640" height="640" alt="" loading="lazy">
+        <img src="assets/tile-biird-blur.png"   width="640" height="640" alt="" loading="lazy">
+      </div>
     </div>
   </div>
 </section>

@@ -248,6 +248,76 @@ try {
     await page.locator("#values .section-label, #teams .section-label, #careers .section-label").allTextContents(),
     ["(05) How we raise the ceiling", "(06) How we work together", "(07) Careers · 11 roles open"],
   );
+
+  const brandCarousels = page.locator("[data-brand-carousel]");
+  assert.equal(await brandCarousels.count(), 2, "both brands should have an automatic image carousel");
+  assert.deepEqual(
+    await brandCarousels.evaluateAll((carousels) => carousels.map((carousel) => ({
+      interval: carousel.dataset.interval,
+      slides: Array.from(carousel.querySelectorAll(".brand-slide"), (slide) => slide.querySelector("img")?.getAttribute("src")),
+    }))),
+    [
+      {
+        interval: "4500",
+        slides: [
+          "images/carenbloom-v3/nancy-lem.jpg",
+          "assets/tile-nancy-sharp.png",
+          "assets/tile-nancy2-sharp.png",
+        ],
+      },
+      {
+        interval: "4500",
+        slides: [
+          "images/carenbloom-v3/biird-ohwii-branch.jpg",
+          "assets/tile-biird-sharp.png",
+          "assets/tile-biird2-sharp.png",
+        ],
+      },
+    ],
+    "each brand carousel should use three distinct approved repository assets",
+  );
+  assert.equal(
+    await brandCarousels.evaluateAll((carousels) => carousels.every((carousel) => {
+      const { width, height } = carousel.getBoundingClientRect();
+      return Math.abs(width - height) < 1;
+    })),
+    true,
+    "brand carousels should use a square crop",
+  );
+  assert.deepEqual(
+    await brandCarousels.evaluateAll((carousels) => carousels.map((carousel) => carousel.dataset.activeSlide)),
+    ["0", "0"],
+    "both carousels should start on their first approved image",
+  );
+  await brandCarousels.first().scrollIntoViewIfNeeded();
+  await page.waitForTimeout(4700);
+  assert.deepEqual(
+    await brandCarousels.evaluateAll((carousels) => carousels.map((carousel) => carousel.dataset.activeSlide)),
+    ["1", "1"],
+    "both carousels should advance on Mother Fable's 4.5-second cadence",
+  );
+  await brandCarousels.first().hover();
+  const pausedSlide = await brandCarousels.first().getAttribute("data-active-slide");
+  await page.waitForTimeout(4700);
+  assert.equal(
+    await brandCarousels.first().getAttribute("data-active-slide"),
+    pausedSlide,
+    "hover should pause automatic carousel advancement",
+  );
+
+  const marquee = page.locator(".tile-marquee");
+  assert.equal(await marquee.count(), 1, "the product tile band should have one continuous marquee owner");
+  assert.equal(await marquee.locator(":scope > .tilerow").count(), 2, "the marquee should duplicate one complete track for a seamless loop");
+  const marqueeTracks = await marquee.locator(":scope > .tilerow").evaluateAll((tracks) => tracks.map((track) => ({
+    sources: Array.from(track.querySelectorAll("img"), (image) => image.getAttribute("src")),
+    left: track.getBoundingClientRect().left,
+    right: track.getBoundingClientRect().right,
+    width: track.getBoundingClientRect().width,
+  })));
+  assert.deepEqual(marqueeTracks[1].sources, marqueeTracks[0].sources, "both marquee tracks should be byte-for-byte equivalent sequences");
+  assert.ok(Math.abs(marqueeTracks[0].width - marqueeTracks[1].width) < 1, "marquee tracks should have equal widths");
+  assert.ok(Math.abs(marqueeTracks[0].right - marqueeTracks[1].left) < 1, "marquee tracks should meet without a visible seam");
+  assert.equal(await marquee.evaluate((node) => getComputedStyle(node).animationName), "tile-marquee");
   assert.equal(await page.locator("#teams .model").count(), 2);
   assert.equal(await page.locator("#teams .coach-col").count(), 2);
   await verifyHeldValuesStage(page, { width: 1440, height: 900 });
@@ -362,6 +432,14 @@ try {
   assert.equal(await noJsPage.locator("#valueDeck .value-card").count(), 7);
   assert.equal(await noJsPage.locator("#valueDeck").evaluate((deck) => deck.classList.contains("is-live")), false);
   assert.equal(await noJsPage.locator("#values").evaluate((section) => Boolean(section.style.height) || section.classList.contains("is-held")), false);
+  assert.deepEqual(
+    await noJsPage.locator("[data-brand-carousel]").evaluateAll((carousels) => carousels.map((carousel) => {
+      const slides = Array.from(carousel.querySelectorAll(".brand-slide"));
+      return slides.map((slide) => getComputedStyle(slide).opacity);
+    })),
+    [["1", "0", "0"], ["1", "0", "0"]],
+    "without JavaScript, each carousel should present its first image as a complete static fallback",
+  );
   await noJsContext.close();
 
   const reducedPage = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
@@ -370,6 +448,14 @@ try {
   assert.equal(await reducedPage.locator("#heroGrowVideo").getAttribute("src"), null);
   assert.equal(await reducedPage.locator(".hero-frame-end").evaluate((node) => getComputedStyle(node).opacity), "1");
   assert.equal(await reducedPage.locator(".chip").evaluateAll((chips) => chips.every((chip) => getComputedStyle(chip).opacity === "1")), true);
+  assert.equal(await reducedPage.locator(".tile-marquee").evaluate((node) => getComputedStyle(node).animationName), "none");
+  assert.equal(await reducedPage.locator(".tile-marquee > .tilerow").nth(1).evaluate((node) => getComputedStyle(node).display), "none");
+  await reducedPage.waitForTimeout(4700);
+  assert.deepEqual(
+    await reducedPage.locator("[data-brand-carousel]").evaluateAll((carousels) => carousels.map((carousel) => carousel.dataset.activeSlide)),
+    ["0", "0"],
+    "reduced motion should keep both carousels on their static first image",
+  );
   await reducedPage.waitForFunction(() => document.querySelector("#values")?.classList.contains("is-held"));
   const reducedValuesTop = await reducedPage.locator("#values").evaluate((section) => scrollY + section.getBoundingClientRect().top);
   await scrollInstant(reducedPage, reducedValuesTop + 900 * 0.35 + 900 * 0.5 * 6 + 1);
