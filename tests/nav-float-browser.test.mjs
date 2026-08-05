@@ -141,15 +141,31 @@ try {
   assert.ok(mobileBrand <= 20, "the mobile brand should hold one line inside the floating bar");
   await mobile.close();
 
-  // ---------- narrow phone ----------
-  const narrow = await browser.newPage({ viewport: { width: 360, height: 800 } });
-  await narrow.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
-  await scrollInstant(narrow, 900);
-  const narrowFloat = await navProbe(narrow);
-  assert.equal(narrowFloat.floating, true);
-  assert.equal(narrowFloat.overflow, 0, "narrow phones should never overflow horizontally");
-  assert.ok(narrowFloat.rect.width <= 360 - 20, "the narrow bar should stay inset");
-  await narrow.close();
+  // ---------- narrow phones: the bar's own contents stay on the paper ----------
+  for (const width of [360, 320]) {
+    const narrow = await browser.newPage({ viewport: { width, height: 800 } });
+    await narrow.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+    await scrollInstant(narrow, 900);
+    const narrowFloat = await navProbe(narrow);
+    assert.equal(narrowFloat.floating, true);
+    assert.equal(narrowFloat.overflow, 0, `${width}px phones should never overflow horizontally`);
+    assert.ok(narrowFloat.rect.width <= width - 20, `the ${width}px bar should stay inset`);
+    const contained = await narrow.evaluate(() => {
+      const bar = document.querySelector(".topbar").getBoundingClientRect();
+      const chip = document.querySelector(".topbar .roles-chip").getBoundingClientRect();
+      const brand = document.querySelector('.topbar > a[aria-label="Care and Bloom home"]').getBoundingClientRect();
+      return { barLeft: bar.left, barRight: bar.right, chipLeft: chip.left, chipRight: chip.right, chipWidth: chip.width, brandLeft: brand.left };
+    });
+    assert.ok(
+      contained.chipRight <= contained.barRight,
+      `the roles chip should stay inside the ${width}px floating bar (chip ${contained.chipRight} / bar ${contained.barRight})`,
+    );
+    assert.ok(contained.brandLeft >= contained.barLeft, `the wordmark should stay inside the ${width}px floating bar`);
+    assert.ok(contained.chipLeft > contained.brandLeft, "the bar should keep its wordmark-then-chip order");
+    assert.ok(contained.chipWidth >= 147, `the ${width}px chip should keep its full legible label, not shrink`);
+    assert.equal(await narrow.locator(".topbar .roles-chip").textContent(), "Open roles (11)");
+    await narrow.close();
+  }
 
   // ---------- reduced motion: instant state change, same geometry ----------
   const reduced = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });

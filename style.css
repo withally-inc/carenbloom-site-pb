@@ -161,6 +161,8 @@ html:not(.js) .nav-shell { position: absolute; }
   margin: 0 auto;
   padding-left: max(var(--pad-x), env(safe-area-inset-left));
   padding-right: max(var(--pad-x), env(safe-area-inset-right));
+  /* phones tighten this measure on arrival — travel with the bar, never snap */
+  transition: padding var(--dur-base) var(--ease-out);
 }
 .topbar {
   pointer-events: auto;
@@ -914,12 +916,27 @@ html:not(.js) .nav-shell { position: absolute; }
   .hero-pin { height: calc(100vh + 1000px + 28vh); }
   .topbar nav { display: none; }
   /* mobile: the same material, held stable — no morph, only the surface fades in.
-     the 1px rule is absorbed into the padding so the bar height never moves */
+     the 1px rule is absorbed into the padding so the bar height never moves.
+     the floating bar carries only the wordmark and the roles chip, so it takes a
+     tighter inset than the content grid — the pair prints whole even at 320px */
+  .nav-shell.is-floating .nav-shell-inner {
+    padding-left: max(8px, env(safe-area-inset-left));
+    padding-right: max(8px, env(safe-area-inset-right));
+  }
   .nav-shell.is-floating .topbar {
-    margin-inline: 10px;
-    padding: calc(var(--space-2xs) - 1px) 12px;
+    margin-inline: 8px;
+    padding: calc(var(--space-2xs) - 1px) 10px;
+    gap: var(--space-2xs);
     border-radius: 14px;
   }
+  /* the chip is held whole; the wordmark is the flexible item, so nothing can
+     ever print past the paper edge however narrow the phone gets */
+  .topbar > a[aria-label="Care and Bloom home"] {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .topbar .roles-chip { flex: none; }
   .display-word { font-size: clamp(56px, 17.5vw, 80px); }
   .stage-center { margin: -0.25em 0; }
   .bloom { height: min(46vh, 420px); }
@@ -1011,7 +1028,7 @@ html:not(.js) .nav-shell { position: absolute; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .nav-shell, .nav-shell .topbar { transition-duration: 1ms; }
+  .nav-shell, .nav-shell-inner, .nav-shell .topbar { transition-duration: 1ms; }
   .roll .lines, .reveal .line > span { transition-duration: 1ms; }
   .brand-slide { transition-duration: 1ms; }
   .progress span.running i { animation: none; }
