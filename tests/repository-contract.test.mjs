@@ -3,8 +3,10 @@ import { existsSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { careerRoles } from "../scripts/careers-roles.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const decodeEntities = (value) => value.replace(/&amp;/g, "&");
 
 const runtimeFiles = [
   "index.html",
@@ -48,6 +50,48 @@ test("the old PB bookmark has only a root redirect", () => {
     { source: "/pb-live", destination: "/", permanent: true },
     { source: "/pb-live/", destination: "/", permanent: true },
   ]);
+});
+
+test("the home careers list agrees with the canonical role authority", () => {
+  const home = readFileSync(path.join(root, "index.html"), "utf8");
+  const rows = [...home.matchAll(
+    /<a class="job-row" href="\/careers\/apply\/\?role=([^"]+)"><span class="j-name">([^<]+)<\/span><span class="j-loc">([^<]+)<\/span><\/a>/g
+  )].map(([, slug, title, location]) => ({ slug, title: decodeEntities(title), location: decodeEntities(location) }));
+
+  const bySlug = (a, b) => a.slug.localeCompare(b.slug);
+  const expected = careerRoles.map((role) => ({
+    slug: role.slug,
+    title: role.title,
+    location: role.locationType || "Remote",
+  }));
+
+  assert.deepEqual(
+    [...rows].sort(bySlug),
+    [...expected].sort(bySlug),
+    "every home job row must use the slug, title, and canonical location from scripts/careers-roles.js"
+  );
+  assert.equal(rows.length, careerRoles.length, "the home page must list every canonical role exactly once");
+});
+
+test("every advertised open-role count matches the canonical role authority", () => {
+  const total = careerRoles.length;
+  const home = readFileSync(path.join(root, "index.html"), "utf8");
+  const apply = readFileSync(path.join(root, "careers/apply/index.html"), "utf8");
+
+  const advertised = [...home.matchAll(/Open roles \((\d+)\)/g), ...apply.matchAll(/Open roles \((\d+)\)/g)]
+    .map(([, count]) => Number(count));
+  assert.notEqual(advertised.length, 0, "the open-role chips should exist");
+  assert.deepEqual(advertised, advertised.map(() => total), `every "Open roles (n)" chip should read ${total}`);
+
+  const sectionLabel = home.match(/\(07\) Careers · (\d+) roles open/);
+  assert.equal(Number(sectionLabel?.[1]), total, "the careers section label should count every canonical role");
+
+  const groupCounts = [...home.matchAll(/<span class="count-chip">(\d+)<\/span>/g)].map(([, count]) => Number(count));
+  assert.equal(
+    groupCounts.reduce((sum, count) => sum + count, 0),
+    total,
+    "the careers group counts should sum to every canonical role"
+  );
 });
 
 test("all local HTML and CSS dependencies resolve inside the repository", () => {

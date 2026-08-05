@@ -66,7 +66,9 @@ The implementation does not invent city, country, or hybrid data, so remote post
 
 Google requires a factual applicant-country restriction alongside `TELECOMMUTE` for remote-job rich results, so those roles are not yet eligible; the real hiring-eligible countries must be decided and added to the role records before that eligibility can be claimed.
 
-The static `careers/apply/index.html` metadata is a neutral, role-agnostic fallback for crawlers that do not execute JavaScript; browsers receive per-role metadata at runtime.
+`careers/apply/index.html` is one shared template for all eleven role URLs, so its static markup is role-agnostic throughout: the meta description, the Open Graph description, the visible location line, the accessible Location and Level entries, the role title, summary, mission, responsibilities, requirements, and the hidden role field all carry neutral placeholder copy rather than any single role's data.
+
+Crawlers that do not execute JavaScript therefore never see a location, title, or requirement asserted for the wrong role; browsers receive the canonical per-role copy and metadata at runtime.
 
 ## Vercel review deployment
 
@@ -98,8 +100,16 @@ Never guess a deployment identifier or roll back another Care and Bloom project.
 
 ## Production blockers
 
+Two named blockers remain open. Neither is addressed by any change in this repository, and both must be resolved and tested before this site is promoted to production.
+
+### 1. Unresolved factual `datePosted` policy
+
 The factual `datePosted` policy for JobPosting structured data is unresolved.
 
 The integrated implementation currently derives `datePosted` from the browser date, and this repository deliberately preserves that behavior pending a captain decision.
 
-Do not promote this site to production until that factual policy is resolved and tested.
+### 2. Server-side enforcement of required application answers, resume, and portfolio
+
+`/api/applications` validates only the answers, resume, and portfolio material the client chooses to send: a direct POST that omits `questions` still passes validation, and `portfolioRequired` is not enforced server-side even though `scripts/careers-roles.js` already carries the canonical questions and portfolio flags the handler uses for `introVideoRequired`.
+
+The captain deliberately deferred this work because publishing comes first and equivalent enforcement exists elsewhere. Review traffic is dry-run-only, so no incomplete application can reach Notion today.

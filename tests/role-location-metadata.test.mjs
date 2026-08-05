@@ -18,6 +18,7 @@ const roles = [
 
 const staticFallback = "Care & Bloom careers — location varies by role.";
 const staticMarkup = await (await fetch(`${baseUrl}/careers/apply/`)).text();
+const staticText = staticMarkup.replace(/&amp;/g, "&");
 for (const attribute of ['name="description"', 'property="og:description"']) {
   const match = staticMarkup.match(new RegExp(`<meta ${attribute} content="([^"]*)">`));
   assert.equal(
@@ -26,6 +27,32 @@ for (const attribute of ['name="description"', 'property="og:description"']) {
     `crawler-visible ${attribute} must stay neutral about role location`
   );
 }
+
+const physicalLocations = [...new Set(roles.map(([, , location]) => location).filter((location) => location !== "Remote"))];
+for (const location of physicalLocations) {
+  assert.equal(
+    staticText.includes(location),
+    false,
+    `the shared static template must not assert "${location}" for the roles that are not in that location`
+  );
+}
+assert.equal(
+  /\bRemote\b/.test(staticText),
+  false,
+  "the shared static template must not assert Remote for the roles that have a physical location"
+);
+for (const [, title] of roles) {
+  assert.equal(
+    staticText.includes(title),
+    false,
+    `the shared static template must not assert "${title}" copy for the other ten role URLs`
+  );
+}
+assert.equal(
+  /<input type="hidden" name="role" value="">/.test(staticMarkup),
+  true,
+  "the shared static template must not preselect a role in the application form"
+);
 
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
@@ -39,6 +66,9 @@ async function readRole(slug) {
       .find((entry) => entry["@type"] === "JobPosting");
     return {
       title: document.querySelector("[data-role-title]")?.textContent?.trim(),
+      summary: document.querySelector("[data-role-summary]")?.textContent?.trim(),
+      level: document.querySelector("[data-role-level]")?.textContent?.trim(),
+      roleField: document.querySelector('input[name="role"]')?.value,
       heroLocation: document.querySelector(".role-hero .role-location")?.textContent?.trim(),
       detailLocation: document.querySelector(".role-meta dd")?.textContent?.trim(),
       description: document.querySelector('meta[name="description"]')?.content,
@@ -48,10 +78,19 @@ async function readRole(slug) {
   });
 }
 
+assert.deepEqual(
+  ["On-site, Hong Kong", "On-site, Shenzhen, China", "Remote"].filter((location) => roles.some(([, , value]) => value === location)),
+  ["On-site, Hong Kong", "On-site, Shenzhen, China", "Remote"],
+  "rendered coverage must keep both physical locations and the remote case"
+);
+
 for (const [slug, title, location] of roles) {
   const result = await readRole(slug);
   const expectedDescription = `${title} — ${location} at Care & Bloom.`;
   assert.equal(result.title, title, `${slug} should render distinct role data`);
+  assert.equal(result.roleField, title, `${slug} should render the canonical role into the application form`);
+  assert.notEqual(result.summary, "Care & Bloom is hiring across product, growth, creative, and operations.", `${slug} should replace the role-agnostic static summary`);
+  assert.notEqual(result.level, "Varies by role", `${slug} should replace the role-agnostic static level`);
   assert.equal(result.heroLocation, location, `${slug} hero location should use canonical role data`);
   assert.equal(result.detailLocation, location, `${slug} accessible role details should agree with the hero`);
   assert.equal(result.description, expectedDescription, `${slug} meta description should agree with the visible location`);
