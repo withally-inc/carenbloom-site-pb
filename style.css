@@ -534,22 +534,20 @@ section, footer { position: relative; }
   height: 100%;
   object-fit: cover;
 }
-.progress {
-  position: absolute;
-  top: 12px;
-  left: var(--space-2xs);
-  right: var(--space-2xs);
-  z-index: 2;
+/* the progress rail: moved off the imagery onto the paper ground, where it is drawn
+   like every other rule on the page — a segmented hairline in the gridline colour
+   (--color-rule), inked by the same --color-ink that prints the record. One segment
+   per slide; the inked sweep reads count, position and dwell at a glance on any slide. */
+.brand-card > .progress {
   display: flex;
   gap: var(--space-3xs);
-  filter: drop-shadow(0 1px 2px color-mix(in oklab, var(--color-ink) 55%, transparent));
+  margin-top: var(--space-3xs);
 }
 .progress span {
   flex: 1;
   height: 2px;
   overflow: hidden;
-  background: var(--color-paper-2);
-  box-shadow: 0 0 0 1px var(--color-paper-2);
+  background: var(--color-rule);
 }
 .progress span i {
   display: block;
@@ -560,9 +558,9 @@ section, footer { position: relative; }
   transform-origin: 0 50%;
 }
 .progress span.running i { animation: progress 4.5s linear forwards; }
-.brand-carousel.paused .progress span.running i { animation-play-state: paused; }
+.brand-carousel.paused ~ .progress span.running i { animation-play-state: paused; }
 @keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-.brand-meta { padding-top: var(--space-2xs); }
+.brand-meta { padding-top: var(--space-3xs); }
 .b-index { font-family: var(--font-mono); font-size: var(--text-mono-s); letter-spacing: 0.04em; opacity: 0.7; }
 .b-name {
   font-family: var(--font-display);

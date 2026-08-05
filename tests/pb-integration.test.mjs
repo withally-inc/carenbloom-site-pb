@@ -283,7 +283,7 @@ try {
   );
   assert.equal(
     await brandCarousels.evaluateAll((carousels) => carousels.every((carousel) =>
-      carousel.querySelectorAll(".progress > span").length === carousel.querySelectorAll(".brand-slide").length)),
+      carousel.closest(".brand-card").querySelectorAll(".progress > span").length === carousel.querySelectorAll(".brand-slide").length)),
     true,
     "each carousel should render exactly one progress bar per slide",
   );
@@ -295,16 +295,33 @@ try {
     true,
     "brand carousels should use a square crop",
   );
+  await scrollInstant(page, 0);
   assert.deepEqual(
     await brandCarousels.evaluateAll((carousels) => carousels.map((carousel) => carousel.dataset.activeSlide)),
     ["0", "0"],
     "both carousels should start on their first approved image",
   );
+  const runningBars = (carousels) => carousels.map((carousel) =>
+    Array.from(carousel.closest(".brand-card").querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running")));
   assert.deepEqual(
-    await brandCarousels.evaluateAll((carousels) => carousels.map((carousel) =>
-      Array.from(carousel.querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running")))),
+    await brandCarousels.evaluateAll(runningBars),
+    [[false, false, false], [false, false, false]],
+    "no progress bar should run before its carousel has been scrolled into view",
+  );
+  assert.equal(
+    await page.locator(".brand-card .progress > span i").evaluateAll((fills) =>
+      fills.every((fill) => getComputedStyle(fill).animationName === "none")),
+    true,
+    "no progress fill should animate before its carousel has been scrolled into view",
+  );
+  await brandCarousels.first().scrollIntoViewIfNeeded();
+  await page.waitForFunction(() =>
+    Array.from(document.querySelectorAll("[data-brand-carousel]")).every((carousel) =>
+      carousel.closest(".brand-card").querySelector(".progress > span").classList.contains("running")));
+  assert.deepEqual(
+    await brandCarousels.evaluateAll(runningBars),
     [[true, false, false], [true, false, false]],
-    "each carousel should start the first progress bar",
+    "each carousel should start its first progress bar once scrolled into view",
   );
   await brandCarousels.first().scrollIntoViewIfNeeded();
   await page.waitForTimeout(4700);
@@ -314,14 +331,14 @@ try {
     "both carousels should advance on Mother Fable's 4.5-second cadence",
   );
   assert.deepEqual(
-    await brandCarousels.evaluateAll((carousels) => carousels.map((carousel) =>
-      Array.from(carousel.querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running")))),
+    await brandCarousels.evaluateAll(runningBars),
     [[false, true, false], [false, true, false]],
     "the active progress bar should advance with its slide",
   );
+  const nancyCard = page.locator(".brand-card").first();
   await brandCarousels.first().hover();
   assert.equal(
-    await brandCarousels.first().locator(".progress > span.running i").evaluate((fill) => getComputedStyle(fill).animationPlayState),
+    await nancyCard.locator(".progress > span.running i").evaluate((fill) => getComputedStyle(fill).animationPlayState),
     "paused",
     "hover should pause the active progress fill",
   );
@@ -336,7 +353,7 @@ try {
   await brandCarousels.first().focus();
   assert.equal(await brandCarousels.first().evaluate((carousel) => carousel.classList.contains("paused")), true);
   assert.equal(
-    await brandCarousels.first().locator(".progress > span.running i").evaluate((fill) => getComputedStyle(fill).animationPlayState),
+    await nancyCard.locator(".progress > span.running i").evaluate((fill) => getComputedStyle(fill).animationPlayState),
     "paused",
     "focus should pause the active progress fill",
   );
@@ -495,16 +512,57 @@ try {
   );
   assert.equal(
     await reducedPage.locator("[data-brand-carousel]").evaluateAll((carousels) => carousels.every((carousel) =>
-      Array.from(carousel.querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running")).every((running) => !running))),
+      Array.from(carousel.closest(".brand-card").querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running")).every((running) => !running))),
     true,
     "reduced motion should leave every progress fill stopped",
   );
-  await reducedPage.waitForFunction(() => document.querySelector("#values")?.classList.contains("is-held"));
-  const reducedValuesTop = await reducedPage.locator("#values").evaluate((section) => scrollY + section.getBoundingClientRect().top);
-  await scrollInstant(reducedPage, reducedValuesTop + 900 * 0.35 + 900 * 0.5 * 6 + 1);
-  assert.equal(await counterText(reducedPage), "07 / 07");
-  assert.equal(await reducedPage.locator("#value-01").evaluate((card) => getComputedStyle(card).transitionDuration), "0.001s");
+  await reducedPage.locator("[data-brand-carousel]").first().scrollIntoViewIfNeeded();
+  await reducedPage.waitForTimeout(4700);
+  assert.deepEqual(
+    await reducedPage.locator("[data-brand-carousel]").evaluateAll((carousels) => carousels.map((carousel) => carousel.dataset.activeSlide)),
+    ["0", "0"],
+    "reduced motion should never auto-advance, even after the carousels are scrolled into view",
+  );
   await reducedPage.close();
+
+  /* start-on-view independence: on the stacked single-column layout each carousel
+     owns its observer, so revealing Hello Nancy must not start Biird, and starting
+     is one-way — leaving and returning never resets a started carousel. */
+  const stackedPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await stackedPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  const stackedCarousels = stackedPage.locator("[data-brand-carousel]");
+  const stackedRunning = () => stackedCarousels.evaluateAll((carousels) => carousels.map((carousel) =>
+    Array.from(carousel.closest(".brand-card").querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running"))));
+  const stackedSlides = () => stackedCarousels.evaluateAll((carousels) => carousels.map((carousel) => carousel.dataset.activeSlide));
+  assert.deepEqual(await stackedRunning(), [[false, false, false], [false, false, false]], "stacked: both carousels inert before view");
+  const nancyOnlyY = await stackedCarousels.first().evaluate((carousel) =>
+    scrollY + carousel.getBoundingClientRect().bottom - innerHeight);
+  await scrollInstant(stackedPage, nancyOnlyY);
+  await stackedPage.waitForFunction(() =>
+    document.querySelector("[data-brand-carousel]").closest(".brand-card").querySelector(".progress > span").classList.contains("running"));
+  assert.deepEqual(await stackedRunning(), [[true, false, false], [false, false, false]], "Hello Nancy starting must not start Biird");
+  await stackedPage.waitForTimeout(4700);
+  assert.deepEqual(await stackedSlides(), ["1", "0"], "only the revealed carousel should advance on the 4.5s cadence");
+  await stackedCarousels.nth(1).scrollIntoViewIfNeeded();
+  await stackedPage.waitForFunction(() =>
+    document.querySelectorAll("[data-brand-carousel]")[1].closest(".brand-card").querySelector(".progress > span").classList.contains("running"));
+  assert.deepEqual((await stackedRunning())[1], [true, false, false], "Biird starts on its own first bar when it enters view");
+  assert.equal((await stackedSlides())[1], "0", "Biird should begin on its first slide, not catch up to Hello Nancy");
+  const beforeLeave = await stackedSlides();
+  await scrollInstant(stackedPage, 0);
+  await scrollInstant(stackedPage, await stackedCarousels.nth(1).evaluate((carousel) =>
+    scrollY + carousel.getBoundingClientRect().top));
+  assert.deepEqual(await stackedSlides(), beforeLeave, "a started carousel must not reset when scrolled away and back");
+  await stackedPage.close();
+
+  const reducedPage2Values = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+  await reducedPage2Values.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await reducedPage2Values.waitForFunction(() => document.querySelector("#values")?.classList.contains("is-held"));
+  const reducedValuesTop = await reducedPage2Values.locator("#values").evaluate((section) => scrollY + section.getBoundingClientRect().top);
+  await scrollInstant(reducedPage2Values, reducedValuesTop + 900 * 0.35 + 900 * 0.5 * 6 + 1);
+  assert.equal(await counterText(reducedPage2Values), "07 / 07");
+  assert.equal(await reducedPage2Values.locator("#value-01").evaluate((card) => getComputedStyle(card).transitionDuration), "0.001s");
+  await reducedPage2Values.close();
 
   const mobileReducedPage = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
   await mobileReducedPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });

@@ -268,7 +268,9 @@ import {
 })();
 
 /* Mother Fable carousel law: one image at a time, a 4.5-second dwell and a
-   deterministically restarted progress fill. */
+   deterministically restarted progress fill. Start-on-view law (k3 carousel bars):
+   a carousel holds its first slide, first bar unfilled, until it is genuinely
+   scrolled into view; starting is one-way and each carousel owns its own observer. */
 (function () {
   const carousels = Array.from(document.querySelectorAll('[data-brand-carousel]'));
   if (!carousels.length) return;
@@ -276,7 +278,8 @@ import {
 
   carousels.forEach((carousel) => {
     const slides = Array.from(carousel.querySelectorAll('.brand-slide'));
-    const progress = carousel.querySelector('.progress');
+    const card = carousel.closest('.brand-card') || carousel;
+    const progress = card.querySelector('.progress');
     if (progress.children.length !== slides.length) {
       progress.replaceChildren(...slides.map(() => {
         const bar = document.createElement('span');
@@ -288,6 +291,7 @@ import {
     let active = 0;
     let timer = 0;
     let paused = false;
+    let started = false;
 
     function show(next) {
       active = (next + slides.length) % slides.length;
@@ -325,7 +329,7 @@ import {
     function resume() {
       paused = false;
       carousel.classList.remove('paused');
-      if (!reduced && !timer) timer = setTimeout(() => show(active + 1), 4500);
+      if (started && !reduced && !timer) timer = setTimeout(() => show(active + 1), 4500);
     }
 
     carousel.addEventListener('mouseenter', pause);
@@ -333,7 +337,28 @@ import {
     carousel.addEventListener('focusin', pause);
     carousel.addEventListener('focusout', resume);
 
-    show(0);
+    function start() {
+      if (started) return;
+      started = true;
+      show(0);
+    }
+
+    if (reduced) {
+      show(0); /* static first slide, every fill stopped — existing reduced-motion law */
+    } else {
+      /* the page's reveal convention: one-shot IntersectionObserver, threshold 0.3
+         (genuinely visible — ~170px of the square on screen, not an edge pixel).
+         One-way: the observer is dropped on start, so leaving view never resets. */
+      const io = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            start();
+            observer.unobserve(carousel);
+          }
+        });
+      }, { threshold: 0.3 });
+      io.observe(carousel);
+    }
   });
 })();
 /* ---------- (05) the scroll-stepped deck: seven values as a physical stack (k3-v2, stage 2) ----------
