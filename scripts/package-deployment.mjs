@@ -11,6 +11,7 @@ const runtimeAllowlist = [
   "app.js",
   "tokens.css",
   "hero-scroll.js",
+  "nav-float.js",
   "vercel.json",
   "assets",
   "icons",

@@ -7,11 +7,11 @@
     "serve": "NOTION_INTAKE_DRY_RUN=1 node scripts/dev-server.mjs",
     "package:deployment": "node scripts/package-deployment.mjs",
     "deploy:review": "NOTION_INTAKE_DRY_RUN=1 npm run package:deployment && vercel deploy --cwd .vercel-deploy",
-    "test:contracts": "node --test tests/repository-contract.test.mjs tests/deployment-package.test.mjs tests/hero-scroll.test.mjs",
+    "test:contracts": "node --test tests/repository-contract.test.mjs tests/deployment-package.test.mjs tests/hero-scroll.test.mjs tests/nav-float.test.mjs",
     "test:api": "node tests/application-payload.test.mjs && node tests/applications-api.test.mjs",
     "test:deadline": "node tests/careers-deadline.test.mjs",
     "test:metadata": "node tests/role-location-metadata.test.mjs",
-    "test:browser": "node tests/careers-apply-submit.test.mjs && node tests/pb-role-apply.test.mjs && node tests/pb-integration.test.mjs && node tests/lemon-band.test.mjs",
+    "test:browser": "node tests/careers-apply-submit.test.mjs && node tests/pb-role-apply.test.mjs && node tests/pb-integration.test.mjs && node tests/lemon-band.test.mjs && node tests/nav-float-browser.test.mjs",
     "test": "node scripts/test.mjs"
   },
   "dependencies": {

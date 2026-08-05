@@ -127,21 +127,78 @@ section, footer { position: relative; }
   max-width: var(--content-max);
   height: 100%;
   margin: 0 auto;
-  padding: 0 var(--pad-x);
+  /* the fixed nav-shell owns the topbar now; reserve exactly its natural height
+     (16px block padding x2 + 13px mono at 1.4 line-height + 8px chip padding x2)
+     so the hero composition is pixel-identical to the inline header it replaces */
+  padding: var(--topbar-h) var(--pad-x) 0;
   display: flex;
   flex-direction: column;
 }
 
+/* ---------- floating navigation: begins inline, arrives as a paper bar ---------- */
+:root {
+  --topbar-h: calc(var(--space-2xs) * 2 + var(--text-mono) * 1.4 + 16px);
+  --nav-offset: 12px;
+}
+.nav-shell {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 80;
+  --color-focus: var(--color-accent); /* cobalt on the paper bar, whatever ground scrolls beneath */
+  transform: translateY(0);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.nav-shell-inner {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding-left: max(var(--pad-x), env(safe-area-inset-left));
+  padding-right: max(var(--pad-x), env(safe-area-inset-right));
+}
 .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-xs);
   padding: var(--space-2xs) 0;
-  position: relative;
-  z-index: 6;
+  /* zero-width border at rest: the floating rule fades in without moving a pixel */
+  border: 0 solid transparent;
+  border-radius: 0;
+  transition:
+    margin var(--dur-base) var(--ease-out),
+    padding var(--dur-base) var(--ease-out),
+    background-color var(--dur-base) var(--ease-out),
+    border-width var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    border-radius var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+}
+/* the arrival: one piece of paper, settling 12px down over the record.
+   translucency is considered (86% white, 10px blur) — the ground shows through
+   as a wash, never as noise; the rule and shadow are the site's hairline + ledger lift */
+.nav-shell.is-floating {
+  transform: translateY(calc(var(--nav-offset) + env(safe-area-inset-top, 0px)));
+}
+.nav-shell.is-floating .topbar {
+  margin-inline: var(--space-2xs);
+  padding: 12px var(--space-2xs);
+  background: color-mix(in oklab, #ffffff 86%, transparent);
+  -webkit-backdrop-filter: blur(10px) saturate(1.04);
+  backdrop-filter: blur(10px) saturate(1.04);
+  border-width: 1px;
+  border-color: color-mix(in oklab, var(--color-ink) 12%, transparent);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px rgb(10 18 32 / 0.05),
+    0 16px 40px -18px rgb(10 18 32 / 0.24);
+}
+/* anchor arrivals land clear of the floating bar */
+#themes, #brands, #people, #careers {
+  scroll-margin-top: calc(var(--topbar-h) + var(--nav-offset) + var(--space-2xs));
 }
 .topbar nav { display: flex; gap: var(--space-xs); }
+.topbar > a[aria-label="Care and Bloom home"] { white-space: nowrap; }
 .topbar .roles-chip {
   white-space: nowrap;
   background: var(--color-accent);
@@ -849,6 +906,13 @@ section, footer { position: relative; }
 @media (max-width: 767px) {
   .hero-pin { height: calc(100vh + 1000px + 28vh); }
   .topbar nav { display: none; }
+  /* mobile: the same material, held stable — no morph, only the surface fades in.
+     the 1px rule is absorbed into the padding so the bar height never moves */
+  .nav-shell.is-floating .topbar {
+    margin-inline: 10px;
+    padding: calc(var(--space-2xs) - 1px) 12px;
+    border-radius: 14px;
+  }
   .display-word { font-size: clamp(56px, 17.5vw, 80px); }
   .stage-center { margin: -0.25em 0; }
   .bloom { height: min(46vh, 420px); }
@@ -940,6 +1004,7 @@ section, footer { position: relative; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .nav-shell, .nav-shell .topbar { transition-duration: 1ms; }
   .roll .lines, .reveal .line > span { transition-duration: 1ms; }
   .brand-slide { transition-duration: 1ms; }
   .progress span.running i { animation: none; }
