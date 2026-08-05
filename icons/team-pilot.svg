@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" role="img" aria-label="Two seats on one bench">
+  <!-- PB teams icon · "Pilot and co-pilot teams" · one bench, two seats — the recruiting chair gains a sibling -->
+  <rect x="3" y="3" width="8" height="8"/>
+  <rect x="13" y="3" width="8" height="8"/>
+  <rect x="2" y="12.5" width="20" height="2.5" fill="currentColor" stroke="none"/>
+  <path d="M5 15.5 V21"/>
+  <path d="M19 15.5 V21"/>
+</svg>

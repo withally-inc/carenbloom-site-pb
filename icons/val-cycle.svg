@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" role="img" aria-label="A loop closing on itself">
+  <!-- PB values icon 03 · "Reduce cycle time" · the tight loop -->
+  <path d="M20 12 A8 8 0 1 1 12 4"/>
+  <rect x="10.25" y="2.25" width="3.5" height="3.5" fill="currentColor" stroke="none"/>
+</svg>

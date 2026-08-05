@@ -1,0 +1,12 @@
+.DS_Store
+.env
+.env.*
+.vercel/
+.vercel-deploy/
+node_modules/
+.firstmate-evidence/
+coverage/
+playwright-report/
+test-results/
+*.log
+*.tmp

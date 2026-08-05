@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" role="img" aria-label="A solid block standing in a gap in the ledger rule">
+  <!-- PB values icon 02 · "Agency" · the actor fills the gap -->
+  <path d="M3 18 H9" opacity="0.6"/>
+  <path d="M15 18 H21" opacity="0.6"/>
+  <rect x="9.5" y="13.5" width="5" height="5" fill="currentColor" stroke="none"/>
+</svg>

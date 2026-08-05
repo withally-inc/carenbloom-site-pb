@@ -1,0 +1,23 @@
+{
+  "name": "carenbloom-site-pb",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "NOTION_INTAKE_DRY_RUN=1 node scripts/dev-server.mjs",
+    "package:deployment": "node scripts/package-deployment.mjs",
+    "deploy:review": "NOTION_INTAKE_DRY_RUN=1 npm run package:deployment && vercel deploy --cwd .vercel-deploy",
+    "test:contracts": "node --test tests/repository-contract.test.mjs tests/deployment-package.test.mjs tests/hero-scroll.test.mjs",
+    "test:api": "node tests/application-payload.test.mjs && node tests/applications-api.test.mjs",
+    "test:deadline": "node tests/careers-deadline.test.mjs",
+    "test:metadata": "node tests/role-location-metadata.test.mjs",
+    "test:browser": "node tests/careers-apply-submit.test.mjs && node tests/pb-role-apply.test.mjs && node tests/pb-integration.test.mjs",
+    "test": "node scripts/test.mjs"
+  },
+  "dependencies": {
+    "busboy": "^1.6.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.53.0"
+  }
+}

@@ -1,0 +1,9 @@
+.git
+.vercel
+node_modules
+tests
+*.test.mjs
+.env*
+.firstmate-evidence
+reports
+docs
