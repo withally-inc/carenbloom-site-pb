@@ -27,6 +27,7 @@ const commands = [
   ["tests/careers-apply-submit.test.mjs"],
   ["tests/pb-role-apply.test.mjs"],
   ["tests/pb-integration.test.mjs"],
+  ["tests/lemon-band.test.mjs"],
 ];
 
 async function waitForServer() {
