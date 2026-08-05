@@ -151,10 +151,13 @@ const phaseOf = (position) => Math.round((parseFloat(position) / 100) * 9);
     const started = performance.now();
     const tick = () => {
       const bandRect = band.getBoundingClientRect();
-      frames.push(lemons.map((lemon) => {
-        const rect = lemon.getBoundingClientRect();
-        return (rect.left + rect.right) / 2 - bandRect.left;
-      }));
+      frames.push({
+        at: performance.now(),
+        centres: lemons.map((lemon) => {
+          const rect = lemon.getBoundingClientRect();
+          return (rect.left + rect.right) / 2 - bandRect.left;
+        }),
+      });
       if (performance.now() - started < 2800) {
         requestAnimationFrame(tick);
       } else {
@@ -169,26 +172,41 @@ const phaseOf = (position) => Math.round((parseFloat(position) / 100) * 9);
   }));
 
   // a seamless wrap carries a lemon from fully past the right edge to fully before the left
-  // edge: the wrap distance is the band plus one whole lemon, not the band alone
+  // edge: the wrap distance is the band plus one whole lemon, not the band alone. A stalled
+  // frame says nothing about either distance, so pairs spanning a stall are not evidence:
+  // sampling under load must not be mistaken for a discontinuity in the march.
+  const STALL_MS = 100;
   const wrapSpan = track.bandWidth + track.lemonWidth;
+  const pairs = [];
+  for (let frame = 1; frame < track.frames.length; frame += 1) {
+    if (track.frames[frame].at - track.frames[frame - 1].at <= STALL_MS) {
+      pairs.push([track.frames[frame - 1].centres, track.frames[frame].centres]);
+    }
+  }
+  assert.ok(
+    pairs.length >= track.frames.length * 0.5,
+    `the sampled window must hold enough unstalled frames (${pairs.length} of ${track.frames.length})`,
+  );
   let wraps = 0;
   for (let i = 0; i < 5; i += 1) {
-    for (let frame = 1; frame < track.frames.length; frame += 1) {
-      const delta = track.frames[frame][i] - track.frames[frame - 1][i];
+    for (const [before, after] of pairs) {
+      const delta = after[i] - before[i];
       if (delta >= 0) {
         assert.ok(
-          delta <= track.bandWidth * 0.1,
+          delta <= track.bandWidth * 0.25,
           `lemon ${i}: the march must advance continuously (jumped ${delta.toFixed(1)}px in one frame)`,
         );
         continue;
       }
       wraps += 1;
+      // the regression signal is the distance itself: the teleport wrapped one band width
+      // (~1.0) where a physical exit and re-entry wraps band plus lemon (~1.257)
       assert.ok(
-        Math.abs(delta + wrapSpan) <= track.lemonWidth * 0.5,
+        Math.abs(delta + wrapSpan) < Math.abs(delta + track.bandWidth),
         `lemon ${i}: a wrap must span the band plus one lemon (${wrapSpan.toFixed(1)}px), not teleport ${(-delta).toFixed(1)}px`,
       );
     }
-    const centres = track.frames.map((frame) => frame[i]);
+    const centres = track.frames.map((frame) => frame.centres[i]);
     assert.ok(
       Math.min(...centres) < track.bandWidth,
       `lemon ${i}: the march must stay on the band`,

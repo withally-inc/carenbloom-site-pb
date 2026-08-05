@@ -585,12 +585,16 @@ try {
   const splitGeometry = async (target) => target.locator(".stat-band-split").evaluate((band) => {
     const bandRect = band.getBoundingClientRect();
     const valueRect = band.querySelector(".stat-value").getBoundingClientRect();
+    const supportRect = band.querySelector(".stat-support").getBoundingClientRect();
+    const box = (rect) => ({ top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right });
     return {
       bandLeft: bandRect.left,
       bandWidth: bandRect.width,
       valueLeft: valueRect.left,
       valueRight: valueRect.right,
       valueWidth: valueRect.width,
+      value: box(valueRect),
+      support: box(supportRect),
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,
     };
@@ -605,9 +609,19 @@ try {
     );
     assert.ok(geometry.valueRight <= geometry.clientWidth + 1, `${width}px: the value must not be viewport-clipped`);
     assert.ok(geometry.scrollWidth <= geometry.clientWidth + 1, `${width}px: no horizontal overflow`);
+    // the value track is minmax(0, 8fr): a value too wide for its column overruns leftward
+    // onto the support column instead of past the sun edge, so containment alone is not enough
+    const { value, support } = geometry;
+    assert.equal(
+      value.left < support.right && value.right > support.left && value.top < support.bottom && value.bottom > support.top,
+      false,
+      `${width}px: the value must not collide with the support column`,
+    );
   };
   // the same geometry is marginal through the tablet range, where the desktop rule centres
-  // the value and pulls it -6vw while the sun still stops at 70% of the viewport
+  // the value and pulls it -6vw while the sun still stops at 70% of the viewport. 901px is
+  // the tightest point of the untouched desktop composition — just above the containment
+  // rule's 900px boundary — so the range is bracketed from both sides, not only from inside.
   for (const splitViewport of [
     { width: 390, height: 844 },
     { width: 320, height: 720 },
@@ -615,6 +629,9 @@ try {
     { width: 800, height: 1024 },
     { width: 850, height: 1024 },
     { width: 900, height: 1024 },
+    { width: 901, height: 1024 },
+    { width: 950, height: 1024 },
+    { width: 991, height: 1024 },
   ]) {
     // reduced motion renders the exact terminal fill immediately, so geometry is deterministic
     const splitPage = await browser.newPage({ viewport: splitViewport, reducedMotion: "reduce" });
