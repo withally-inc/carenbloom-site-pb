@@ -661,6 +661,48 @@ try {
   assertValueOnSun(await splitGeometry(splitScrollPage), 390);
   await splitScrollPage.close();
 
+  // captain 2026-08-05: the lemon band's height is capped so the first stat row's numbers
+  // are above the fold when the record section enters (section top at viewport top),
+  // while the band still reads as a full band — every lemon fully inside it.
+  for (const entryViewport of [{ width: 1440, height: 900 }, { width: 1280, height: 800 }, { width: 390, height: 844 }]) {
+    const entryPage = await browser.newPage({ viewport: entryViewport });
+    await openPage(entryPage, `${baseUrl}/`);
+    const entryGeometry = await entryPage.evaluate(() => {
+      const record = document.querySelector(".record");
+      scrollTo({ top: scrollY + record.getBoundingClientRect().top, behavior: "instant" });
+      const band = document.getElementById("lemonBand").getBoundingClientRect();
+      const stat1 = document.querySelector(".stat-band").getBoundingClientRect();
+      const value = document.querySelector(".stat-band .stat-value").getBoundingClientRect();
+      const lemons = Array.from(document.querySelectorAll("#lemonBand .lemon img"), (img) => img.getBoundingClientRect());
+      return {
+        viewportH: innerHeight,
+        band: { top: band.top, bottom: band.bottom, height: band.height },
+        stat1: { top: stat1.top, bottom: stat1.bottom },
+        value: { top: value.top, bottom: value.bottom, height: value.height },
+        lemons: lemons.map((rect) => ({ top: rect.top, bottom: rect.bottom, width: rect.width })),
+      };
+    });
+    const label = `${entryViewport.width}x${entryViewport.height}`;
+    assert.ok(entryGeometry.value.height > 0, `${label}: the first stat row's value must render`);
+    assert.ok(
+      entryGeometry.value.bottom <= entryGeometry.viewportH + 1,
+      `${label}: the first numbers row must be above the fold on record entry (value bottom ${entryGeometry.value.bottom.toFixed(1)} vs fold ${entryGeometry.viewportH})`,
+    );
+    assert.ok(entryGeometry.value.top >= 0, `${label}: the first numbers row must not start above the viewport`);
+    assert.ok(
+      entryGeometry.band.bottom <= entryGeometry.stat1.top + 1,
+      `${label}: the lemon band must not overlap the first stat row`,
+    );
+    for (const lemon of entryGeometry.lemons) {
+      assert.ok(lemon.width >= 60, `${label}: lemons stay legible (${Math.round(lemon.width)}px)`);
+      assert.ok(
+        lemon.top >= entryGeometry.band.top - 1 && lemon.bottom <= entryGeometry.band.bottom + 1,
+        `${label}: every lemon must stay fully inside the capped band`,
+      );
+    }
+    await entryPage.close();
+  }
+
   assert.deepEqual(pageErrors, [], "the integrated natural-scroll journey should have no console, page, or request errors");
 } finally {
   await browser.close();

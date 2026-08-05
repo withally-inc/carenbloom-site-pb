@@ -348,13 +348,21 @@ section, footer { position: relative; }
   position: relative;
   overflow: clip;
   aspect-ratio: 1400 / 500;
+  /* captain 2026-08-05: cap the vertical footprint so the first stat row's numbers
+     are above the fold when the record enters at desktop (1440x900, 1280x800).
+     40vh leaves 166px record lead-in + 72px trailing margin + the 320px first
+     stat band's number row inside the viewport; the 1400/500 proof proportion
+     still governs wherever the viewport is tall enough (mobile included). */
+  max-height: 40vh;
   margin: var(--space-xs) 0 var(--space-lg);
 }
 .lemon-band .lemon {
   position: absolute;
   top: 14%; /* 70/500 */
   left: calc(var(--x) * 100%);
-  width: 25.714%; /* 360/1400 */
+  height: 72%; /* 360/500 — sized off the (possibly capped) band height, never the width,
+                  so the height cap shrinks lemons proportionally instead of clipping them */
+  aspect-ratio: 1;
   transform: translateX(-50%);
 }
 .lemon-band .lemon img {
