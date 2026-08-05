@@ -340,61 +340,58 @@ section, footer { position: relative; }
   padding: var(--space-xl) 0 0;
 }
 
-/* the million made physical — PBv2 dot field, on the evidence ground.
-   Marks are cobalt: cobalt-on-sun 7.49:1, already ledger-cleared. */
-.field-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-2xs);
-  font-family: var(--font-mono);
-  font-size: var(--text-mono-s);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border-top: 1px solid var(--color-rule-sun);
-  padding: var(--space-2xs) 0;
-}
-.live-chip {
-  display: inline-block;
-  background: var(--color-accent);
-  color: var(--color-paper);
-  border-radius: var(--radius-chip);
-  padding: 6px 10px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-.live-chip.tick { animation: chip-tick 600ms var(--ease-out); }
-@keyframes chip-tick {
-  0% { transform: translateY(0); }
-  30% { transform: translateY(-4px); }
-  100% { transform: translateY(0); }
-}
-.dotfield {
+/* the record made physical — five Candidate 03 lemons in a stepped stop-motion march
+   (lemon-stopmotion-a1). Geometry is the captain-approved proof: a 1400×500 canvas, lemons
+   360/1400 of the width at 70/500 from the top, marching on the exact sun ground. The band
+   scales proportionally at every viewport instead of cropping a fixed artboard. */
+.lemon-band {
   position: relative;
-  width: 100%;
-  margin: var(--space-xs) 0;
+  overflow: clip;
+  aspect-ratio: 1400 / 500;
+  /* captain 2026-08-05: cap the vertical footprint so the first stat row's numbers
+     are above the fold when the record enters at desktop (1440x900, 1280x800).
+     40vh is the approved cap, but it is the only viewport-proportional term in a
+     column of fixed-pixel geometry, so on short desktops it stops being enough on
+     its own (1366x768 and 1280x720 both push the number row past the fold). The
+     entry reserve below states that column explicitly, and the desktop rule takes
+     whichever of the two caps is tighter; the 1400/500 proof proportion still
+     governs wherever the viewport is tall enough (mobile included). */
+  --band-entry-reserve: calc(
+    var(--space-xl) + 19px + var(--space-md)      /* record padding, label line, collapsed label margin */
+    + var(--space-lg)                             /* the band's own trailing margin */
+    + 160px + 0.43 * clamp(84px, 11.25vw, 162px)  /* first stat band's number-row bottom:
+                                                     half its 320px min-height + half the
+                                                     0.86-line-height value */
+  );
+  max-height: 40vh;
+  margin: var(--space-xs) 0 var(--space-lg);
 }
-.dotfield .mark {
+/* the reserve above describes the desktop stat-band layout, so the short-height cap is
+   scoped to it; the 84px floor keeps every lemon at or above the 60px legibility floor
+   (lemons are 72% of band height) on viewports too short for the fold guarantee at all */
+@media (min-width: 768px) {
+  .lemon-band { max-height: max(84px, min(40vh, calc(100vh - var(--band-entry-reserve)))); }
+}
+.lemon-band .lemon {
   position: absolute;
-  background: var(--color-accent);
-  transform: scale(0);
+  top: 14%; /* 70/500 */
+  left: calc(var(--x) * 100%);
+  height: 72%; /* 360/500 — sized off the (possibly capped) band height, never the width,
+                  so the height cap shrinks lemons proportionally instead of clipping them */
+  aspect-ratio: 1;
+  transform: translateX(-50%);
 }
-.dotfield.in .mark { transform: scale(1); transition: transform 500ms var(--ease-out); transition-delay: var(--md, 0ms); }
-.field-foot {
-  font-family: var(--font-mono);
-  font-size: var(--text-mono-s);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  opacity: 0.8;
-  max-width: 60ch;
-  border-top: 1px solid var(--color-rule-sun);
-  padding-top: var(--space-2xs);
-  margin-bottom: var(--space-lg);
+.lemon-band .lemon img {
+  display: block;
+  width: 100%;
+  height: auto; /* overrides the height-attribute hint so aspect-ratio governs the box */
+  aspect-ratio: 1;
+  object-fit: cover; /* the 3600×360 sprite covers the square frame; object-position picks the phase */
+  image-rendering: pixelated; /* 1-bit print language stays crisp when scaled */
 }
+.lemon-band.is-running .lemon { will-change: transform; }
 
-/* The field keeps its established height and 72px foot-to-stats pause.
-   The record figures then leave the wrap as full-bleed, normal-flow bands. */
+/* The record figures leave the wrap as full-bleed, normal-flow bands. */
 .stat-bands { position: relative; }
 .stat-bands::after {
   content: "";
@@ -534,22 +531,20 @@ section, footer { position: relative; }
   height: 100%;
   object-fit: cover;
 }
-.progress {
-  position: absolute;
-  top: 12px;
-  left: var(--space-2xs);
-  right: var(--space-2xs);
-  z-index: 2;
+/* the progress rail: moved off the imagery onto the paper ground, where it is drawn
+   like every other rule on the page — a segmented hairline in the gridline colour
+   (--color-rule), inked by the same --color-ink that prints the record. One segment
+   per slide; the inked sweep reads count, position and dwell at a glance on any slide. */
+.brand-card > .progress {
   display: flex;
   gap: var(--space-3xs);
-  filter: drop-shadow(0 1px 2px color-mix(in oklab, var(--color-ink) 55%, transparent));
+  margin-top: var(--space-3xs);
 }
 .progress span {
   flex: 1;
   height: 2px;
   overflow: hidden;
-  background: var(--color-paper-2);
-  box-shadow: 0 0 0 1px var(--color-paper-2);
+  background: var(--color-rule);
 }
 .progress span i {
   display: block;
@@ -560,9 +555,9 @@ section, footer { position: relative; }
   transform-origin: 0 50%;
 }
 .progress span.running i { animation: progress 4.5s linear forwards; }
-.brand-carousel.paused .progress span.running i { animation-play-state: paused; }
+.brand-carousel.paused ~ .progress span.running i { animation-play-state: paused; }
 @keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-.brand-meta { padding-top: var(--space-2xs); }
+.brand-meta { padding-top: var(--space-3xs); }
 .b-index { font-family: var(--font-mono); font-size: var(--text-mono-s); letter-spacing: 0.04em; opacity: 0.7; }
 .b-name {
   font-family: var(--font-display);
@@ -635,7 +630,7 @@ section, footer { position: relative; }
 .p-img {
   width: 100%;
   height: auto;
-  aspect-ratio: 1 / 2;
+  aspect-ratio: 1 / 1; /* captain 2026-08-05: true square portraits supersede the 1/2 crop */
   object-fit: cover;
   align-self: start;
   border: 1px solid var(--color-rule-dark);
@@ -908,11 +903,6 @@ section, footer { position: relative; }
     flex-direction: row;
     width: auto;
   }
-  .stat-band-split .stat-value {
-    width: auto;
-    justify-self: end;
-    transform: none;
-  }
   .stat-number { font-size: clamp(58px, 18vw, 82px); }
   .stat-unit { font-size: 16px; }
   .theme-row { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
@@ -921,7 +911,19 @@ section, footer { position: relative; }
   .p-img { max-width: 240px; }
   .contact-foot { flex-direction: column; align-items: flex-start; gap: var(--space-2xs); }
   .tilerow { grid-auto-columns: minmax(140px, 36vw); }
-  .field-head { align-items: flex-start; }
+}
+/* the split band's sun fill terminally covers only the left 70% (--band-target: 0.7), so
+   below the width where the centred desktop composition clears that edge the content box
+   must end at the sun edge minus the standard inset: any alignment past it parks the ink
+   value on the remaining ink ground, where it is invisible (reproduced at 390px and 500px,
+   and again through the 768-900px tablet range) */
+@media (max-width: 900px) {
+  .stat-band-split .stat-band-inner { padding-right: calc(30% + var(--pad-x)); }
+  .stat-band-split .stat-value {
+    width: auto;
+    justify-self: end;
+    transform: none;
+  }
 }
 @media (max-width: 479px) {
   .email-link { font-size: 22px; }
@@ -943,8 +945,6 @@ section, footer { position: relative; }
   .progress span.running i { animation: none; }
   .tile-marquee { width: 100%; animation: none; transform: none; will-change: auto; }
   .tile-marquee > .tilerow:nth-child(2) { display: none; }
-  .dotfield.in .mark { transition-duration: 1ms; transition-delay: 0ms; }
-  .live-chip.tick { animation: none; }
   .stat-band { --band-reveal: 1 !important; }
   .hero-pin { height: auto; }
   .hero-stage { position: relative; height: auto; min-height: 100vh; }

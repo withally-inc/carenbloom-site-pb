@@ -19,6 +19,18 @@ const browser = await chromium.launch({ headless: true });
 
 const counterText = (page) => page.locator("#deckCounter").textContent();
 
+// Every geometry assertion here measures laid-out glyphs, and the display face loads with
+// font-display: swap over a Helvetica Neue fallback: measuring before it settles measures the
+// wrong typeface, which is a silent false pass on the tight split-band boundary cases.
+async function openPage(page, url = `${baseUrl}/`) {
+  const response = await page.goto(url, { waitUntil: "domcontentloaded" });
+  await page.evaluate(() => Promise.race([
+    document.fonts.ready,
+    new Promise((resolve) => setTimeout(resolve, 5000)),
+  ]));
+  return response;
+}
+
 async function scrollInstant(page, y) {
   await page.evaluate((target) => scrollTo({ top: target, behavior: "instant" }), y);
   await page.waitForTimeout(100);
@@ -108,7 +120,7 @@ try {
       && request.url().endsWith("/assets/hero-grow.mp4");
     if (!isCancelledHeroSeek) pageErrors.push(`request: ${request.url()} ${errorText}`);
   });
-  const response = await page.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  const response = await openPage(page, `${baseUrl}/`);
   assert.equal(response?.status(), 200, "the canonical PB review route should resolve");
   assert.equal(await page.locator('link[rel="icon"][href="/images/cb-logo-white.svg"]').count(), 1, "the PB page should declare a valid shared favicon");
   assert.equal((await page.request.get(`${baseUrl}/images/cb-logo-white.svg`)).status(), 200, "the shared favicon should resolve without a browser console error");
@@ -283,7 +295,7 @@ try {
   );
   assert.equal(
     await brandCarousels.evaluateAll((carousels) => carousels.every((carousel) =>
-      carousel.querySelectorAll(".progress > span").length === carousel.querySelectorAll(".brand-slide").length)),
+      carousel.closest(".brand-card").querySelectorAll(".progress > span").length === carousel.querySelectorAll(".brand-slide").length)),
     true,
     "each carousel should render exactly one progress bar per slide",
   );
@@ -295,16 +307,33 @@ try {
     true,
     "brand carousels should use a square crop",
   );
+  await scrollInstant(page, 0);
   assert.deepEqual(
     await brandCarousels.evaluateAll((carousels) => carousels.map((carousel) => carousel.dataset.activeSlide)),
     ["0", "0"],
     "both carousels should start on their first approved image",
   );
+  const runningBars = (carousels) => carousels.map((carousel) =>
+    Array.from(carousel.closest(".brand-card").querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running")));
   assert.deepEqual(
-    await brandCarousels.evaluateAll((carousels) => carousels.map((carousel) =>
-      Array.from(carousel.querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running")))),
+    await brandCarousels.evaluateAll(runningBars),
+    [[false, false, false], [false, false, false]],
+    "no progress bar should run before its carousel has been scrolled into view",
+  );
+  assert.equal(
+    await page.locator(".brand-card .progress > span i").evaluateAll((fills) =>
+      fills.every((fill) => getComputedStyle(fill).animationName === "none")),
+    true,
+    "no progress fill should animate before its carousel has been scrolled into view",
+  );
+  await brandCarousels.first().scrollIntoViewIfNeeded();
+  await page.waitForFunction(() =>
+    Array.from(document.querySelectorAll("[data-brand-carousel]")).every((carousel) =>
+      carousel.closest(".brand-card").querySelector(".progress > span").classList.contains("running")));
+  assert.deepEqual(
+    await brandCarousels.evaluateAll(runningBars),
     [[true, false, false], [true, false, false]],
-    "each carousel should start the first progress bar",
+    "each carousel should start its first progress bar once scrolled into view",
   );
   await brandCarousels.first().scrollIntoViewIfNeeded();
   await page.waitForTimeout(4700);
@@ -314,14 +343,14 @@ try {
     "both carousels should advance on Mother Fable's 4.5-second cadence",
   );
   assert.deepEqual(
-    await brandCarousels.evaluateAll((carousels) => carousels.map((carousel) =>
-      Array.from(carousel.querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running")))),
+    await brandCarousels.evaluateAll(runningBars),
     [[false, true, false], [false, true, false]],
     "the active progress bar should advance with its slide",
   );
+  const nancyCard = page.locator(".brand-card").first();
   await brandCarousels.first().hover();
   assert.equal(
-    await brandCarousels.first().locator(".progress > span.running i").evaluate((fill) => getComputedStyle(fill).animationPlayState),
+    await nancyCard.locator(".progress > span.running i").evaluate((fill) => getComputedStyle(fill).animationPlayState),
     "paused",
     "hover should pause the active progress fill",
   );
@@ -336,7 +365,7 @@ try {
   await brandCarousels.first().focus();
   assert.equal(await brandCarousels.first().evaluate((carousel) => carousel.classList.contains("paused")), true);
   assert.equal(
-    await brandCarousels.first().locator(".progress > span.running i").evaluate((fill) => getComputedStyle(fill).animationPlayState),
+    await nancyCard.locator(".progress > span.running i").evaluate((fill) => getComputedStyle(fill).animationPlayState),
     "paused",
     "focus should pause the active progress fill",
   );
@@ -360,12 +389,12 @@ try {
   await verifyHeldValuesStage(page, { width: 1440, height: 900 });
 
   const shortLaptopPage = await browser.newPage({ viewport: { width: 1280, height: 800 } });
-  await shortLaptopPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openPage(shortLaptopPage, `${baseUrl}/`);
   await verifyHeldValuesStage(shortLaptopPage, { width: 1280, height: 800 });
   await shortLaptopPage.close();
 
   const anchorPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  await anchorPage.goto(`${baseUrl}/#values`, { waitUntil: "domcontentloaded" });
+  await openPage(anchorPage, `${baseUrl}/#values`);
   await anchorPage.waitForFunction(() => document.querySelector("#values")?.classList.contains("is-held"));
   assert.equal(await counterText(anchorPage), "01 / 07", "direct Values anchor arrival should preserve card 01");
   await anchorPage.close();
@@ -399,7 +428,7 @@ try {
     { width: 390, height: 844 },
   ]) {
     const headerPage = await browser.newPage({ viewport });
-    await headerPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+    await openPage(headerPage, `${baseUrl}/`);
     const homeMetrics = await headerPage.locator(".topbar").evaluate((header) => {
       const logo = header.querySelector(":scope > a");
       const headerRect = header.getBoundingClientRect();
@@ -410,7 +439,7 @@ try {
         logo: { width: logoRect.width, height: logoRect.height, fontSize: logoStyle.fontSize, fontWeight: logoStyle.fontWeight, letterSpacing: logoStyle.letterSpacing },
       };
     });
-    await headerPage.goto(`${baseUrl}/careers/apply/?role=creative-strategist-performance-marketing`, { waitUntil: "domcontentloaded" });
+    await openPage(headerPage, `${baseUrl}/careers/apply/?role=creative-strategist-performance-marketing`);
     assert.equal(await headerPage.locator('link[rel="icon"][href="/images/cb-logo-white.svg"]').count(), 1, `${viewport.width}px application page should declare the shared favicon`);
     const applicationMetrics = await headerPage.locator(".application-topbar").evaluate((header) => {
       const logo = header.querySelector(":scope > a");
@@ -436,7 +465,7 @@ try {
   assert.equal((await rangeResponse.body()).byteLength, 1024);
 
   const fallbackPage = await browser.newPage({ viewport: { width: 900, height: 800 } });
-  await fallbackPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openPage(fallbackPage, `${baseUrl}/`);
   await fallbackPage.waitForFunction(() => document.querySelector("#valueDeck")?.classList.contains("is-live"));
   assert.equal(await fallbackPage.locator("#values").evaluate((section) => section.classList.contains("is-held")), false);
   assert.equal(await fallbackPage.locator("#values").getAttribute("style"), null, "900px fallback should have no held runway");
@@ -455,7 +484,7 @@ try {
   await fallbackPage.close();
 
   const mobilePage = await browser.newPage({ viewport: { width: 390, height: 844 } });
-  await mobilePage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openPage(mobilePage, `${baseUrl}/`);
   assert.equal(await mobilePage.locator("#valueDeck").evaluate((deck) => deck.classList.contains("is-live")), false);
   assert.equal(await mobilePage.locator("#values").evaluate((section) => Boolean(section.style.height) || section.classList.contains("is-held")), false);
   assert.equal(await mobilePage.locator("#deckPrev").isHidden(), true);
@@ -480,7 +509,7 @@ try {
   await noJsContext.close();
 
   const reducedPage = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
-  await reducedPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openPage(reducedPage, `${baseUrl}/`);
   assert.equal(await reducedPage.locator("#heroMedia").getAttribute("data-state"), "reduced");
   assert.equal(await reducedPage.locator("#heroGrowVideo").getAttribute("src"), null);
   assert.equal(await reducedPage.locator(".hero-frame-end").evaluate((node) => getComputedStyle(node).opacity), "1");
@@ -495,19 +524,60 @@ try {
   );
   assert.equal(
     await reducedPage.locator("[data-brand-carousel]").evaluateAll((carousels) => carousels.every((carousel) =>
-      Array.from(carousel.querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running")).every((running) => !running))),
+      Array.from(carousel.closest(".brand-card").querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running")).every((running) => !running))),
     true,
     "reduced motion should leave every progress fill stopped",
   );
-  await reducedPage.waitForFunction(() => document.querySelector("#values")?.classList.contains("is-held"));
-  const reducedValuesTop = await reducedPage.locator("#values").evaluate((section) => scrollY + section.getBoundingClientRect().top);
-  await scrollInstant(reducedPage, reducedValuesTop + 900 * 0.35 + 900 * 0.5 * 6 + 1);
-  assert.equal(await counterText(reducedPage), "07 / 07");
-  assert.equal(await reducedPage.locator("#value-01").evaluate((card) => getComputedStyle(card).transitionDuration), "0.001s");
+  await reducedPage.locator("[data-brand-carousel]").first().scrollIntoViewIfNeeded();
+  await reducedPage.waitForTimeout(4700);
+  assert.deepEqual(
+    await reducedPage.locator("[data-brand-carousel]").evaluateAll((carousels) => carousels.map((carousel) => carousel.dataset.activeSlide)),
+    ["0", "0"],
+    "reduced motion should never auto-advance, even after the carousels are scrolled into view",
+  );
   await reducedPage.close();
 
+  /* start-on-view independence: on the stacked single-column layout each carousel
+     owns its observer, so revealing Hello Nancy must not start Biird, and starting
+     is one-way — leaving and returning never resets a started carousel. */
+  const stackedPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await openPage(stackedPage, `${baseUrl}/`);
+  const stackedCarousels = stackedPage.locator("[data-brand-carousel]");
+  const stackedRunning = () => stackedCarousels.evaluateAll((carousels) => carousels.map((carousel) =>
+    Array.from(carousel.closest(".brand-card").querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running"))));
+  const stackedSlides = () => stackedCarousels.evaluateAll((carousels) => carousels.map((carousel) => carousel.dataset.activeSlide));
+  assert.deepEqual(await stackedRunning(), [[false, false, false], [false, false, false]], "stacked: both carousels inert before view");
+  const nancyOnlyY = await stackedCarousels.first().evaluate((carousel) =>
+    scrollY + carousel.getBoundingClientRect().bottom - innerHeight);
+  await scrollInstant(stackedPage, nancyOnlyY);
+  await stackedPage.waitForFunction(() =>
+    document.querySelector("[data-brand-carousel]").closest(".brand-card").querySelector(".progress > span").classList.contains("running"));
+  assert.deepEqual(await stackedRunning(), [[true, false, false], [false, false, false]], "Hello Nancy starting must not start Biird");
+  await stackedPage.waitForTimeout(4700);
+  assert.deepEqual(await stackedSlides(), ["1", "0"], "only the revealed carousel should advance on the 4.5s cadence");
+  await stackedCarousels.nth(1).scrollIntoViewIfNeeded();
+  await stackedPage.waitForFunction(() =>
+    document.querySelectorAll("[data-brand-carousel]")[1].closest(".brand-card").querySelector(".progress > span").classList.contains("running"));
+  assert.deepEqual((await stackedRunning())[1], [true, false, false], "Biird starts on its own first bar when it enters view");
+  assert.equal((await stackedSlides())[1], "0", "Biird should begin on its first slide, not catch up to Hello Nancy");
+  const beforeLeave = await stackedSlides();
+  await scrollInstant(stackedPage, 0);
+  await scrollInstant(stackedPage, await stackedCarousels.nth(1).evaluate((carousel) =>
+    scrollY + carousel.getBoundingClientRect().top));
+  assert.deepEqual(await stackedSlides(), beforeLeave, "a started carousel must not reset when scrolled away and back");
+  await stackedPage.close();
+
+  const reducedPage2Values = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+  await openPage(reducedPage2Values, `${baseUrl}/`);
+  await reducedPage2Values.waitForFunction(() => document.querySelector("#values")?.classList.contains("is-held"));
+  const reducedValuesTop = await reducedPage2Values.locator("#values").evaluate((section) => scrollY + section.getBoundingClientRect().top);
+  await scrollInstant(reducedPage2Values, reducedValuesTop + 900 * 0.35 + 900 * 0.5 * 6 + 1);
+  assert.equal(await counterText(reducedPage2Values), "07 / 07");
+  assert.equal(await reducedPage2Values.locator("#value-01").evaluate((card) => getComputedStyle(card).transitionDuration), "0.001s");
+  await reducedPage2Values.close();
+
   const mobileReducedPage = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
-  await mobileReducedPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openPage(mobileReducedPage, `${baseUrl}/`);
   assert.deepEqual(
     await mobileReducedPage.locator(".stat-band").evaluateAll((bands) => bands.map((band) => band.getBoundingClientRect().height)),
     [224, 198, 250],
@@ -519,6 +589,128 @@ try {
     "reduced motion should render exact terminal reveals immediately",
   );
   await mobileReducedPage.close();
+
+  // regression (captain report 2026-08-05): the split band's sun fill terminally covers only
+  // the left 70%, and the mobile rule right-aligned the ink “18 months” value onto the
+  // remaining ink ground, where it was invisible. The value must stay inside the sun field
+  // and inside the viewport at mobile widths.
+  const splitGeometry = async (target) => target.locator(".stat-band-split").evaluate((band) => {
+    const bandRect = band.getBoundingClientRect();
+    const valueRect = band.querySelector(".stat-value").getBoundingClientRect();
+    const supportRect = band.querySelector(".stat-support").getBoundingClientRect();
+    const box = (rect) => ({ top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right });
+    return {
+      bandLeft: bandRect.left,
+      bandWidth: bandRect.width,
+      valueLeft: valueRect.left,
+      valueRight: valueRect.right,
+      valueWidth: valueRect.width,
+      value: box(valueRect),
+      support: box(supportRect),
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    };
+  });
+  const assertValueOnSun = (geometry, width) => {
+    const sunEdge = geometry.bandLeft + geometry.bandWidth * 0.7;
+    assert.ok(geometry.valueWidth > 0, `${width}px: the Elapsed value must render`);
+    assert.ok(geometry.valueLeft >= geometry.bandLeft - 1, `${width}px: the value must not bleed left of the band`);
+    assert.ok(
+      geometry.valueRight <= sunEdge + 1,
+      `${width}px: “18 months” must sit inside the 70% sun field, not ink-on-ink (right ${geometry.valueRight.toFixed(1)} vs sun edge ${sunEdge.toFixed(1)})`,
+    );
+    assert.ok(geometry.valueRight <= geometry.clientWidth + 1, `${width}px: the value must not be viewport-clipped`);
+    assert.ok(geometry.scrollWidth <= geometry.clientWidth + 1, `${width}px: no horizontal overflow`);
+    // the value track is minmax(0, 8fr): a value too wide for its column overruns leftward
+    // onto the support column instead of past the sun edge, so containment alone is not enough
+    const { value, support } = geometry;
+    assert.equal(
+      value.left < support.right && value.right > support.left && value.top < support.bottom && value.bottom > support.top,
+      false,
+      `${width}px: the value must not collide with the support column`,
+    );
+  };
+  // the same geometry is marginal through the tablet range, where the desktop rule centres
+  // the value and pulls it -6vw while the sun still stops at 70% of the viewport. 901px is
+  // the tightest point of the untouched desktop composition — just above the containment
+  // rule's 900px boundary — so the range is bracketed from both sides, not only from inside.
+  for (const splitViewport of [
+    { width: 390, height: 844 },
+    { width: 320, height: 720 },
+    { width: 768, height: 1024 },
+    { width: 800, height: 1024 },
+    { width: 850, height: 1024 },
+    { width: 900, height: 1024 },
+    { width: 901, height: 1024 },
+    { width: 950, height: 1024 },
+    { width: 991, height: 1024 },
+  ]) {
+    // reduced motion renders the exact terminal fill immediately, so geometry is deterministic
+    const splitPage = await browser.newPage({ viewport: splitViewport, reducedMotion: "reduce" });
+    await openPage(splitPage, `${baseUrl}/`);
+    assertValueOnSun(await splitGeometry(splitPage), splitViewport.width);
+    await splitPage.close();
+  }
+  // the reported path: real scroll at 390px to the terminal reveal
+  const splitScrollPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await openPage(splitScrollPage, `${baseUrl}/`);
+  const splitTop = await splitScrollPage.locator(".stat-band-split").evaluate((band) => scrollY + band.getBoundingClientRect().top);
+  await scrollInstant(splitScrollPage, splitTop - 844 * 0.2);
+  await splitScrollPage.waitForFunction(() =>
+    Number.parseFloat(document.querySelector(".stat-band-split")?.style.getPropertyValue("--band-reveal")) > 0.999);
+  assertValueOnSun(await splitGeometry(splitScrollPage), 390);
+  await splitScrollPage.close();
+
+  // captain 2026-08-05: the lemon band's height is capped so the first stat row's numbers
+  // are above the fold when the record section enters (section top at viewport top),
+  // while the band still reads as a full band — every lemon fully inside it.
+  // 1366x768 and 1280x720 are the short-laptop heights where a bare viewport-proportional
+  // cap stops covering the fixed-pixel lead-in, trailing margin and stat-band number row.
+  for (const entryViewport of [
+    { width: 1440, height: 900 },
+    { width: 1366, height: 768 },
+    { width: 1280, height: 800 },
+    { width: 1280, height: 720 },
+    { width: 390, height: 844 },
+  ]) {
+    const entryPage = await browser.newPage({ viewport: entryViewport });
+    await openPage(entryPage, `${baseUrl}/`);
+    const entryGeometry = await entryPage.evaluate(() => {
+      const record = document.querySelector(".record");
+      scrollTo({ top: scrollY + record.getBoundingClientRect().top, behavior: "instant" });
+      const band = document.getElementById("lemonBand").getBoundingClientRect();
+      const stat1 = document.querySelector(".stat-band").getBoundingClientRect();
+      const value = document.querySelector(".stat-band .stat-value").getBoundingClientRect();
+      const lemons = Array.from(document.querySelectorAll("#lemonBand .lemon img"), (img) => img.getBoundingClientRect());
+      return {
+        viewportH: innerHeight,
+        band: { top: band.top, bottom: band.bottom, height: band.height },
+        stat1: { top: stat1.top, bottom: stat1.bottom },
+        value: { top: value.top, bottom: value.bottom, height: value.height },
+        lemons: lemons.map((rect) => ({ top: rect.top, bottom: rect.bottom, width: rect.width })),
+      };
+    });
+    const label = `${entryViewport.width}x${entryViewport.height}`;
+    assert.ok(entryGeometry.value.height > 0, `${label}: the first stat row's value must render`);
+    assert.ok(
+      entryGeometry.value.bottom <= entryGeometry.viewportH + 1,
+      `${label}: the first numbers row must be above the fold on record entry (value bottom ${entryGeometry.value.bottom.toFixed(1)} vs fold ${entryGeometry.viewportH})`,
+    );
+    assert.ok(entryGeometry.value.top >= 0, `${label}: the first numbers row must not start above the viewport`);
+    assert.ok(
+      entryGeometry.band.bottom <= entryGeometry.stat1.top + 1,
+      `${label}: the lemon band must not overlap the first stat row`,
+    );
+    for (const lemon of entryGeometry.lemons) {
+      assert.ok(lemon.width >= 60, `${label}: lemons stay legible (${Math.round(lemon.width)}px)`);
+      assert.ok(
+        lemon.top >= entryGeometry.band.top - 1 && lemon.bottom <= entryGeometry.band.bottom + 1,
+        `${label}: every lemon must stay fully inside the capped band`,
+      );
+    }
+    await entryPage.close();
+  }
+
   assert.deepEqual(pageErrors, [], "the integrated natural-scroll journey should have no console, page, or request errors");
 } finally {
   await browser.close();

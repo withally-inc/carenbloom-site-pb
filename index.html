@@ -151,19 +151,20 @@
   </div>
   <div class="wrap">
     <div class="section-label">(01) Operating record</div>
+  </div>
 
-    <!-- the million made physical: one mark = 1,000 customers (PBv2 dot field, landed on the evidence ground) -->
-    <div class="field-head">
-      <span>1 mark = 1,000 customers</span>
-      <span class="field-live">
-        <span class="live-chip" id="liveChip" aria-live="polite">Since you arrived +0</span>
-      </span>
-    </div>
-    <div class="dotfield" id="dotfield" role="img"
-         aria-label="A field of one thousand square marks, each standing for one thousand customers — one million customers in total. The top of the field dissolves into scattered noise."></div>
-    <p class="field-foot">Averaged over the run, someone new arrives about every 47 seconds — the counter above
-      is keeping time. At that pace the field grows a fresh mark every 13 hours.</p>
-
+  <!-- the record made physical: five Candidate 03 lemons in a stepped stop-motion march
+       (carenbloom-pb-lemon-stopmotion-a1, captain-approved 2026-08-05). One shared sprite holds
+       all ten rotational keyframes; each lemon's default object-position holds its distinct
+       phase offset [0,2,4,6,8], so a script failure leaves this exact static composition, and
+       the reduced-motion <source> swaps in the static print master. -->
+  <div class="lemon-band" id="lemonBand" role="img"
+       aria-label="Five lemons march left to right across the yellow evidence field, each in its own stepped phase; with reduced motion, five identical still lemons.">
+    <span class="lemon" style="--x: 0" aria-hidden="true"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/lemon-march/lemon-print-master-static.png"><img src="assets/lemon-march/lemon-rotation-sprite.png" width="3600" height="360" style="object-position: 0% 50%" alt="" decoding="async"></picture></span>
+    <span class="lemon" style="--x: 0.1786" aria-hidden="true"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/lemon-march/lemon-print-master-static.png"><img src="assets/lemon-march/lemon-rotation-sprite.png" width="3600" height="360" style="object-position: 22.2222% 50%" alt="" decoding="async"></picture></span>
+    <span class="lemon" style="--x: 0.3821" aria-hidden="true"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/lemon-march/lemon-print-master-static.png"><img src="assets/lemon-march/lemon-rotation-sprite.png" width="3600" height="360" style="object-position: 44.4444% 50%" alt="" decoding="async"></picture></span>
+    <span class="lemon" style="--x: 0.5964" aria-hidden="true"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/lemon-march/lemon-print-master-static.png"><img src="assets/lemon-march/lemon-rotation-sprite.png" width="3600" height="360" style="object-position: 66.6667% 50%" alt="" decoding="async"></picture></span>
+    <span class="lemon" style="--x: 0.8107" aria-hidden="true"><picture><source media="(prefers-reduced-motion: reduce)" srcset="assets/lemon-march/lemon-print-master-static.png"><img src="assets/lemon-march/lemon-rotation-sprite.png" width="3600" height="360" style="object-position: 88.8889% 50%" alt="" decoding="async"></picture></span>
   </div>
 
   <div class="stat-bands" aria-label="Operating record figures">
@@ -258,7 +259,6 @@
       <article class="brand-card">
         <div class="brand-carousel" data-brand-carousel data-interval="4500" data-active-slide="0"
              role="group" aria-label="Hello Nancy product gallery" aria-live="off" tabindex="0">
-          <div class="progress" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span></div>
           <div class="brand-slide is-active" aria-hidden="false">
             <img class="brand-img" src="images/carenbloom-v3/nancy-lem.jpg" width="1080" height="1080" loading="lazy"
                  alt="Hello Nancy's Lem product photographed on a bright yellow set with lemon slices">
@@ -272,6 +272,7 @@
                  alt="Hello Nancy avocado-form product arranged among avocados on a green ground">
           </div>
         </div>
+        <div class="progress" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span></div>
         <div class="brand-meta">
           <span class="b-index">01/02</span>
           <h3 class="b-name">Hello Nancy</h3>
@@ -286,7 +287,6 @@
       <article class="brand-card">
         <div class="brand-carousel" data-brand-carousel data-interval="4500" data-active-slide="0"
              role="group" aria-label="Biird product gallery" aria-live="off" tabindex="0">
-          <div class="progress" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span></div>
           <div class="brand-slide is-active" aria-hidden="false">
             <img class="brand-img" src="images/carenbloom-v3/biird-ohwii-branch.jpg" width="1080" height="1080" loading="lazy"
                  alt="Biird's blue glass object resting on a bare branch against a blue backdrop">
@@ -300,6 +300,7 @@
                  alt="Biird lilac product in an on-body lifestyle photograph with first-timer guidance">
           </div>
         </div>
+        <div class="progress" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span></div>
         <div class="brand-meta">
           <span class="b-index">02/02</span>
           <h3 class="b-name">Biird</h3>

@@ -52,6 +52,18 @@ The focused browser commands expect `npm run serve` to be running separately.
 
 No automated test performs a real application or Notion write.
 
+## Operating-record lemon band
+
+The (01) Operating record section carries the captain-approved Candidate 03 stepped lemon march (decision: five whole leafless lemons on exact `--color-sun` `#FDFF6D`, distinct stepped rotational phases, left-to-right), replacing the earlier dot-field mechanism.
+
+`assets/lemon-march/lemon-rotation-sprite.png` holds all ten stepped rotational keyframes in one 3600×360 sheet, derived from the approved motion proof with the baked contact-shadow fringe removed at the alpha source. Each lemon picks its phase with `object-position` on a square `object-fit: cover` frame, so a phase step is a paint-only change with no refetch; translation is delta-time-based and transform-only, and the loop pauses offscreen and when the document is hidden.
+
+The markup's default `object-position` values hold the five distinct phase offsets `[0,2,4,6,8]`, so a script failure leaves the static five-phase composition intact. `prefers-reduced-motion: reduce` swaps every lemon to `assets/lemon-march/lemon-print-master-static.png` (the static Candidate 03 print master) via `<picture>` sources, with no translation, rotation, or autoplaying media. The band has one concise `role="img"` description; the five lemons are `aria-hidden`.
+
+The band keeps the approved 1400×500 proof aspect but caps its height so the first stat row's numbers are above the fold when the record section enters at desktop; `style.css` owns the exact caps (a 40vh cap, tightened on short desktops by an explicit entry reserve). Lemons are sized off the band height rather than its width, so the cap shrinks the march proportionally instead of clipping it, and mobile is unchanged because the proof aspect still governs below the cap. `tests/pb-integration.test.mjs` pins the above-the-fold, no-overlap, in-band, and legibility guarantees at 1440×900, 1280×800, and 390×844.
+
+Focused behavioral coverage lives in `tests/lemon-band.test.mjs` (distinct phases, pause/resume, offscreen and hidden-document suspension, reduced-motion and failure fallbacks, exact yellow, overflow, stat-band preservation) and runs inside `npm test` and `npm run test:browser`.
+
 ## Role-location metadata
 
 `scripts/careers-roles.js` is the authoritative owner of all eleven role records.
