@@ -1,3 +1,5 @@
+// Shared helpers live under api/_lib/ because Vercel publishes every other file
+// under api/ as its own serverless function.
 import { buildApplicationPayload, clean, safeUrl } from "./_lib/application-payload.js";
 import { createPage, uploadFile } from "./_lib/notion-client.js";
 import { careerRoles } from "../scripts/careers-roles.js";

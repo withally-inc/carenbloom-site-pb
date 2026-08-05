@@ -56,6 +56,8 @@ No automated test performs a real application or Notion write.
 
 `scripts/careers-roles.js` is the authoritative owner of all eleven role records.
 
+The application page and `/api/applications` both import that module, so the API rejects unknown role slugs and decides the intro-video requirement from the canonical record rather than from client input.
+
 Roles with an explicit physical `locationType` use that exact string in visible role copy, accessible role details, meta descriptions, Open Graph descriptions, and physical JobPosting data.
 
 Roles without an explicit physical location are genuinely remote and use `Remote` wording with `TELECOMMUTE` structured semantics.
