@@ -1,0 +1,14 @@
+{
+  "git": {
+    "deploymentEnabled": false
+  },
+  "functions": {
+    "api/applications.js": {
+      "maxDuration": 30
+    }
+  },
+  "redirects": [
+    { "source": "/pb-live", "destination": "/", "permanent": true },
+    { "source": "/pb-live/", "destination": "/", "permanent": true }
+  ]
+}

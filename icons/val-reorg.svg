@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" role="img" aria-label="A grid with one cell moved outside">
+  <!-- PB values icon 05 · "Organic (re)org" · the structure, rewritten -->
+  <rect x="3" y="8" width="12" height="12"/>
+  <path d="M9 8 V20"/>
+  <path d="M3 14 H15"/>
+  <rect x="16.5" y="2.5" width="5" height="5" fill="currentColor" stroke="none"/>
+</svg>

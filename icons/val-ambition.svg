@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" role="img" aria-label="A goal breaking the top of its frame">
+  <!-- PB values icon 01 · "Outsized ambition" · the goal overshoots the frame -->
+  <rect x="4" y="11" width="16" height="9"/>
+  <path d="M12 15 V4"/>
+  <rect x="10" y="2" width="4" height="4" fill="currentColor" stroke="none"/>
+</svg>

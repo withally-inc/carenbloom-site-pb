@@ -1,0 +1,94 @@
+/* Hallmark · macrostructure: Manifesto (Stat-Led lean) · tone: direct/kinetic · anchor hue: cyan-blue
+ * theme: studied-DNA (source: https://patternbreak.ing/) · paper #DCEDF5 (oklch 93% .025 230) · accent #2331E4 · sun #FDFF6D
+ * display: PP Mori SemiBold (heavy grotesque role) · body: PP Mori Regular · label: Space Mono
+ * studied: yes · DNA-source: url + live playwright study · captain deltas: pale blue for lilac; acid yellow RESTORED as the evidence ground (d6)
+ * merge (pb-merge-k3-e2): PBv2 material landed INSIDE the d6 arc — dot-field + honest 47s clock on the sun band,
+ *   cobalt halftone tile band in brands, cobalt duotone leaders, dithered wordmark sign-off. No token value changed:
+ *   the cobalt was already the system's accent; it now also carries a band, the marks, and the portraits.
+ * colour law: pale-blue paper is the calm surface, ink is the revealed record, cobalt marks what is live,
+ *   and acid yellow is the ground of the evidence — every yellow field carries dark ink, never light type.
+ *   On the sun band, marks and fills are cobalt (cobalt/sun 7.49:1, already ledger-cleared for focus rings).
+ * Hallmark · pre-emit critique: P5 H4 E4 S5 R4 V5
+ */
+
+@font-face {
+  font-family: "PP Mori";
+  src: url("fonts/PPMori-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Mori";
+  src: url("fonts/PPMori-Semibold.otf") format("opentype");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Space Mono";
+  src: url("fonts/SpaceMono-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Space Mono";
+  src: url("fonts/SpaceMono-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  /* colour — the calm surface, the revealed record, the live mark, the evidence ground. */
+  --color-paper:      #dcedf5; /* pale blue ground — the calm surface (matched to hero print) */
+  --color-paper-2:    #eaf4fa; /* raised chip surface on paper */
+  --color-ink:        #0a1220; /* revealed ground + ink on paper */
+  --color-ink-2:      #dcedf5; /* ink on dark = the paper colour; the system folds, it never adds */
+  --color-accent:     #2331e4; /* electric cobalt — "what is live". Fills + marks only on dark (contrast). */
+  --color-sun:        #fdff6d; /* acid yellow — the evidence ground + live-status flags. Carries dark ink ONLY. */
+  --color-rule:       color-mix(in oklab, var(--color-ink) 18%, var(--color-paper));
+  --color-rule-dark:  color-mix(in oklab, var(--color-ink-2) 16%, var(--color-ink));
+  --color-rule-sun:   color-mix(in oklab, var(--color-ink) 22%, var(--color-sun));
+  --color-focus:      var(--color-accent);
+
+  /* yellow contrast ledger (WCAG 2.1 ratios, measured):
+     ink on sun 17.6:1 · sun on ink 17.6:1 · cobalt on sun 7.5:1 ·
+     paper on sun 1.13:1 (FORBIDDEN) · sun as text on paper 1.13:1 (FORBIDDEN) */
+
+  --font-display: "PP Mori", "Helvetica Neue", sans-serif;
+  --font-body:    "PP Mori", "Helvetica Neue", sans-serif;
+  --font-mono:    "Space Mono", ui-monospace, monospace;
+
+  /* spacing — carried from the measured reference scale */
+  --space-3xs: 8px;
+  --space-2xs: 16px;
+  --space-xs:  24px;
+  --space-sm:  32px;
+  --space-md:  48px;
+  --space-lg:  72px;
+  --space-xl:  100px;
+  --space-2xl: 144px;
+  --space-3xl: 160px;
+
+  --text-display:   clamp(64px, 15.5vw, 224px);
+  --text-display-s: clamp(44px, 8.5vw, 120px);
+  --text-heading:   clamp(28px, 3.9vw, 56px);
+  --text-stat:      clamp(34px, 6.5vw, 96px);
+  --text-card:      clamp(28px, 3.4vw, 48px); /* value-card names — k3-v2 addition, no existing value changed */
+  --text-body-lg:   clamp(18px, 1.67vw, 24px);
+  --text-body:      16px;
+  --text-mono:      13px;
+  --text-mono-s:    11px;
+
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-arrive: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* power2.out — measured reference card entrance */
+  --ease-in:     cubic-bezier(0.64, 0, 0.78, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 200ms;
+  --dur-base: 300ms;
+  --dur-slow: 800ms;
+
+  --radius-chip: 10px;
+  --radius-input: 0px;
+
+  --content-max: 1200px;
+  --pad-x: var(--space-md);
+}
