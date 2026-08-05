@@ -149,14 +149,21 @@ section, footer { position: relative; }
   --color-focus: var(--color-accent); /* cobalt on the paper bar, whatever ground scrolls beneath */
   transform: translateY(0);
   transition: transform var(--dur-base) var(--ease-out);
+  /* the shell is only a rail: nothing outside the bar itself may swallow a click */
+  pointer-events: none;
 }
+/* without JavaScript nothing can ever float the bar, so it stays the natural
+   inline header the hero already reserves room for, and scrolls away with the page */
+html:not(.js) .nav-shell { position: absolute; }
 .nav-shell-inner {
+  pointer-events: none;
   max-width: var(--content-max);
   margin: 0 auto;
   padding-left: max(var(--pad-x), env(safe-area-inset-left));
   padding-right: max(var(--pad-x), env(safe-area-inset-right));
 }
 .topbar {
+  pointer-events: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -194,7 +201,7 @@ section, footer { position: relative; }
     0 16px 40px -18px rgb(10 18 32 / 0.24);
 }
 /* anchor arrivals land clear of the floating bar */
-#themes, #brands, #people, #careers {
+#record, #themes, #brands, #people, #careers {
   scroll-margin-top: calc(var(--topbar-h) + var(--nav-offset) + var(--space-2xs));
 }
 .topbar nav { display: flex; gap: var(--space-xs); }

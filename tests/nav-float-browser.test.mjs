@@ -95,6 +95,29 @@ try {
   assert.ok(careersState.rect.y >= 12 && careersState.rect.y < 60, "the bar should stay pinned in view");
   const careersTop = await desktop.locator("#careers").evaluate((section) => section.getBoundingClientRect().top);
   assert.ok(careersTop >= 66.1875 + 12, "scroll-margin should land anchored sections clear of the floating bar");
+
+  // ---------- the hero CTA anchor lands clear too ----------
+  await desktop.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+  await desktop.waitForTimeout(450);
+  await desktop.locator('a[href="#record"]').click();
+  await desktop.waitForTimeout(600);
+  const recordState = await navProbe(desktop);
+  assert.equal(recordState.floating, true, "the record anchor sits well past the float threshold");
+  const recordTop = await desktop.locator("#record").evaluate((section) => section.getBoundingClientRect().top);
+  assert.ok(
+    recordTop >= recordState.rect.y + recordState.rect.height,
+    `the record anchor should clear the floating bar (top ${recordTop} vs bar bottom ${recordState.rect.y + recordState.rect.height})`,
+  );
+
+  // ---------- the shell rail never swallows clicks outside the bar ----------
+  const railHit = await desktop.evaluate(() => {
+    const bar = document.querySelector(".topbar").getBoundingClientRect();
+    const outside = document.elementFromPoint(4, bar.y + bar.height / 2);
+    const inside = document.elementFromPoint(bar.x + 4, bar.y + bar.height / 2);
+    return { outside: outside?.closest(".nav-shell") !== null, inside: inside?.closest(".nav-shell") !== null };
+  });
+  assert.equal(railHit.outside, false, "the transparent shell must not intercept pointer events beside the bar");
+  assert.equal(railHit.inside, true, "the bar itself must stay interactive");
   await desktop.close();
 
   // ---------- mobile: compact stable bar, same material ----------
@@ -150,6 +173,18 @@ try {
   assert.equal(noJsState.floating, false, "without JavaScript the bar should remain in its natural inline state");
   assert.equal(noJsState.background, "rgba(0, 0, 0, 0)");
   assert.equal(noJsState.rect.x, 168);
+  assert.equal(
+    await noJs.locator(".nav-shell").evaluate((shell) => getComputedStyle(shell).position),
+    "absolute",
+    "without JavaScript the header must not be pinned over the page",
+  );
+  await noJs.evaluate(() => window.scrollTo({ top: 900, behavior: "instant" }));
+  await noJs.waitForTimeout(300);
+  const noJsScrolled = await navProbe(noJs);
+  assert.ok(
+    noJsScrolled.rect.y + noJsScrolled.rect.height <= 0,
+    `without JavaScript the header should scroll away, not obscure the page (bottom ${noJsScrolled.rect.y + noJsScrolled.rect.height})`,
+  );
   await noJsContext.close();
 } finally {
   await browser.close();
