@@ -204,12 +204,20 @@ import {
     const BAND_WIDTHS_PER_SECOND = 0.5;
     const phasePosition = (phase) => `${((phase / (PHASE_COUNT - 1)) * 100).toFixed(4)}% 50%`;
     let bandWidth = 0;
+    let lemonHalf = 0;
+    let wrapSpan = 1;
     let elapsed = 0;
     let lastTick = 0;
     let rafId = 0;
     let inView = false;
 
-    const measureBand = () => { bandWidth = lemonBand.clientWidth; };
+    /* the march wraps over the band plus one lemon width, so a lemon leaves the right edge
+       completely before its next appearance begins entering at the left edge */
+    const measureBand = () => {
+      bandWidth = lemonBand.clientWidth;
+      lemonHalf = bandWidth > 0 ? lemons[0].offsetWidth / bandWidth / 2 : 0;
+      wrapSpan = 1 + lemonHalf * 2;
+    };
     measureBand();
     addEventListener('resize', measureBand);
 
@@ -228,7 +236,7 @@ import {
         lemons.forEach((lemon, i) => {
           const position = phasePosition((rotationStep + PHASE_OFFSETS[i]) % PHASE_COUNT);
           if (imgs[i].style.objectPosition !== position) imgs[i].style.objectPosition = position;
-          const u = (START_FRACTIONS[i] + march) % 1;
+          const u = (((START_FRACTIONS[i] + march + lemonHalf) % wrapSpan) + wrapSpan) % wrapSpan - lemonHalf;
           lemon.style.transform = `translateX(calc(-50% + ${((u - START_FRACTIONS[i]) * bandWidth).toFixed(2)}px))`;
         });
         rafId = requestAnimationFrame(step);

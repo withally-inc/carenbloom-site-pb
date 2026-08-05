@@ -879,16 +879,6 @@ section, footer { position: relative; }
     flex-direction: row;
     width: auto;
   }
-  /* the sun fill terminally covers only the left 70% (--band-target: 0.7), so the
-     content box must end at the sun edge minus the standard inset: a band-width
-     right alignment would park the ink value on the remaining ink ground, where
-     it is invisible (reproduced at 390px and 500px before this fix) */
-  .stat-band-split .stat-band-inner { padding-right: calc(30% + var(--pad-x)); }
-  .stat-band-split .stat-value {
-    width: auto;
-    justify-self: end;
-    transform: none;
-  }
   .stat-number { font-size: clamp(58px, 18vw, 82px); }
   .stat-unit { font-size: 16px; }
   .theme-row { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
@@ -897,6 +887,19 @@ section, footer { position: relative; }
   .p-img { max-width: 240px; }
   .contact-foot { flex-direction: column; align-items: flex-start; gap: var(--space-2xs); }
   .tilerow { grid-auto-columns: minmax(140px, 36vw); }
+}
+/* the split band's sun fill terminally covers only the left 70% (--band-target: 0.7), so
+   below the width where the centred desktop composition clears that edge the content box
+   must end at the sun edge minus the standard inset: any alignment past it parks the ink
+   value on the remaining ink ground, where it is invisible (reproduced at 390px and 500px,
+   and again through the 768-900px tablet range) */
+@media (max-width: 900px) {
+  .stat-band-split .stat-band-inner { padding-right: calc(30% + var(--pad-x)); }
+  .stat-band-split .stat-value {
+    width: auto;
+    justify-self: end;
+    transform: none;
+  }
 }
 @media (max-width: 479px) {
   .email-link { font-size: 22px; }

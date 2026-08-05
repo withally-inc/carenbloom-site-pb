@@ -137,6 +137,68 @@ const phaseOf = (position) => Math.round((parseFloat(position) / 100) * 9);
   await context.close();
 }
 
+// ---------- 2b. the wrap is a physical exit and re-entry, never a mid-band teleport ----------
+{
+  const context = await browser.newContext();
+  const page = await newPage(context);
+  await scrollBandIntoView(page);
+  await page.waitForFunction(() => document.getElementById("lemonBand").classList.contains("is-running"), null, { timeout: 4000 });
+
+  const track = await page.evaluate(() => new Promise((resolve) => {
+    const band = document.getElementById("lemonBand");
+    const lemons = Array.from(band.querySelectorAll(".lemon"));
+    const frames = [];
+    const started = performance.now();
+    const tick = () => {
+      const bandRect = band.getBoundingClientRect();
+      frames.push(lemons.map((lemon) => {
+        const rect = lemon.getBoundingClientRect();
+        return (rect.left + rect.right) / 2 - bandRect.left;
+      }));
+      if (performance.now() - started < 2800) {
+        requestAnimationFrame(tick);
+      } else {
+        resolve({
+          frames,
+          bandWidth: bandRect.width,
+          lemonWidth: lemons[0].getBoundingClientRect().width,
+        });
+      }
+    };
+    requestAnimationFrame(tick);
+  }));
+
+  // a seamless wrap carries a lemon from fully past the right edge to fully before the left
+  // edge: the wrap distance is the band plus one whole lemon, not the band alone
+  const wrapSpan = track.bandWidth + track.lemonWidth;
+  let wraps = 0;
+  for (let i = 0; i < 5; i += 1) {
+    for (let frame = 1; frame < track.frames.length; frame += 1) {
+      const delta = track.frames[frame][i] - track.frames[frame - 1][i];
+      if (delta >= 0) {
+        assert.ok(
+          delta <= track.bandWidth * 0.1,
+          `lemon ${i}: the march must advance continuously (jumped ${delta.toFixed(1)}px in one frame)`,
+        );
+        continue;
+      }
+      wraps += 1;
+      assert.ok(
+        Math.abs(delta + wrapSpan) <= track.lemonWidth * 0.5,
+        `lemon ${i}: a wrap must span the band plus one lemon (${wrapSpan.toFixed(1)}px), not teleport ${(-delta).toFixed(1)}px`,
+      );
+    }
+    const centres = track.frames.map((frame) => frame[i]);
+    assert.ok(
+      Math.min(...centres) < track.bandWidth,
+      `lemon ${i}: the march must stay on the band`,
+    );
+  }
+  assert.ok(wraps >= 1, "the sampled window must contain at least one wrap");
+
+  await context.close();
+}
+
 // ---------- 3. reduced motion: the static Candidate 03 print master, nothing moves ----------
 {
   const context = await browser.newContext({ reducedMotion: "reduce" });
@@ -151,6 +213,10 @@ const phaseOf = (position) => Math.round((parseFloat(position) / 100) * 9);
     "reduced motion shows the static Candidate 03 print master",
   );
   assert.equal(state.transforms.every((t) => t === ""), true, "no scripted translation under reduced motion");
+  // the one description must stay truthful in this state too: five identical lemons, standing still
+  const reducedLabel = await page.locator("#lemonBand").getAttribute("aria-label");
+  assert.match(reducedLabel, /reduced motion/i, "the description must account for the reduced-motion state");
+  assert.match(reducedLabel, /(still|identical)/i, "the reduced-motion state must be described as identical still lemons");
   const before = await page.locator("#lemonBand .lemon").evaluateAll((els) => els.map((el) => el.getBoundingClientRect().x));
   await page.waitForTimeout(600);
   const after = await page.locator("#lemonBand .lemon").evaluateAll((els) => els.map((el) => el.getBoundingClientRect().x));

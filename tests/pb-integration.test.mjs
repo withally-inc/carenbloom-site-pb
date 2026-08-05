@@ -606,7 +606,16 @@ try {
     assert.ok(geometry.valueRight <= geometry.clientWidth + 1, `${width}px: the value must not be viewport-clipped`);
     assert.ok(geometry.scrollWidth <= geometry.clientWidth + 1, `${width}px: no horizontal overflow`);
   };
-  for (const splitViewport of [{ width: 390, height: 844 }, { width: 320, height: 720 }]) {
+  // the same geometry is marginal through the tablet range, where the desktop rule centres
+  // the value and pulls it -6vw while the sun still stops at 70% of the viewport
+  for (const splitViewport of [
+    { width: 390, height: 844 },
+    { width: 320, height: 720 },
+    { width: 768, height: 1024 },
+    { width: 800, height: 1024 },
+    { width: 850, height: 1024 },
+    { width: 900, height: 1024 },
+  ]) {
     // reduced motion renders the exact terminal fill immediately, so geometry is deterministic
     const splitPage = await browser.newPage({ viewport: splitViewport, reducedMotion: "reduce" });
     await splitPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
