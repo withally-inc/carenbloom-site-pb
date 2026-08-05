@@ -30,7 +30,7 @@ const listening = new Promise((resolve, reject) => {
 });
 
 const commands = [
-  ["--test", "tests/repository-contract.test.mjs", "tests/deployment-package.test.mjs", "tests/hero-scroll.test.mjs"],
+  ["--test", "tests/repository-contract.test.mjs", "tests/deployment-package.test.mjs", "tests/hero-scroll.test.mjs", "tests/nav-float.test.mjs"],
   ["tests/careers-deadline.test.mjs"],
   ["tests/application-payload.test.mjs"],
   ["tests/applications-api.test.mjs"],
@@ -40,6 +40,7 @@ const commands = [
   ["tests/pb-role-apply.test.mjs"],
   ["tests/pb-integration.test.mjs"],
   ["tests/lemon-band.test.mjs"],
+  ["tests/nav-float-browser.test.mjs"],
 ];
 
 async function waitForServer(baseUrl) {

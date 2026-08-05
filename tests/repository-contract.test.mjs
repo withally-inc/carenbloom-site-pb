@@ -14,6 +14,7 @@ const runtimeFiles = [
   "app.js",
   "tokens.css",
   "hero-scroll.js",
+  "nav-float.js",
   "careers/apply/index.html",
   "assets/pb-apply.css",
   "scripts/careers-apply.js",
