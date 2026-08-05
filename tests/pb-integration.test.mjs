@@ -19,6 +19,18 @@ const browser = await chromium.launch({ headless: true });
 
 const counterText = (page) => page.locator("#deckCounter").textContent();
 
+// Every geometry assertion here measures laid-out glyphs, and the display face loads with
+// font-display: swap over a Helvetica Neue fallback: measuring before it settles measures the
+// wrong typeface, which is a silent false pass on the tight split-band boundary cases.
+async function openPage(page, url = `${baseUrl}/`) {
+  const response = await page.goto(url, { waitUntil: "domcontentloaded" });
+  await page.evaluate(() => Promise.race([
+    document.fonts.ready,
+    new Promise((resolve) => setTimeout(resolve, 5000)),
+  ]));
+  return response;
+}
+
 async function scrollInstant(page, y) {
   await page.evaluate((target) => scrollTo({ top: target, behavior: "instant" }), y);
   await page.waitForTimeout(100);
@@ -108,7 +120,7 @@ try {
       && request.url().endsWith("/assets/hero-grow.mp4");
     if (!isCancelledHeroSeek) pageErrors.push(`request: ${request.url()} ${errorText}`);
   });
-  const response = await page.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  const response = await openPage(page, `${baseUrl}/`);
   assert.equal(response?.status(), 200, "the canonical PB review route should resolve");
   assert.equal(await page.locator('link[rel="icon"][href="/images/cb-logo-white.svg"]').count(), 1, "the PB page should declare a valid shared favicon");
   assert.equal((await page.request.get(`${baseUrl}/images/cb-logo-white.svg`)).status(), 200, "the shared favicon should resolve without a browser console error");
@@ -377,12 +389,12 @@ try {
   await verifyHeldValuesStage(page, { width: 1440, height: 900 });
 
   const shortLaptopPage = await browser.newPage({ viewport: { width: 1280, height: 800 } });
-  await shortLaptopPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openPage(shortLaptopPage, `${baseUrl}/`);
   await verifyHeldValuesStage(shortLaptopPage, { width: 1280, height: 800 });
   await shortLaptopPage.close();
 
   const anchorPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  await anchorPage.goto(`${baseUrl}/#values`, { waitUntil: "domcontentloaded" });
+  await openPage(anchorPage, `${baseUrl}/#values`);
   await anchorPage.waitForFunction(() => document.querySelector("#values")?.classList.contains("is-held"));
   assert.equal(await counterText(anchorPage), "01 / 07", "direct Values anchor arrival should preserve card 01");
   await anchorPage.close();
@@ -416,7 +428,7 @@ try {
     { width: 390, height: 844 },
   ]) {
     const headerPage = await browser.newPage({ viewport });
-    await headerPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+    await openPage(headerPage, `${baseUrl}/`);
     const homeMetrics = await headerPage.locator(".topbar").evaluate((header) => {
       const logo = header.querySelector(":scope > a");
       const headerRect = header.getBoundingClientRect();
@@ -427,7 +439,7 @@ try {
         logo: { width: logoRect.width, height: logoRect.height, fontSize: logoStyle.fontSize, fontWeight: logoStyle.fontWeight, letterSpacing: logoStyle.letterSpacing },
       };
     });
-    await headerPage.goto(`${baseUrl}/careers/apply/?role=creative-strategist-performance-marketing`, { waitUntil: "domcontentloaded" });
+    await openPage(headerPage, `${baseUrl}/careers/apply/?role=creative-strategist-performance-marketing`);
     assert.equal(await headerPage.locator('link[rel="icon"][href="/images/cb-logo-white.svg"]').count(), 1, `${viewport.width}px application page should declare the shared favicon`);
     const applicationMetrics = await headerPage.locator(".application-topbar").evaluate((header) => {
       const logo = header.querySelector(":scope > a");
@@ -453,7 +465,7 @@ try {
   assert.equal((await rangeResponse.body()).byteLength, 1024);
 
   const fallbackPage = await browser.newPage({ viewport: { width: 900, height: 800 } });
-  await fallbackPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openPage(fallbackPage, `${baseUrl}/`);
   await fallbackPage.waitForFunction(() => document.querySelector("#valueDeck")?.classList.contains("is-live"));
   assert.equal(await fallbackPage.locator("#values").evaluate((section) => section.classList.contains("is-held")), false);
   assert.equal(await fallbackPage.locator("#values").getAttribute("style"), null, "900px fallback should have no held runway");
@@ -472,7 +484,7 @@ try {
   await fallbackPage.close();
 
   const mobilePage = await browser.newPage({ viewport: { width: 390, height: 844 } });
-  await mobilePage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openPage(mobilePage, `${baseUrl}/`);
   assert.equal(await mobilePage.locator("#valueDeck").evaluate((deck) => deck.classList.contains("is-live")), false);
   assert.equal(await mobilePage.locator("#values").evaluate((section) => Boolean(section.style.height) || section.classList.contains("is-held")), false);
   assert.equal(await mobilePage.locator("#deckPrev").isHidden(), true);
@@ -497,7 +509,7 @@ try {
   await noJsContext.close();
 
   const reducedPage = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
-  await reducedPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openPage(reducedPage, `${baseUrl}/`);
   assert.equal(await reducedPage.locator("#heroMedia").getAttribute("data-state"), "reduced");
   assert.equal(await reducedPage.locator("#heroGrowVideo").getAttribute("src"), null);
   assert.equal(await reducedPage.locator(".hero-frame-end").evaluate((node) => getComputedStyle(node).opacity), "1");
@@ -529,7 +541,7 @@ try {
      owns its observer, so revealing Hello Nancy must not start Biird, and starting
      is one-way — leaving and returning never resets a started carousel. */
   const stackedPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
-  await stackedPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openPage(stackedPage, `${baseUrl}/`);
   const stackedCarousels = stackedPage.locator("[data-brand-carousel]");
   const stackedRunning = () => stackedCarousels.evaluateAll((carousels) => carousels.map((carousel) =>
     Array.from(carousel.closest(".brand-card").querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running"))));
@@ -556,7 +568,7 @@ try {
   await stackedPage.close();
 
   const reducedPage2Values = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
-  await reducedPage2Values.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openPage(reducedPage2Values, `${baseUrl}/`);
   await reducedPage2Values.waitForFunction(() => document.querySelector("#values")?.classList.contains("is-held"));
   const reducedValuesTop = await reducedPage2Values.locator("#values").evaluate((section) => scrollY + section.getBoundingClientRect().top);
   await scrollInstant(reducedPage2Values, reducedValuesTop + 900 * 0.35 + 900 * 0.5 * 6 + 1);
@@ -565,7 +577,7 @@ try {
   await reducedPage2Values.close();
 
   const mobileReducedPage = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
-  await mobileReducedPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openPage(mobileReducedPage, `${baseUrl}/`);
   assert.deepEqual(
     await mobileReducedPage.locator(".stat-band").evaluateAll((bands) => bands.map((band) => band.getBoundingClientRect().height)),
     [224, 198, 250],
@@ -635,13 +647,13 @@ try {
   ]) {
     // reduced motion renders the exact terminal fill immediately, so geometry is deterministic
     const splitPage = await browser.newPage({ viewport: splitViewport, reducedMotion: "reduce" });
-    await splitPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+    await openPage(splitPage, `${baseUrl}/`);
     assertValueOnSun(await splitGeometry(splitPage), splitViewport.width);
     await splitPage.close();
   }
   // the reported path: real scroll at 390px to the terminal reveal
   const splitScrollPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
-  await splitScrollPage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openPage(splitScrollPage, `${baseUrl}/`);
   const splitTop = await splitScrollPage.locator(".stat-band-split").evaluate((band) => scrollY + band.getBoundingClientRect().top);
   await scrollInstant(splitScrollPage, splitTop - 844 * 0.2);
   await splitScrollPage.waitForFunction(() =>
