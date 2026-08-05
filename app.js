@@ -268,21 +268,26 @@ import {
 })();
 
 /* Mother Fable carousel law: one image at a time, a 4.5-second dwell and a
-   600ms crossfade. The loop yields whenever the gallery is not being viewed. */
+   deterministically restarted progress fill. */
 (function () {
   const carousels = Array.from(document.querySelectorAll('[data-brand-carousel]'));
   if (!carousels.length) return;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   carousels.forEach((carousel) => {
-    const card = carousel.closest('.brand-card');
     const slides = Array.from(carousel.querySelectorAll('.brand-slide'));
-    const interval = Number.parseInt(carousel.dataset.interval || '4500', 10);
+    const progress = carousel.querySelector('.progress');
+    if (progress.children.length !== slides.length) {
+      progress.replaceChildren(...slides.map(() => {
+        const bar = document.createElement('span');
+        bar.append(document.createElement('i'));
+        return bar;
+      }));
+    }
+    const bars = Array.from(progress.querySelectorAll('span'));
     let active = 0;
     let timer = 0;
-    let inView = false;
-    let hovered = false;
-    let focused = false;
+    let paused = false;
 
     function show(next) {
       active = (next + slides.length) % slides.length;
@@ -292,49 +297,43 @@ import {
         slide.classList.toggle('is-active', isActive);
         slide.setAttribute('aria-hidden', String(!isActive));
       });
+      bars.forEach((bar, index) => {
+        bar.classList.remove('running');
+        const fill = bar.querySelector('i');
+        fill.style.animation = 'none';
+        void fill.offsetWidth;
+        fill.style.animation = '';
+        bar.classList.toggle('running', index === active && !reduced);
+      });
+      if (timer) {
+        clearTimeout(timer);
+        timer = 0;
+      }
+      if (!reduced && !paused) {
+        timer = setTimeout(() => show(active + 1), 4500);
+      }
     }
 
-    function clear() {
-      clearTimeout(timer);
-      timer = 0;
+    function pause() {
+      paused = true;
+      carousel.classList.add('paused');
+      if (timer) {
+        clearTimeout(timer);
+        timer = 0;
+      }
+    }
+    function resume() {
+      paused = false;
+      carousel.classList.remove('paused');
+      if (!reduced && !timer) timer = setTimeout(() => show(active + 1), 4500);
     }
 
-    function stopped() {
-      return reduced || document.hidden || !inView || hovered || focused;
-    }
-
-    function schedule() {
-      clear();
-      if (stopped()) return;
-      timer = setTimeout(() => {
-        show(active + 1);
-        schedule();
-      }, interval);
-    }
+    carousel.addEventListener('mouseenter', pause);
+    carousel.addEventListener('mouseleave', resume);
+    carousel.addEventListener('focusin', pause);
+    carousel.addEventListener('focusout', resume);
 
     show(0);
-    if (reduced) return;
-
-    card.addEventListener('mouseenter', () => { hovered = true; schedule(); });
-    card.addEventListener('mouseleave', () => { hovered = false; schedule(); });
-    card.addEventListener('focusin', () => { focused = true; schedule(); });
-    card.addEventListener('focusout', () => {
-      requestAnimationFrame(() => {
-        focused = card.contains(document.activeElement);
-        schedule();
-      });
-    });
-    document.addEventListener('visibilitychange', schedule);
-
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver((entries) => {
-        inView = entries.some((entry) => entry.isIntersecting);
-        schedule();
-      }, { threshold: 0.1 }).observe(carousel);
-    } else {
-      inView = true;
-      schedule();
-    }
   });
 })();
 /* ---------- (05) the scroll-stepped deck: seven values as a physical stack (k3-v2, stage 2) ----------

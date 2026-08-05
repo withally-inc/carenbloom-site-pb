@@ -266,20 +266,26 @@ try {
         interval: "4500",
         slides: [
           "images/carenbloom-v3/nancy-lem.jpg",
-          "assets/tile-nancy-sharp.png",
-          "assets/tile-nancy2-sharp.png",
+          "images/carenbloom-v3/nancy-raspberry.png",
+          "images/carenbloom-v3/nancy-avocado.png",
         ],
       },
       {
         interval: "4500",
         slides: [
           "images/carenbloom-v3/biird-ohwii-branch.jpg",
-          "assets/tile-biird-sharp.png",
-          "assets/tile-biird2-sharp.png",
+          "images/carenbloom-v3/biird-glass-sky.png",
+          "images/carenbloom-v3/biird-lilac-first-timer.png",
         ],
       },
     ],
     "each brand carousel should use three distinct approved repository assets",
+  );
+  assert.equal(
+    await brandCarousels.evaluateAll((carousels) => carousels.every((carousel) =>
+      carousel.querySelectorAll(".progress > span").length === carousel.querySelectorAll(".brand-slide").length)),
+    true,
+    "each carousel should render exactly one progress bar per slide",
   );
   assert.equal(
     await brandCarousels.evaluateAll((carousels) => carousels.every((carousel) => {
@@ -294,6 +300,12 @@ try {
     ["0", "0"],
     "both carousels should start on their first approved image",
   );
+  assert.deepEqual(
+    await brandCarousels.evaluateAll((carousels) => carousels.map((carousel) =>
+      Array.from(carousel.querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running")))),
+    [[true, false, false], [true, false, false]],
+    "each carousel should start the first progress bar",
+  );
   await brandCarousels.first().scrollIntoViewIfNeeded();
   await page.waitForTimeout(4700);
   assert.deepEqual(
@@ -301,7 +313,18 @@ try {
     ["1", "1"],
     "both carousels should advance on Mother Fable's 4.5-second cadence",
   );
+  assert.deepEqual(
+    await brandCarousels.evaluateAll((carousels) => carousels.map((carousel) =>
+      Array.from(carousel.querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running")))),
+    [[false, true, false], [false, true, false]],
+    "the active progress bar should advance with its slide",
+  );
   await brandCarousels.first().hover();
+  assert.equal(
+    await brandCarousels.first().locator(".progress > span.running i").evaluate((fill) => getComputedStyle(fill).animationPlayState),
+    "paused",
+    "hover should pause the active progress fill",
+  );
   const pausedSlide = await brandCarousels.first().getAttribute("data-active-slide");
   await page.waitForTimeout(4700);
   assert.equal(
@@ -309,6 +332,15 @@ try {
     pausedSlide,
     "hover should pause automatic carousel advancement",
   );
+  await page.mouse.move(0, 0);
+  await brandCarousels.first().focus();
+  assert.equal(await brandCarousels.first().evaluate((carousel) => carousel.classList.contains("paused")), true);
+  assert.equal(
+    await brandCarousels.first().locator(".progress > span.running i").evaluate((fill) => getComputedStyle(fill).animationPlayState),
+    "paused",
+    "focus should pause the active progress fill",
+  );
+  await page.evaluate(() => document.activeElement?.blur());
 
   const marquee = page.locator(".tile-marquee");
   assert.equal(await marquee.count(), 1, "the product tile band should have one continuous marquee owner");
@@ -460,6 +492,12 @@ try {
     await reducedPage.locator("[data-brand-carousel]").evaluateAll((carousels) => carousels.map((carousel) => carousel.dataset.activeSlide)),
     ["0", "0"],
     "reduced motion should keep both carousels on their static first image",
+  );
+  assert.equal(
+    await reducedPage.locator("[data-brand-carousel]").evaluateAll((carousels) => carousels.every((carousel) =>
+      Array.from(carousel.querySelectorAll(".progress > span"), (bar) => bar.classList.contains("running")).every((running) => !running))),
+    true,
+    "reduced motion should leave every progress fill stopped",
   );
   await reducedPage.waitForFunction(() => document.querySelector("#values")?.classList.contains("is-held"));
   const reducedValuesTop = await reducedPage.locator("#values").evaluate((section) => scrollY + section.getBoundingClientRect().top);

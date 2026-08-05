@@ -529,12 +529,39 @@ section, footer { position: relative; }
 }
 .brand-slide:first-child,
 .brand-slide.is-active { opacity: 1; }
-.brand-slide-halftone { background: var(--color-accent); }
 .brand-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+.progress {
+  position: absolute;
+  top: 12px;
+  left: var(--space-2xs);
+  right: var(--space-2xs);
+  z-index: 2;
+  display: flex;
+  gap: var(--space-3xs);
+  filter: drop-shadow(0 1px 2px color-mix(in oklab, var(--color-ink) 55%, transparent));
+}
+.progress span {
+  flex: 1;
+  height: 2px;
+  overflow: hidden;
+  background: var(--color-paper-2);
+  box-shadow: 0 0 0 1px var(--color-paper-2);
+}
+.progress span i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--color-ink);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+.progress span.running i { animation: progress 4.5s linear forwards; }
+.brand-carousel.paused .progress span.running i { animation-play-state: paused; }
+@keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .brand-meta { padding-top: var(--space-2xs); }
 .b-index { font-family: var(--font-mono); font-size: var(--text-mono-s); letter-spacing: 0.04em; opacity: 0.7; }
 .b-name {
@@ -913,6 +940,7 @@ section, footer { position: relative; }
   html { scroll-behavior: auto; }
   .roll .lines, .reveal .line > span { transition-duration: 1ms; }
   .brand-slide { transition-duration: 1ms; }
+  .progress span.running i { animation: none; }
   .tile-marquee { width: 100%; animation: none; transform: none; will-change: auto; }
   .tile-marquee > .tilerow:nth-child(2) { display: none; }
   .dotfield.in .mark { transition-duration: 1ms; transition-delay: 0ms; }
