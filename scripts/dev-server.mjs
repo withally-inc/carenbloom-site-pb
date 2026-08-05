@@ -7,7 +7,7 @@ import applicationHandler from "../api/applications.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const port = Number.parseInt(process.env.PORT || "49279", 10);
-const host = process.env.HOST || "0.0.0.0";
+const host = process.env.HOST || "127.0.0.1";
 
 function loadEnv(filePath) {
   if (!existsSync(filePath)) return;
@@ -47,12 +47,17 @@ function contentType(filePath) {
 }
 
 function staticPath(urlPath) {
-  const decoded = decodeURIComponent(urlPath);
+  let decoded;
+  try {
+    decoded = decodeURIComponent(urlPath);
+  } catch {
+    return null;
+  }
   const cleanPath = decoded.replace(/^\/+/, "");
-  let target = path.join(root, cleanPath);
-  if (decoded === "/" || decoded.endsWith("/")) target = path.join(root, cleanPath, "index.html");
+  let target = path.resolve(root, cleanPath);
+  if (decoded === "/" || decoded.endsWith("/")) target = path.resolve(root, cleanPath, "index.html");
   if (!path.extname(target) && existsSync(path.join(target, "index.html"))) target = path.join(target, "index.html");
-  if (!target.startsWith(root)) return null;
+  if (target !== root && !target.startsWith(`${root}${path.sep}`)) return null;
   return target;
 }
 

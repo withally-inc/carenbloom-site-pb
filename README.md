@@ -58,9 +58,13 @@ No automated test performs a real application or Notion write.
 
 Roles with an explicit physical `locationType` use that exact string in visible role copy, accessible role details, meta descriptions, Open Graph descriptions, and physical JobPosting data.
 
-Roles without an explicit physical location are genuinely remote and use `Remote`, `TELECOMMUTE`, and remote applicant structured semantics.
+Roles without an explicit physical location are genuinely remote and use `Remote` wording with `TELECOMMUTE` structured semantics.
 
-The implementation does not invent city, country, or hybrid data.
+The implementation does not invent city, country, or hybrid data, so remote postings emit no `applicantLocationRequirements`.
+
+Google requires a factual applicant-country restriction alongside `TELECOMMUTE` for remote-job rich results, so those roles are not yet eligible; the real hiring-eligible countries must be decided and added to the role records before that eligibility can be claimed.
+
+The static `careers/apply/index.html` metadata is a neutral, role-agnostic fallback for crawlers that do not execute JavaScript; browsers receive per-role metadata at runtime.
 
 ## Vercel review deployment
 
@@ -80,7 +84,11 @@ Before any review deployment, inspect current Vercel CLI help and the existing p
 
 Never create another Vercel project or alias, add a custom domain, deploy to the Care and Bloom production project, or touch `carenbloom-site2.vercel.app`.
 
-The `deploy:review` package command preserves the local dry-run safety flag, but the operator remains responsible for linking the generated directory to the exact existing project, verifying the remote environment setting, and assigning only the existing stable alias.
+The `deploy:review` command sets `NOTION_INTAKE_DRY_RUN=1` only for the local packaging process; it does not configure the deployed function environment and proves nothing about it.
+
+Deployed dry-run safety comes exclusively from the `NOTION_INTAKE_DRY_RUN=1` environment variable on the `carenbloom-redesign-a` Vercel project, which the operator must set and verify in that project before publishing, in addition to linking the generated directory to the exact existing project and assigning only the existing stable alias.
+
+This repository deliberately keeps `vercel.json` free of a pinned dry-run value so the same source stays production-capable.
 
 For rollback, identify the deployment that served `carenbloom-redesign-a.vercel.app` before the update and use the current Vercel rollback command for that exact project and deployment.
 

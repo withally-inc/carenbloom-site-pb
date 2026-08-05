@@ -1,7 +1,8 @@
 import { getClosingPresentation } from "./careers-deadline.js";
+import { careerRoles } from "./careers-roles.js";
 
 (function () {
-  const roles = window.careerRoles || [];
+  const roles = careerRoles;
   const params = new URLSearchParams(window.location.search);
   const slug = params.get("role") || roles[0]?.slug;
   const role = roles.find((item) => item.slug === slug) || roles[0];
@@ -73,7 +74,6 @@ import { getClosingPresentation } from "./careers-deadline.js";
       sameAs: "https://carenbloom.com",
     },
     directApply: true,
-    applicantLocationRequirements: isRemote ? { "@type": "Country", name: "Remote" } : undefined,
     jobLocationType: isRemote ? "TELECOMMUTE" : undefined,
     jobLocation: !isRemote ? {
       "@type": "Place",

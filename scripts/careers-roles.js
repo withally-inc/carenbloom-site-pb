@@ -319,3 +319,5 @@ const careerRoles = [
 if (typeof window !== "undefined") {
   window.careerRoles = careerRoles;
 }
+
+export { careerRoles };

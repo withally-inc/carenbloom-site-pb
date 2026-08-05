@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { buildApplicationPayload } from "../api/lib/application-payload.js";
+import { buildApplicationPayload } from "../api/_lib/application-payload.js";
 
 const payload = buildApplicationPayload("db-id", {
   role: "Chief of Staff",

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { EventEmitter } from "node:events";
 import handler, { _private } from "../api/applications.js";
+import { careerRoles } from "../scripts/careers-roles.js";
 
 function samplePayload(overrides = {}) {
   return {
@@ -96,7 +97,21 @@ assert.equal(_private.validatePayload(samplePayload({ monthlyIncomeUsd: "12k" })
 assert.equal(_private.validatePayload(samplePayload({ timeZones: ["Mars"] })).error, "Choose a valid time zone.");
 assert.equal(_private.validatePayload(samplePayload({ introVideoUrl: "not-a-url" })).error, "Enter a valid intro video URL.");
 assert.equal(_private.validatePayload(samplePayload({ roleSlug: "video-editor", introVideoUrl: "" })).error, "Intro video is required for this role.");
-assert.equal(_private.validatePayload(samplePayload({ roleSlug: "chief-of-staff", introVideoUrl: "" })).error, undefined);
+assert.equal(_private.validatePayload(samplePayload({ roleSlug: "chief-of-staff", introVideoUrl: "" })).error, "Intro video is required for this role.");
+assert.equal(_private.validatePayload(samplePayload({ roleSlug: "entrepreneur-in-residence", introVideoUrl: "" })).error, "Intro video is required for this role.");
+assert.equal(
+  _private.validatePayload(samplePayload({ roleSlug: "social-media-strategist", introVideoUrl: "", introVideoRequired: false })).error,
+  "Intro video is required for this role.",
+  "a client-supplied flag must not relax the canonical role requirement"
+);
+assert.equal(_private.validatePayload(samplePayload({ roleSlug: "social-media-manager" })).error, "Unknown role.");
+for (const role of careerRoles) {
+  assert.equal(
+    _private.validatePayload(samplePayload({ role: role.title, roleSlug: role.slug, introVideoUrl: "" })).error,
+    role.introVideoRequired ? "Intro video is required for this role." : undefined,
+    `${role.slug} intro video enforcement should follow canonical role data`
+  );
+}
 assert.equal(_private.validatePayload(samplePayload({ questions: [{ question: "One", answer: "" }] })).error, "Missing required answer: role question 1");
 assert.equal(
   _private.validatePayload(samplePayload({

@@ -1,17 +1,12 @@
-import { buildApplicationPayload, clean, safeUrl } from "./lib/application-payload.js";
-import { createPage, uploadFile } from "./lib/notion-client.js";
+import { buildApplicationPayload, clean, safeUrl } from "./_lib/application-payload.js";
+import { createPage, uploadFile } from "./_lib/notion-client.js";
+import { careerRoles } from "../scripts/careers-roles.js";
 import Busboy from "busboy";
 
 const DEFAULT_DATABASE_ID = "3792b7ec4597800fab56f5a61ff00187";
 const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
 const ALLOWED_TIME_ZONES = new Set(["US", "Europe", "Asia"]);
-const INTRO_VIDEO_REQUIRED_ROLES = new Set([
-  "graphic-designer",
-  "video-editor",
-  "social-media-manager",
-  "head-of-performance-marketing",
-  "creative-strategist-performance-marketing",
-]);
+const CANONICAL_ROLES = new Map(careerRoles.map((role) => [role.slug, role]));
 
 function sendJson(res, status, payload) {
   res.statusCode = status;
@@ -146,8 +141,12 @@ function normalizeTimeZones(payload) {
   return values.map(clean).filter(Boolean);
 }
 
+function canonicalRole(payload) {
+  return CANONICAL_ROLES.get(clean(payload.roleSlug));
+}
+
 function introVideoIsRequired(payload) {
-  return payload.introVideoRequired === true || clean(payload.introVideoRequired) === "true" || INTRO_VIDEO_REQUIRED_ROLES.has(clean(payload.roleSlug));
+  return canonicalRole(payload)?.introVideoRequired === true;
 }
 
 function validatePayload(payload) {
@@ -166,6 +165,7 @@ function validatePayload(payload) {
     if (!clean(payload[field])) return { error: `Missing required field: ${field}` };
   }
 
+  if (!canonicalRole(payload)) return { error: "Unknown role." };
   if (!emailIsValid(clean(payload.email))) return { error: "Enter a valid email address." };
   if (clean(payload.linkedIn) && !safeUrl(payload.linkedIn)) return { error: "Enter a valid LinkedIn URL." };
   if (clean(payload.introVideoUrl) && !safeUrl(payload.introVideoUrl)) return { error: "Enter a valid intro video URL." };

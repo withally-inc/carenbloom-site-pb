@@ -16,6 +16,17 @@ const roles = [
   ["ai-native-product-manager-apps", "AI-Native Product Manager, Apps", "Remote"],
 ];
 
+const staticFallback = "Care & Bloom careers — location varies by role.";
+const staticMarkup = await (await fetch(`${baseUrl}/careers/apply/`)).text();
+for (const attribute of ['name="description"', 'property="og:description"']) {
+  const match = staticMarkup.match(new RegExp(`<meta ${attribute} content="([^"]*)">`));
+  assert.equal(
+    match?.[1] && match[1].replace(/&amp;/g, "&"),
+    staticFallback,
+    `crawler-visible ${attribute} must stay neutral about role location`
+  );
+}
+
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 
@@ -48,7 +59,7 @@ for (const [slug, title, location] of roles) {
 
   if (location === "Remote") {
     assert.equal(result.jsonLd.jobLocationType, "TELECOMMUTE", `${slug} should use remote JobPosting semantics`);
-    assert.deepEqual(result.jsonLd.applicantLocationRequirements, { "@type": "Country", name: "Remote" });
+    assert.equal("applicantLocationRequirements" in result.jsonLd, false, `${slug} must not claim a fabricated applicant country`);
     assert.equal("jobLocation" in result.jsonLd, false, `${slug} should not claim a physical location`);
   } else {
     assert.equal(result.jsonLd.jobLocation?.address?.addressLocality, location, `${slug} structured location should preserve the exact canonical location`);

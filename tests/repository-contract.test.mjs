@@ -20,8 +20,8 @@ const runtimeFiles = [
   "scripts/header-scroll.js",
   "scripts/dev-server.mjs",
   "api/applications.js",
-  "api/lib/application-payload.js",
-  "api/lib/notion-client.js",
+  "api/_lib/application-payload.js",
+  "api/_lib/notion-client.js",
   "vercel.json",
 ];
 

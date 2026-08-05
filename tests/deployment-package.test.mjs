@@ -11,10 +11,14 @@ test("deployment packaging has an explicit runtime owner", () => {
   assert.equal(existsSync(path.join(root, "scripts/package-deployment.mjs")), true, "deployment packaging script should exist");
 });
 
-test("deployment commands require dry-run application safety", () => {
+test("the local packaging command runs in dry-run mode", () => {
   const packageJson = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8"));
   const scripts = packageJson.scripts || {};
-  assert.match(scripts["deploy:review"] || "", /NOTION_INTAKE_DRY_RUN=1/, "review deployment command must require dry-run mode");
+  assert.match(
+    scripts["deploy:review"] || "",
+    /NOTION_INTAKE_DRY_RUN=1/,
+    "review packaging must run dry-run locally; the deployed function environment is set and verified separately in the Vercel project"
+  );
 });
 
 test("the emitted deployment tree contains runtime files and no private development surfaces", () => {
@@ -30,6 +34,8 @@ test("the emitted deployment tree contains runtime files and no private developm
   }
   assert.equal(files.some((file) => /(?:^|\/)(?:\.git|\.vercel|tests?|evidence|reports?)(?:\/|$)/i.test(file)), false, `forbidden development surface packaged: ${files.join(", ")}`);
   assert.equal(files.some((file) => /(?:^|\/)\.env(?:\.|$)/i.test(file)), false, `environment file packaged: ${files.join(", ")}`);
+  const accidentalEndpoints = files.filter((file) => file.startsWith(`api${path.sep}`) && !file.startsWith(`api${path.sep}_`) && file !== path.join("api", "applications.js"));
+  assert.deepEqual(accidentalEndpoints, [], "only api/applications.js may be detected as a function; shared helpers belong under api/_lib/");
   const runtimePackage = JSON.parse(readFileSync(path.join(deploymentRoot, "package.json"), "utf8"));
   assert.deepEqual(runtimePackage, {
     name: "carenbloom-site-pb-runtime",
