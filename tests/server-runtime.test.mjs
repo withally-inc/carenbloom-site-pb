@@ -6,16 +6,21 @@ const otf = await fetch(`${baseUrl}/fonts/PPMori-Regular.otf`);
 assert.equal(otf.status, 200);
 assert.equal(otf.headers.get("content-type"), "font/otf");
 
-for (const font of ["Syne-VF.ttf", "AzeretMono-VF.ttf"]) {
+for (const font of ["AzeretMono-VF.ttf"]) {
   const ttf = await fetch(`${baseUrl}/fonts/${font}`);
   assert.equal(ttf.status, 200, `${font} should be served`);
   assert.equal(ttf.headers.get("content-type"), "font/ttf");
 }
 
-for (const licence of ["OFL-Syne.txt", "OFL-AzeretMono.txt"]) {
+for (const licence of ["OFL-AzeretMono.txt"]) {
   const response = await fetch(`${baseUrl}/fonts/${licence}`);
   assert.equal(response.status, 200, `${licence} should ship beside its font`);
   assert.match(await response.text(), /SIL OPEN FONT LICENSE Version 1\.1/);
+}
+
+for (const removedSyneAsset of ["Syne-VF.ttf", "OFL-Syne.txt"]) {
+  const response = await fetch(`${baseUrl}/fonts/${removedSyneAsset}`);
+  assert.equal(response.status, 404, `${removedSyneAsset} should no longer ship`);
 }
 
 const range = await fetch(`${baseUrl}/assets/hero-grow.mp4`, { headers: { Range: "bytes=0-1023" } });

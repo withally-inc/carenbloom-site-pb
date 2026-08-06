@@ -54,9 +54,9 @@ No automated test performs a real application or Notion write.
 
 ## Typography
 
-The production type system is self-hosted Syne for display roles, PP Mori for body copy, and Azeret Mono for utility text.
+The production type system is self-hosted PP Mori for display roles and body copy, with Azeret Mono for utility text.
 
-`fonts/Syne-VF.ttf` and `fonts/AzeretMono-VF.ttf` are the exact runtime binaries, with their SIL Open Font License 1.1 texts beside them as `fonts/OFL-Syne.txt` and `fonts/OFL-AzeretMono.txt`.
+PP Mori ships in regular and semibold weights, and `fonts/AzeretMono-VF.ttf` remains the exact utility-face runtime binary with its SIL Open Font License 1.1 text beside it as `fonts/OFL-AzeretMono.txt`.
 
 The mobile navigation keeps the Azeret Mono Care & Bloom mark whole at 320px by tightening the two-item gap and setting the mark at a legible 12px with slight negative tracking.
 
@@ -88,7 +88,7 @@ Focused behavioral coverage lives in `tests/lemon-band.test.mjs` (distinct phase
 
 ## Footer sign-off wordmark
 
-The page closes on an oversized `Care & Bloom` sign-off set in live, selectable Syne rather than the earlier raster halftone image, so it inherits the site type system, scales without a bitmap, and is announced once by screen readers.
+The page closes on an oversized `Care & Bloom` sign-off set in live, selectable PP Mori rather than the earlier raster halftone image, so it inherits the site type system, scales without a bitmap, and is announced once by screen readers.
 
 The wordmark is present by default and arrives with a one-shot scroll-triggered transform-and-opacity motion in the homepage's unhurried character; it never loops.
 `prefers-reduced-motion: reduce` and disabled, blocked, or failed JavaScript all leave it fully visible at rest, and the motion is armed only after the wordmark has been observed offscreen, so an already-painted sign-off is never retroactively hidden.

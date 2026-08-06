@@ -913,27 +913,27 @@ html:not(.js) .contact-display .line > span { transform: none; }
   margin: clamp(24px, 2.5vw, 40px) 0 0;
   overflow: clip;
   font-family: var(--font-display);
-  font-size: max(38px, 12.1vw);
+  font-size: max(38px, 12.7vw);
   font-weight: 600;
   line-height: 1;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.04em;
   text-align: center;
   text-transform: uppercase;
   white-space: nowrap;
 }
 .footer-wordmark-clip {
   display: block;
-  height: 0.82em;
+  height: 0.8em;
   overflow: clip;
 }
 .footer-wordmark-text {
   display: inline-block;
   position: relative;
-  top: -0.035em;
-  padding-inline: 0.025em;
+  top: -0.025em;
+  padding-inline: 0.02em;
   color: var(--color-accent);
-  line-height: 0.82;
-  -webkit-text-stroke: clamp(1px, 0.16vw, 2px) var(--color-ink-2);
+  line-height: 0.8;
+  -webkit-text-stroke: clamp(1px, 0.14vw, 2px) var(--color-ink-2);
   paint-order: stroke fill;
   transform-origin: 50% 100%;
 }
