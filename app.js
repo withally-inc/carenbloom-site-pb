@@ -408,6 +408,24 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
   }
 })();
 
+/* The footer sign-off is present by default. Motion becomes active only after a working
+   observer owns the one-shot arrival, so blocked, failed, or absent scripting never traps it. */
+(function () {
+  const wordmark = document.querySelector('[data-footer-wordmark]');
+  if (!wordmark) return;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced || typeof IntersectionObserver === 'undefined') return;
+
+  const observer = new IntersectionObserver((entries, owner) => {
+    if (!entries.some(entry => entry.isIntersecting)) return;
+    wordmark.classList.add('is-visible');
+    owner.unobserve(wordmark);
+  }, { threshold: 0.18 });
+
+  observer.observe(wordmark);
+  wordmark.classList.add('is-motion-ready');
+})();
+
 /* Mother Fable carousel law: one image at a time, a 4.5-second dwell and a
    deterministically restarted progress fill. Start-on-view law (k3 carousel bars):
    a carousel holds its first slide, first bar unfilled, until it is genuinely

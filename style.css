@@ -873,7 +873,8 @@ html:not(.js) .nav-shell { position: absolute; }
   color: var(--color-ink-2);
   --color-focus: var(--color-sun);
   --gridline: color-mix(in oklab, var(--color-ink-2) 14%, transparent);
-  padding: var(--space-xl) 0 var(--space-md);
+  padding: var(--space-xl) 0 0;
+  overflow-x: clip;
 }
 .contact .wrap { border-top: 1px solid var(--color-rule-dark); padding-top: var(--space-xl); }
 .contact-display {
@@ -889,6 +890,7 @@ html:not(.js) .nav-shell { position: absolute; }
   min-width: 0;
   margin-bottom: var(--space-sm);
 }
+html:not(.js) .contact-display .line > span { transform: none; }
 .email-link {
   display: inline-block;
   font-weight: 600;
@@ -918,9 +920,48 @@ html:not(.js) .nav-shell { position: absolute; }
 }
 .cf-nav { display: flex; gap: var(--space-xs); font-size: var(--text-mono-s); }
 .cf-loc { font-family: var(--font-mono); opacity: 0.75; }
-/* the sign-off: the wordmark, printed in dissolving dot halftone — PBv2 material */
-.wordmark-block { margin-top: var(--space-xl); }
-.wordmark { width: 100%; height: auto; }
+/* The live sign-off carries the reference's one-line, bottom-cropped scale in the site's own
+   display face. Its line box owns stable geometry; only the inner text moves and fades. */
+.footer-wordmark {
+  max-width: 100%;
+  margin: clamp(24px, 2.5vw, 40px) 0 0;
+  overflow: clip;
+  font-family: var(--font-display);
+  font-size: clamp(38px, 12.1vw, 174px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.055em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.footer-wordmark-clip {
+  display: block;
+  height: 0.82em;
+  overflow: clip;
+}
+.footer-wordmark-text {
+  display: inline-block;
+  position: relative;
+  top: -0.035em;
+  padding-inline: 0.025em;
+  color: var(--color-accent);
+  line-height: 0.82;
+  -webkit-text-stroke: clamp(1px, 0.16vw, 2px) var(--color-ink-2);
+  paint-order: stroke fill;
+  transform-origin: 50% 100%;
+}
+.js .footer-wordmark.is-motion-ready:not(.is-visible) .footer-wordmark-text {
+  opacity: 0;
+  transform: translate3d(2.5vw, 78%, 0) scale(0.965);
+}
+.js .footer-wordmark.is-motion-ready.is-visible .footer-wordmark-text {
+  opacity: 1;
+  transform: none;
+  transition:
+    transform 1100ms var(--ease-out),
+    opacity 800ms var(--ease-arrive);
+}
 
 /* ---------- responsive ---------- */
 @media (max-width: 991px) {
@@ -1039,6 +1080,7 @@ html:not(.js) .nav-shell { position: absolute; }
   }
 }
 @media (max-width: 479px) {
+  .contact-display { font-size: clamp(28px, 8.8vw, 34px); }
   .email-link { font-size: 22px; }
 }
 /* short desktop/tablet viewports: the stage-center shrinks with height, so spread the
@@ -1065,6 +1107,12 @@ html:not(.js) .nav-shell { position: absolute; }
   .hero-media .hero-frame-end { opacity: 1; }
   .hero-media .hero-frame-start,
   .hero-media .hero-grow-video { opacity: 0; }
+  .footer-wordmark .footer-wordmark-text {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
 }
 /* ---------- (05) + (06): values & teams (k3-v2, stage 2 — root base)
    Hallmark · macrostructure: Manifesto (Stat-Led lean) · theme: studied-DNA (locked: root)

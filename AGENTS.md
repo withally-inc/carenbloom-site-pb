@@ -10,6 +10,7 @@ This file is the project's committed home for project-intrinsic agent knowledge:
 - `nav-float.js` owns the floating-navigation threshold/hysteresis state and is imported by `app.js`; `.nav-shell`/`.topbar` rules in `style.css` own the material, and `tests/nav-float*.test.mjs` cover top/floating/mobile/reduced-motion behavior.
 - `tokens.css` owns the production Syne display, PP Mori body, and Azeret Mono utility roles; the self-hosted Syne/Azeret binaries and OFL texts live in `fonts/`, and the 320px full-mark regression is pinned in `tests/nav-float-browser.test.mjs`.
 - The homepage opening sequence (blank art side → wordmark beat → hero emergence → scroll-earned satellite chips) is driven by `.js-live`/`.arrived`/`.settled`/`.chip-in`: pure logic in `hero-scroll.js` (`chipRevealCount`, `resolveOpeningMode`), the driver in `app.js`, the CSS opening block in `style.css`. Pre-reveal hiding requires `.js-live`, granted by the render-blocking head script in `index.html` (which also arms a 4s release so a blocked or failed module still prints the page whole) and owned by `app.js` once it wires the ceremony (`window.__cbOpeningRelease`) — never hide opening content behind the inline `.js` class alone. `tests/hero-reveal-browser.test.mjs` owns the behavioral contract.
+- The footer sign-off is live Syne text owned by `[data-footer-wordmark]` in `index.html`, its progressive one-shot observer in `app.js`, and `tests/footer-wordmark.test.mjs`; default, reduced-motion, and no-JavaScript states must remain fully visible.
 
 ## Maintaining this file
 
