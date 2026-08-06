@@ -39,6 +39,7 @@ const commands = [
   ["tests/careers-apply-submit.test.mjs"],
   ["tests/pb-role-apply.test.mjs"],
   ["tests/pb-integration.test.mjs"],
+  ["tests/hero-performance-browser.test.mjs"],
   ["tests/lemon-band.test.mjs"],
   ["tests/nav-float-browser.test.mjs"],
   ["tests/hero-reveal-browser.test.mjs"],

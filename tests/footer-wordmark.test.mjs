@@ -253,6 +253,49 @@ try {
   assert.equal(await racePage.locator("[data-footer-wordmark]").evaluate((element) => element.classList.contains("is-visible")), true, "crossing the arrival ratio should reveal the wordmark");
   await raceContext.close();
 
+  const missingStylesContext = await browser.newContext({ viewport: viewports[0] });
+  const missingStylesPage = await missingStylesContext.newPage();
+  await missingStylesPage.addInitScript(() => {
+    window.__observers = [];
+    window.IntersectionObserver = class {
+      constructor(callback, options) {
+        this.callback = callback;
+        this.options = options || {};
+        this.targets = [];
+        window.__observers.push(this);
+      }
+      observe(target) { this.targets.push(target); }
+      unobserve(target) { this.targets = this.targets.filter((candidate) => candidate !== target); }
+      disconnect() { this.targets = []; }
+      takeRecords() { return []; }
+    };
+  });
+  await missingStylesPage.goto(`${baseUrl}/`, { waitUntil: "load" });
+  await missingStylesPage.addStyleTag({ content: `
+    .js .footer-wordmark.is-motion-ready:not(.is-visible) .footer-wordmark-text {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  ` });
+  const missingStylesState = await missingStylesPage.evaluate(() => {
+    const wordmark = document.querySelector("[data-footer-wordmark]");
+    const observer = window.__observers.find((candidate) => candidate.targets.includes(wordmark));
+    observer.callback([{ target: wordmark, intersectionRatio: 0, isIntersecting: false }], observer);
+    const text = wordmark.querySelector(".footer-wordmark-text");
+    return {
+      motionReady: wordmark.classList.contains("is-motion-ready"),
+      visible: wordmark.classList.contains("is-visible"),
+      opacity: getComputedStyle(text).opacity,
+      transform: getComputedStyle(text).transform,
+    };
+  });
+  assert.deepEqual(
+    missingStylesState,
+    { motionReady: false, visible: true, opacity: "1", transform: "none" },
+    "missing prepared-state CSS should leave the wordmark visible and static",
+  );
+  await missingStylesContext.close();
+
   const noJsContext = await browser.newContext({ viewport: viewports[0], javaScriptEnabled: false });
   const noJsPage = await noJsContext.newPage();
   await noJsPage.goto(`${baseUrl}/`, { waitUntil: "load" });

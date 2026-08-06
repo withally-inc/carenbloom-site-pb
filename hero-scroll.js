@@ -41,6 +41,11 @@ export function resolveMediaState({ reduced, failed, metadataReady, frameReady, 
   return 'video';
 }
 
+export function shouldLoadHeroVideo({ reduced, viewportWidth, saveData, effectiveType }) {
+  if (reduced || saveData || viewportWidth <= 767) return false;
+  return !['slow-2g', '2g', '3g'].includes(effectiveType);
+}
+
 /* ---------- the opening: the page does not arrive fully formed ---------- */
 
 /* Each card earns its entrance at its own slice of the hero scrub: card 1 at 4% of the

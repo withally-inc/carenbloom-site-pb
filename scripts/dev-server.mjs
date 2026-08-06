@@ -37,6 +37,7 @@ function contentType(filePath) {
     ".png": "image/png",
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
+    ".avif": "image/avif",
     ".mp4": "video/mp4",
     ".webp": "image/webp",
     ".woff": "font/woff",

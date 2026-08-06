@@ -3,6 +3,7 @@ import {
   deriveScrollMetrics,
   resolveMediaState,
   resolveOpeningMode,
+  shouldLoadHeroVideo,
   scrollStateFromScroll,
   timeFromProgress
 } from './hero-scroll.js';
@@ -22,6 +23,13 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const media = document.getElementById('heroMedia');
   const video = document.getElementById('heroGrowVideo');
+  const connection = navigator.connection;
+  const loadHeroVideo = shouldLoadHeroVideo({
+    reduced,
+    viewportWidth: innerWidth,
+    saveData: connection?.saveData,
+    effectiveType: connection?.effectiveType
+  });
   const PREFERRED_SCRUB_DISTANCE = 1000;
   let pinStart = 0;
   let pinHeight = 0;
@@ -166,13 +174,15 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
       chip.style.setProperty('--pc', pc.toFixed(4));
     });
 
-    const mediaState = resolveMediaState({
-      reduced,
-      failed: videoFailed,
-      metadataReady,
-      frameReady,
-      progress: p
-    });
+    const mediaState = loadHeroVideo
+      ? resolveMediaState({
+        reduced,
+        failed: videoFailed,
+        metadataReady,
+        frameReady,
+        progress: p
+      })
+      : 'static';
     media.dataset.state = mediaState;
     if (metadataReady) seekVideo(p);
   }
@@ -239,22 +249,26 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
     // belt: if the wiring below dies after ownership passes here, print the page whole
     openingFailsafe = setTimeout(() => openSettled(true), 4000);
     takeOpeningOwnership();
-    video.addEventListener('loadedmetadata', () => {
-      if (!Number.isFinite(video.duration) || video.duration <= 0) {
-        failVideo();
-        return;
-      }
-      clearTimeout(metadataTimer);
-      videoDuration = video.duration;
-      metadataReady = true;
-      scheduleUpdate();
-    }, { once: true });
-    video.addEventListener('seeked', () => {
-      clearTimeout(seekTimer);
-      frameReady = true;
-      scheduleUpdate();
-    });
-    video.addEventListener('error', failVideo, { once: true });
+    if (loadHeroVideo) {
+      video.addEventListener('loadedmetadata', () => {
+        if (!Number.isFinite(video.duration) || video.duration <= 0) {
+          failVideo();
+          return;
+        }
+        clearTimeout(metadataTimer);
+        videoDuration = video.duration;
+        metadataReady = true;
+        scheduleUpdate();
+      }, { once: true });
+      video.addEventListener('seeked', () => {
+        clearTimeout(seekTimer);
+        frameReady = true;
+        scheduleUpdate();
+      });
+      video.addEventListener('error', failVideo, { once: true });
+    } else {
+      media.dataset.state = 'static';
+    }
     addEventListener('scroll', scheduleUpdate, { passive: true });
     addEventListener('resize', () => {
       measureHero();
@@ -262,9 +276,11 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
     });
     measureHero();
     scheduleUpdate();
-    video.src = video.dataset.src;
-    video.load();
-    metadataTimer = setTimeout(failVideo, 8000);
+    if (loadHeroVideo) {
+      video.src = video.dataset.src;
+      video.load();
+      metadataTimer = setTimeout(failVideo, 8000);
+    }
 
     /* Arrival T0 composes beneath the shared GROW/colour/chip progress owner.
        The exact bud still replaces the old bloom image as the readiness asset. */
@@ -418,15 +434,32 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
   if (reduced || typeof IntersectionObserver === 'undefined') return;
 
   const arriveRatio = 0.18;
-  const revealAfterPreparedPaint = () => {
+  const text = wordmark.querySelector('.footer-wordmark-text');
+  let safetyTimer = 0;
+  const prepare = () => {
     wordmark.classList.add('is-motion-ready');
-    const text = wordmark.querySelector('.footer-wordmark-text');
-    if (text) getComputedStyle(text).opacity;
+    if (!text) return false;
+    const style = getComputedStyle(text);
+    if (style.opacity === '0' && style.transform !== 'none') return true;
+    wordmark.classList.remove('is-motion-ready');
+    wordmark.classList.add('is-visible');
+    return false;
+  };
+  const releaseIfStranded = () => {
+    clearTimeout(safetyTimer);
+    safetyTimer = setTimeout(() => {
+      if (!wordmark.classList.contains('is-visible')) wordmark.classList.remove('is-motion-ready');
+    }, 1500);
+  };
+  const revealAfterPreparedPaint = () => {
+    if (!prepare()) return;
+    releaseIfStranded();
     let revealed = false;
     const reveal = () => {
       if (revealed) return;
       revealed = true;
       wordmark.classList.add('is-visible');
+      clearTimeout(safetyTimer);
     };
     requestAnimationFrame(() => {
       requestAnimationFrame(reveal);
@@ -440,10 +473,17 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
       owner.unobserve(wordmark);
       return;
     }
-    if (entry.intersectionRatio === 0) wordmark.classList.add('is-motion-ready');
+    if (entry.intersectionRatio === 0 && prepare()) releaseIfStranded();
   }, { threshold: [0, arriveRatio] });
 
   observer.observe(wordmark);
+  const revealIfRestoredOnscreen = () => {
+    if (!wordmark.classList.contains('is-motion-ready') || wordmark.classList.contains('is-visible')) return;
+    const rect = wordmark.getBoundingClientRect();
+    if (rect.top < innerHeight && rect.bottom > 0) revealAfterPreparedPaint();
+  };
+  addEventListener('scroll', revealIfRestoredOnscreen, { passive: true });
+  addEventListener('pageshow', () => requestAnimationFrame(() => requestAnimationFrame(revealIfRestoredOnscreen)), { once: true });
 })();
 
 /* Mother Fable carousel law: one image at a time, a 4.5-second dwell and a

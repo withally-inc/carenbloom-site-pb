@@ -28,4 +28,8 @@ assert.equal(range.status, 206);
 assert.match(range.headers.get("content-range") || "", /^bytes 0-1023\/\d+$/);
 assert.equal((await range.arrayBuffer()).byteLength, 1024);
 
+const avif = await fetch(`${baseUrl}/assets/hero-grow-start.avif`);
+assert.equal(avif.status, 200, "optimized hero still should be served");
+assert.equal(avif.headers.get("content-type"), "image/avif");
+
 console.log("server content-type and media range tests passed");

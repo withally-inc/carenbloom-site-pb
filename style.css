@@ -257,6 +257,9 @@ html:not(.js) .nav-shell { position: absolute; }
   overflow: hidden;
   background: var(--color-paper);
 }
+.hero-media > picture,
+.brand-slide > picture,
+.person > picture { display: contents; }
 .hero-frame,
 .hero-grow-video {
   position: absolute;
@@ -275,6 +278,8 @@ html:not(.js) .nav-shell { position: absolute; }
 .hero-media[data-state="end"] .hero-frame-end,
 .hero-media[data-state="reduced"] .hero-frame-end,
 .hero-media[data-state="fallback"] .hero-frame-end { opacity: 1; }
+.hero-media[data-state="static"] .hero-frame-start { opacity: calc(1 - var(--p, 0)); }
+.hero-media[data-state="static"] .hero-frame-end { opacity: var(--p, 0); }
 
 /* satellite chips — every chip is a PAIR: the space (calm) over the score (record) */
 .chip {
@@ -938,18 +943,6 @@ html:not(.js) .contact-display .line > span { transform: none; }
   paint-order: stroke fill;
   transform-origin: 50% 100%;
 }
-.js .footer-wordmark.is-motion-ready:not(.is-visible) .footer-wordmark-text {
-  opacity: 0;
-  transform: translate3d(2.5vw, 78%, 0) scale(0.965);
-}
-.js .footer-wordmark.is-motion-ready.is-visible .footer-wordmark-text {
-  opacity: 1;
-  transform: none;
-  transition:
-    transform 1100ms var(--ease-out),
-    opacity 800ms var(--ease-arrive);
-}
-
 /* ---------- responsive ---------- */
 @media (max-width: 991px) {
   :root { --pad-x: var(--space-sm); }
