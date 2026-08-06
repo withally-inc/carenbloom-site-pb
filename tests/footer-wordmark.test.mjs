@@ -9,6 +9,8 @@ const viewports = [
   { width: 768, height: 900 },
   { width: 390, height: 844 },
   { width: 320, height: 720 },
+  { width: 1920, height: 1080 },
+  { width: 2560, height: 1440 },
 ];
 
 async function scrollToFooter(page) {
@@ -108,6 +110,58 @@ try {
   assert.equal(reducedState.opacity, 1, "reduced motion should render the final state immediately");
   assert.equal(reducedState.transform, "none");
   await reducedPage.close();
+
+  /* A deferred module runs after the wordmark has already painted, so hiding it may only be armed
+     once the observer proves it is fully offscreen — never while it is on screen below threshold. */
+  const raceContext = await browser.newContext({ viewport: viewports[0] });
+  const racePage = await raceContext.newPage();
+  await racePage.addInitScript(() => {
+    window.__observers = [];
+    window.IntersectionObserver = class {
+      constructor(callback, options) {
+        this.callback = callback;
+        this.options = options || {};
+        this.targets = [];
+        window.__observers.push(this);
+      }
+      observe(target) { this.targets.push(target); }
+      unobserve(target) { this.targets = this.targets.filter((candidate) => candidate !== target); }
+      disconnect() { this.targets = []; }
+      takeRecords() { return []; }
+    };
+  });
+  await racePage.goto(`${baseUrl}/`, { waitUntil: "load" });
+  await racePage.evaluate(() => document.fonts.ready);
+
+  const deliver = (ratio) => racePage.evaluate((intersectionRatio) => {
+    const wordmark = document.querySelector("[data-footer-wordmark]");
+    const observer = window.__observers.find((candidate) => candidate.targets.includes(wordmark));
+    if (!observer) return null;
+    const thresholds = [].concat(observer.options.threshold ?? 0);
+    observer.callback([{ target: wordmark, intersectionRatio, isIntersecting: thresholds.some((value) => intersectionRatio >= value && intersectionRatio > 0) }], observer);
+    return {
+      thresholds,
+      motionReady: wordmark.classList.contains("is-motion-ready"),
+      visible: wordmark.classList.contains("is-visible"),
+      observed: observer.targets.includes(wordmark),
+      opacity: getComputedStyle(wordmark.querySelector(".footer-wordmark-text")).opacity,
+    };
+  }, ratio);
+
+  const onScreenBelowThreshold = await deliver(0.1);
+  assert.ok(onScreenBelowThreshold, "the wordmark should register an intersection observer");
+  assert.ok(onScreenBelowThreshold.thresholds.includes(0), "the observer must watch the fully-offscreen boundary");
+  assert.equal(onScreenBelowThreshold.motionReady, false, "an on-screen wordmark must not be armed for hiding");
+  assert.equal(onScreenBelowThreshold.opacity, "1", "an already-painted, on-screen wordmark must never pop out of view");
+
+  const offScreen = await deliver(0);
+  assert.equal(offScreen.motionReady, true, "a fully offscreen wordmark should arm the arrival");
+  assert.equal(offScreen.opacity, "0", "the armed wordmark should wait below its crop");
+
+  const arrived = await deliver(0.5);
+  assert.equal(arrived.visible, true, "crossing the arrival ratio should reveal the wordmark");
+  assert.equal(arrived.observed, false, "the arrival should be one-shot");
+  await raceContext.close();
 
   const noJsContext = await browser.newContext({ viewport: viewports[0], javaScriptEnabled: false });
   const noJsPage = await noJsContext.newPage();
