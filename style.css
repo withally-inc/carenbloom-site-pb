@@ -384,20 +384,6 @@ html:not(.js) .nav-shell { position: absolute; }
 .claim .meta { text-align: right; flex-shrink: 0; }
 .claim .locations { font-family: var(--font-mono); font-size: var(--text-mono-s); text-transform: uppercase; letter-spacing: 0.03em; opacity: 0.85; margin-top: 8px; }
 
-/* scroll cue */
-.scroll-cue {
-  position: absolute;
-  left: 50%;
-  bottom: 110px;
-  transform: translateX(-50%);
-  z-index: 5;
-  font-family: var(--font-mono);
-  font-size: var(--text-mono-s);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  opacity: calc(0.7 * (1 - var(--p, 0) * 3));
-}
-
 /* ---------- (01) operating record: the yellow evidence band ---------- */
 .record {
   background: var(--color-sun);
@@ -964,7 +950,6 @@ html:not(.js) .nav-shell { position: absolute; }
   .job-row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .job-row .j-loc { text-align: left; }
   .careers-cta { justify-content: flex-start; }
-  .scroll-cue { display: none; }
   .stat-band { min-height: 0; }
   .stat-band:nth-child(1) .stat-band-inner { min-height: 224px; }
   .stat-band:nth-child(2) .stat-band-inner { min-height: 198px; }
