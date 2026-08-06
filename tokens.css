@@ -1,6 +1,6 @@
 /* Hallmark · macrostructure: Manifesto (Stat-Led lean) · tone: direct/kinetic · anchor hue: cyan-blue
  * theme: studied-DNA (source: https://patternbreak.ing/) · paper #DCEDF5 (oklch 93% .025 230) · accent #2331E4 · sun #FDFF6D
- * display: Syne 600 (graphic display role) · body: PP Mori Regular · label: Azeret Mono
+ * display: PP Mori SemiBold (heavy grotesque role) · body: PP Mori Regular · label: Azeret Mono
  * studied: yes · DNA-source: url + live playwright study · captain deltas: pale blue for lilac; acid yellow RESTORED as the evidence ground (d6)
  * merge (pb-merge-k3-e2): PBv2 material landed INSIDE the d6 arc — dot-field + honest 47s clock on the sun band,
  *   cobalt halftone tile band in brands, cobalt duotone leaders, live cobalt wordmark sign-off. No token value changed:
@@ -21,12 +21,6 @@
   font-family: "PP Mori";
   src: url("fonts/PPMori-Semibold.otf") format("opentype");
   font-weight: 600;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Syne";
-  src: url("fonts/Syne-VF.ttf") format("truetype");
-  font-weight: 400 800;
   font-display: swap;
 }
 @font-face {
@@ -53,7 +47,7 @@
      ink on sun 17.6:1 · sun on ink 17.6:1 · cobalt on sun 7.5:1 ·
      paper on sun 1.13:1 (FORBIDDEN) · sun as text on paper 1.13:1 (FORBIDDEN) */
 
-  --font-display: "Syne", "Helvetica Neue", sans-serif;
+  --font-display: "PP Mori", "Helvetica Neue", sans-serif;
   --font-body:    "PP Mori", "Helvetica Neue", sans-serif;
   --font-mono:    "Azeret Mono", ui-monospace, monospace;
 

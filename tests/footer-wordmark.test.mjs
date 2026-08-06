@@ -21,16 +21,20 @@ async function wordmarkProbe(page) {
   return page.evaluate(() => {
     const wordmark = document.querySelector("[data-footer-wordmark]");
     const text = wordmark?.querySelector(".footer-wordmark-text");
-    if (!wordmark || !text) return null;
+    const clip = wordmark?.querySelector(".footer-wordmark-clip");
+    if (!wordmark || !text || !clip) return null;
     const wordmarkRect = wordmark.getBoundingClientRect();
     const textRect = text.getBoundingClientRect();
+    const clipRect = clip.getBoundingClientRect();
     const style = getComputedStyle(text);
     return {
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       viewportWidth: innerWidth,
       wordmarkRect: { left: wordmarkRect.left, right: wordmarkRect.right, width: wordmarkRect.width, height: wordmarkRect.height },
-      textRect: { left: textRect.left, right: textRect.right, width: textRect.width, height: textRect.height },
+      textRect: { left: textRect.left, right: textRect.right, top: textRect.top, bottom: textRect.bottom, width: textRect.width, height: textRect.height },
+      clipRect: { top: clipRect.top, bottom: clipRect.bottom, height: clipRect.height },
       fontFamily: style.fontFamily,
+      fontSize: Number.parseFloat(style.fontSize),
       opacity: Number.parseFloat(style.opacity),
       transform: style.transform,
       userSelect: style.userSelect,
@@ -85,7 +89,11 @@ try {
     assert.ok(state.wordmarkRect.left >= -0.5 && state.wordmarkRect.right <= viewport.width + 0.5, `${viewport.width}px wordmark container should stay inside the viewport`);
     assert.ok(state.textRect.left >= -0.5 && state.textRect.right <= viewport.width + 0.5, `${viewport.width}px wordmark ink should stay inside the viewport`);
     assert.ok(state.textRect.width >= viewport.width * 0.88, `${viewport.width}px wordmark should fill the footer width`);
-    assert.match(state.fontFamily, /Syne/, `${viewport.width}px wordmark should inherit the display face`);
+    assert.ok(state.textRect.top >= state.clipRect.top - 0.5, `${viewport.width}px wordmark should preserve every letter top`);
+    const bottomCrop = state.textRect.bottom - state.clipRect.bottom;
+    assert.ok(bottomCrop >= state.fontSize * 0.04, `${viewport.width}px wordmark should keep an intentional bottom crop`);
+    assert.ok(bottomCrop <= state.fontSize * 0.1, `${viewport.width}px wordmark crop should not cut too deeply into PP Mori`);
+    assert.match(state.fontFamily, /PP Mori/, `${viewport.width}px wordmark should inherit the display face`);
     assert.notEqual(state.userSelect, "none", `${viewport.width}px wordmark should remain selectable`);
     assert.equal(state.opacity, 1, `${viewport.width}px wordmark should finish visible`);
     if (viewport.width === 320) {
