@@ -1,5 +1,7 @@
 # Footer sign-off evidence — live wordmark (f1)
 
+This record captures the original Syne-era wordmark; the display face was later restored to PP Mori and the wordmark retuned, with the current values recorded in `evidence/font-mori-t1/README.md` and owned by `style.css`.
+
 `reference-mobbin-section.png` is the captain's Mobbin reference (the Parker footer sign-off).
 Every `after-*.png` is the shipped Care & Bloom footer at that viewport, `during-1440x900.png` is the arrival mid-transition, and `reduced-motion-*` / `no-js-*` are the two fallback resting states.
 
