@@ -914,6 +914,7 @@ html:not(.js) .nav-shell { position: absolute; }
 }
 @media (max-width: 767px) {
   .hero-pin { height: calc(100vh + 1000px + 28vh); }
+  .topbar { gap: var(--space-3xs); }
   .topbar nav { display: none; }
   /* mobile: the same material, held stable — no morph, only the surface fades in.
      the 1px rule is absorbed into the padding so the bar height never moves.
@@ -926,7 +927,7 @@ html:not(.js) .nav-shell { position: absolute; }
   .nav-shell.is-floating .topbar {
     margin-inline: 8px;
     padding: calc(var(--space-2xs) - 1px) 10px;
-    gap: var(--space-2xs);
+    gap: var(--space-3xs);
     border-radius: 14px;
   }
   /* the chip is held whole; the wordmark is the flexible item, so nothing can
@@ -935,6 +936,8 @@ html:not(.js) .nav-shell { position: absolute; }
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 12px;
+    letter-spacing: -0.01em;
   }
   .topbar .roles-chip { flex: none; }
   .display-word { font-size: clamp(56px, 17.5vw, 80px); }

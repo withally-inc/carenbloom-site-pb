@@ -38,6 +38,27 @@ test("the runtime dependency closure is complete", () => {
   assert.deepEqual(missing, [], `missing runtime files: ${missing.join(", ")}`);
 });
 
+test("production owns only the approved Syne, PP Mori, and Azeret typography", () => {
+  const tokens = readFileSync(path.join(root, "tokens.css"), "utf8");
+  const home = readFileSync(path.join(root, "index.html"), "utf8");
+  const apply = readFileSync(path.join(root, "careers/apply/index.html"), "utf8");
+  const required = [
+    "fonts/Syne-VF.ttf",
+    "fonts/AzeretMono-VF.ttf",
+    "fonts/OFL-Syne.txt",
+    "fonts/OFL-AzeretMono.txt",
+  ];
+
+  assert.deepEqual(required.filter((file) => !existsSync(path.join(root, file))), [], "approved font binaries and OFL licences must ship together");
+  assert.match(tokens, /--font-display:\s*"Syne"/);
+  assert.match(tokens, /--font-body:\s*"PP Mori"/);
+  assert.match(tokens, /--font-mono:\s*"Azeret Mono"/);
+  assert.doesNotMatch(`${tokens}\n${home}\n${apply}`, /type-lab|Space Mono/);
+  assert.equal(existsSync(path.join(root, "type-lab.css")), false, "the exploratory switcher must not ship");
+  assert.equal(existsSync(path.join(root, "type-lab.js")), false, "the exploratory switcher must not ship");
+  assert.equal(existsSync(path.join(root, "type-lab-compare.html")), false, "the exploratory comparison page must not ship");
+});
+
 test("runtime text files contain no old canonical path", () => {
   const redirectOwners = new Set(["vercel.json", "scripts/dev-server.mjs"]);
   const existing = runtimeFiles.filter((file) => !redirectOwners.has(file) && existsSync(path.join(root, file)));

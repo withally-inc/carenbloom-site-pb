@@ -52,6 +52,16 @@ The focused browser commands expect `npm run serve` to be running separately.
 
 No automated test performs a real application or Notion write.
 
+## Typography
+
+The production type system is self-hosted Syne for display roles, PP Mori for body copy, and Azeret Mono for utility text.
+
+`fonts/Syne-VF.ttf` and `fonts/AzeretMono-VF.ttf` are the exact runtime binaries, with their SIL Open Font License 1.1 texts beside them as `fonts/OFL-Syne.txt` and `fonts/OFL-AzeretMono.txt`.
+
+The mobile navigation keeps the Azeret Mono Care & Bloom mark whole at 320px by tightening the two-item gap and setting the mark at a legible 12px with slight negative tracking.
+
+`tests/repository-contract.test.mjs` owns the font and licence dependency contract, and `tests/nav-float-browser.test.mjs` pins the complete mobile mark before and after the bar floats.
+
 ## Operating-record lemon band
 
 The (01) Operating record section carries the captain-approved Candidate 03 stepped lemon march (decision: five whole leafless lemons on exact `--color-sun` `#FDFF6D`, distinct stepped rotational phases, left-to-right), replacing the earlier dot-field mechanism.

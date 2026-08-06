@@ -141,10 +141,40 @@ try {
   assert.ok(mobileBrand <= 20, "the mobile brand should hold one line inside the floating bar");
   await mobile.close();
 
+  // ---------- direct in-page anchors stay below the floating bar at every review width ----------
+  for (const viewport of [
+    { width: 1440, height: 900 },
+    { width: 1280, height: 800 },
+    { width: 390, height: 844 },
+    { width: 320, height: 720 },
+  ]) {
+    const anchored = await browser.newPage({ viewport });
+    await anchored.goto(`${baseUrl}/#careers`, { waitUntil: "domcontentloaded" });
+    await anchored.evaluate(() => document.fonts.ready);
+    await anchored.waitForTimeout(500);
+    const anchoredBar = await navProbe(anchored);
+    const targetTop = await anchored.locator("#careers").evaluate((section) => section.getBoundingClientRect().top);
+    assert.equal(anchoredBar.floating, true, `${viewport.width}px direct anchor arrival should float the nav`);
+    assert.ok(
+      targetTop >= anchoredBar.rect.y + anchoredBar.rect.height,
+      `${viewport.width}px direct anchor should clear the floating nav`,
+    );
+    await anchored.close();
+  }
+
   // ---------- narrow phones: the bar's own contents stay on the paper ----------
   for (const width of [360, 320]) {
     const narrow = await browser.newPage({ viewport: { width, height: 800 } });
     await narrow.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+    await narrow.evaluate(() => document.fonts.ready);
+    const restBrand = await narrow.locator('.topbar > a[aria-label="Care and Bloom home"]').evaluate((brand) => ({
+      clientWidth: brand.clientWidth,
+      scrollWidth: brand.scrollWidth,
+    }));
+    assert.ok(
+      restBrand.scrollWidth <= restBrand.clientWidth + 1,
+      `the full Care & Bloom mark should render before floating at ${width}px`,
+    );
     await scrollInstant(narrow, 900);
     const narrowFloat = await navProbe(narrow);
     assert.equal(narrowFloat.floating, true);
@@ -154,7 +184,16 @@ try {
       const bar = document.querySelector(".topbar").getBoundingClientRect();
       const chip = document.querySelector(".topbar .roles-chip").getBoundingClientRect();
       const brand = document.querySelector('.topbar > a[aria-label="Care and Bloom home"]').getBoundingClientRect();
-      return { barLeft: bar.left, barRight: bar.right, chipLeft: chip.left, chipRight: chip.right, chipWidth: chip.width, brandLeft: brand.left };
+      return {
+        barLeft: bar.left,
+        barRight: bar.right,
+        chipLeft: chip.left,
+        chipRight: chip.right,
+        chipWidth: chip.width,
+        brandLeft: brand.left,
+        brandClientWidth: document.querySelector('.topbar > a[aria-label="Care and Bloom home"]').clientWidth,
+        brandScrollWidth: document.querySelector('.topbar > a[aria-label="Care and Bloom home"]').scrollWidth,
+      };
     });
     assert.ok(
       contained.chipRight <= contained.barRight,
@@ -163,6 +202,11 @@ try {
     assert.ok(contained.brandLeft >= contained.barLeft, `the wordmark should stay inside the ${width}px floating bar`);
     assert.ok(contained.chipLeft > contained.brandLeft, "the bar should keep its wordmark-then-chip order");
     assert.ok(contained.chipWidth >= 147, `the ${width}px chip should keep its full legible label, not shrink`);
+    assert.ok(
+      contained.brandScrollWidth <= contained.brandClientWidth + 1,
+      `the full Care & Bloom mark should render at ${width}px, not ellipsize (${contained.brandScrollWidth}px ink / ${contained.brandClientWidth}px box)`,
+    );
+    assert.equal(await narrow.locator('.topbar > a[aria-label="Care and Bloom home"]').textContent(), "Care & Bloom");
     assert.equal(await narrow.locator(".topbar .roles-chip").textContent(), "Open roles (11)");
     await narrow.close();
   }

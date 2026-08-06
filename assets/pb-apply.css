@@ -736,8 +736,24 @@ main {
 }
 
 @media (max-width: 767px) {
+  .application-topbar {
+    gap: var(--space-3xs);
+  }
+
+  .application-topbar > a[aria-label="Care and Bloom home"] {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    letter-spacing: -0.01em;
+  }
+
   .application-topbar nav {
     display: none;
+  }
+
+  .application-topbar .roles-chip {
+    flex: none;
   }
 }
 

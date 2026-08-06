@@ -426,6 +426,7 @@ try {
     { width: 1440, height: 900 },
     { width: 1280, height: 800 },
     { width: 390, height: 844 },
+    { width: 320, height: 720 },
   ]) {
     const headerPage = await browser.newPage({ viewport });
     await openPage(headerPage, `${baseUrl}/`);
@@ -452,6 +453,16 @@ try {
       };
     });
     assert.deepEqual(applicationMetrics, homeMetrics, `${viewport.width}px application header should match the integrated home`);
+    if (viewport.width === 320) {
+      const applicationBrand = await headerPage.locator('.application-topbar > a[aria-label="Care and Bloom home"]').evaluate((brand) => ({
+        clientWidth: brand.clientWidth,
+        scrollWidth: brand.scrollWidth,
+      }));
+      assert.ok(
+        applicationBrand.scrollWidth <= applicationBrand.clientWidth + 1,
+        "the application header should print the full Care & Bloom mark at 320px",
+      );
+    }
     const applicationSurfaces = await headerPage.locator("body, .application-header-surface, .application-form, .site-footer").evaluateAll((surfaces) => surfaces.map((surface) => getComputedStyle(surface).backgroundColor));
     assert.equal(applicationSurfaces.every((color) => color === "rgb(220, 237, 245)" || color === "rgb(234, 244, 250)"), true, `${viewport.width}px application surfaces should remain entirely light`);
     assert.equal(await headerPage.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), 0);
@@ -672,6 +683,7 @@ try {
     { width: 1280, height: 800 },
     { width: 1280, height: 720 },
     { width: 390, height: 844 },
+    { width: 320, height: 720 },
   ]) {
     const entryPage = await browser.newPage({ viewport: entryViewport });
     await openPage(entryPage, `${baseUrl}/`);
