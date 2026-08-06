@@ -360,8 +360,9 @@ html:not(.js) .nav-shell { position: absolute; }
       (hero first, cards second, never both at once). Each card keeps the measured reference
       entrance — 50px rise, 800ms power2.out, completing once started — wrapper-level, so
       the scroll-driven --pc face crossfade composes underneath untouched.
-   Ownership: hiding requires .js-live, which only app.js grants at runtime — a blocked,
-   failed, or disabled script leaves every element printed at first paint. .settled is the
+   Ownership: hiding requires .js-live, which index.html's render-blocking head script grants
+   before any paint and releases again after 4s unless app.js takes over — a blocked, failed,
+   or disabled script leaves every element printed, and nothing ever flashes. .settled is the
    no-ceremony landing (restored scroll, deep anchor, late script): the earned state prints
    immediately. Durations are mirrored in app.js (HERO_BEAT_MS / HERO_EMERGE_MS) — keep in sync. */
 @media (prefers-reduced-motion: no-preference) {

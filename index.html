@@ -7,7 +7,19 @@
 <link rel="icon" href="/images/cb-logo-white.svg" type="image/svg+xml">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="style.css">
-<script>document.documentElement.classList.add('js');</script>
+<script>
+/* Render-blocking, in <head>: no paint may ever happen without .js-live, or the opening's
+   hidden states would flash their content and then take it away. The reveal must also never
+   trap content, so this same script arms the release — if app.js never takes ownership
+   (blocked, failed, or stalled module) .js-live comes back off and the page prints whole. */
+(function () {
+  var root = document.documentElement;
+  root.classList.add('js', 'js-live');
+  window.__cbOpeningRelease = setTimeout(function () {
+    root.classList.remove('js-live');
+  }, 4000);
+})();
+</script>
 </head>
 <body>
 

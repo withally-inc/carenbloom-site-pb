@@ -41,9 +41,10 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
      wordmark keeps a beat to itself, the art then emerges slowly, and only once it has
      fully settled do the five cards start earning their entrances from scroll progress
      (hero first, cards second, never both at once). The pre-reveal hidden states in
-     style.css exist only under the .js-live class granted here, so a blocked or failed
-     script leaves the whole page printed at paint; the belt below covers a script that
-     dies between granting .js-live and arming the ceremony. Durations are mirrored in
+     style.css exist only under the .js-live class, which index.html's render-blocking head
+     script grants before any paint and releases again after 4s; this module takes ownership
+     of that release once it has wired the ceremony, and the belt below covers a script that
+     dies after taking ownership. Durations are mirrored in
      style.css's opening block — keep in sync. */
   const HERO_BEAT_MS = 600;    // the wordmark alone before the art moves (hero-emerge delay)
   const HERO_EMERGE_MS = 1200; // the art's emergence (hero-emerge duration)
@@ -87,9 +88,19 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
     revealChips(revealAll ? chips.length : chipRevealCount(lastProgress, chips.length), true);
   }
 
-  document.documentElement.classList.add('js-live');
-  // belt: if the wiring below dies before the ceremony is armed, print the page whole
-  const openingFailsafe = reduced ? 0 : setTimeout(() => openSettled(true), 4000);
+  function takeOpeningOwnership() {
+    clearTimeout(window.__cbOpeningRelease);
+    window.__cbOpeningRelease = 0;
+  }
+
+  /* the ceremony needs every one of its pieces; without them nothing here can ever undo the
+     hidden states, so hand the page straight back to the head script's printed fallback */
+  const heroWired = Boolean(pin && stage && media && video);
+  if (!heroWired) {
+    takeOpeningOwnership();
+    document.documentElement.classList.remove('js-live');
+  }
+  let openingFailsafe = 0;
 
   function measureHero() {
     const rect = pin.getBoundingClientRect();
@@ -204,13 +215,30 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
     requestAnimationFrame(update);
   }
 
-  if (reduced) {
+  const openingMode = heroWired
+    ? resolveOpeningMode({
+      reduced,
+      restoredScroll: scrollY > 1,
+      lateStart: performance.now() > 3000
+    })
+    : null;
+
+  if (!heroWired) {
+    // the page is already printed whole above; there is no stage to choreograph
+  } else if (openingMode === 'reduced') {
     // No pin, no scrub: show the revealed record state at rest.
     stage.style.setProperty('--p', '1');
     stage.style.setProperty('--pf', '1');
     chips.forEach(c => c.style.setProperty('--pc', '1'));
     media.dataset.state = 'reduced';
+    /* stamping the settled state costs nothing under reduce and means a visitor who turns the
+       preference off mid-visit lands on the printed page instead of a page that hid itself */
+    openSettled(true);
+    takeOpeningOwnership();
   } else {
+    // belt: if the wiring below dies after ownership passes here, print the page whole
+    openingFailsafe = setTimeout(() => openSettled(true), 4000);
+    takeOpeningOwnership();
     video.addEventListener('loadedmetadata', () => {
       if (!Number.isFinite(video.duration) || video.duration <= 0) {
         failVideo();
@@ -249,12 +277,7 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
         bud.addEventListener('error', resolve, { once: true });
       })
     ]);
-    const mode = resolveOpeningMode({
-      reduced,
-      restoredScroll: scrollY > 1,
-      lateStart: performance.now() > 3000
-    });
-    if (mode === 'settled') {
+    if (openingMode === 'settled') {
       openSettled(false);
     } else {
       /* the cards may move only once the art has truly finished arriving: animationend is

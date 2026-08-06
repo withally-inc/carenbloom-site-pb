@@ -40,6 +40,11 @@ try {
     1,
     "the wordmark type must be printed from first paint",
   );
+  assert.equal(
+    await desktop.evaluate(() => document.documentElement.classList.contains("js-live")),
+    true,
+    "the head script must grant .js-live before any paint, so nothing can flash and then hide",
+  );
   assert.equal(await heroOpacity(desktop), 0, "the art side must begin blank");
   const blankBox = await heroLayoutBox(desktop);
   assert.ok(blankBox.width > 0 && blankBox.height > 0, "the blank art side must hold its reserved box");
@@ -127,8 +132,9 @@ try {
     await scrollInstant(phone, 500);
     await phone.waitForFunction(() =>
       Array.from(document.querySelectorAll(".chip")).slice(0, 4).every((chip) => chip.classList.contains("chip-in")));
+    await phone.waitForTimeout(900); // outlast the card entrances the scroll just earned
     const phoneCards = await chipStates(phone);
-    assert.ok(phoneCards.slice(0, 4).every((chip) => chip.opacity === 1 || chip.revealed),
+    assert.ok(phoneCards.slice(0, 4).every((chip) => chip.opacity === 1),
       `${width}px scroll must earn the visible cards`);
     assert.equal(phoneCards[4].display, "none", "card 5 stays out of the phone composition as designed");
     await phone.close();
@@ -143,6 +149,20 @@ try {
   const reducedCards = await chipStates(reduced);
   assert.ok(reducedCards.every((chip) => chip.opacity === 1), "reduced motion prints every card immediately");
   await reduced.close();
+
+  // ---------- a module that never takes ownership: the head script releases the page ----------
+  const blocked = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await blocked.route("**/app.js", (route) => route.abort());
+  await blocked.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await blocked.waitForFunction(
+    () => !document.documentElement.classList.contains("js-live"),
+    undefined,
+    { timeout: 6000 },
+  );
+  assert.equal(await heroOpacity(blocked), 1, "a blocked module must leave the hero art printed");
+  const blockedCards = await chipStates(blocked);
+  assert.ok(blockedCards.every((chip) => chip.opacity === 1), "a blocked module must leave every card printed");
+  await blocked.close();
 
   // ---------- no JavaScript: nothing is ever trapped behind the reveal ----------
   const noJsContext = await browser.newContext({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: false });
