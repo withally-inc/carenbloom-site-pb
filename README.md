@@ -36,7 +36,7 @@ Run the complete self-contained suite with:
 npm test
 ```
 
-The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, deployment packaging, hero behavior, floating navigation, Monday HKT deadlines, application payload and API behavior, all eleven role routes, location metadata, form validation and multipart submission, responsive layouts, reduced motion, failed-video behavior, and no-JavaScript fallbacks.
+The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, deployment packaging, hero behavior, the homepage opening reveal sequence, floating navigation, Monday HKT deadlines, application payload and API behavior, all eleven role routes, location metadata, form validation and multipart submission, responsive layouts, reduced motion, failed-video behavior, and no-JavaScript fallbacks.
 
 Focused commands are also available:
 
@@ -61,6 +61,18 @@ The production type system is self-hosted Syne for display roles, PP Mori for bo
 The mobile navigation keeps the Azeret Mono Care & Bloom mark whole at 320px by tightening the two-item gap and setting the mark at a legible 12px with slight negative tracking.
 
 `tests/repository-contract.test.mjs` owns the font and licence dependency contract, and `tests/nav-float-browser.test.mjs` pins the complete mobile mark before and after the bar floats.
+
+## Homepage opening sequence
+
+The home page does not arrive fully formed.
+First paint is the type alone — wordmark, claim, and topbar — while the hero art side holds its reserved blank box, so nothing shifts when the art arrives.
+After the existing readiness moment (fonts plus the bud frame) the wordmark keeps a 600ms beat, the art then emerges over 1200ms, and only once it has settled do the five satellite cards earn their entrances one at a time from scroll progress: hero first, cards second, never both at once.
+
+`prefers-reduced-motion: reduce` presents everything immediately at rest.
+A visitor who lands mid-page, follows a deep anchor, or reloads scrolled down is shown the already-earned state rather than a re-performed ceremony.
+The pre-reveal hidden states exist only under a runtime-granted `.js-live` class with a 4s in-page release, so blocked, failed, or disabled JavaScript prints the page whole and the reveal can never trap content.
+
+`tests/hero-reveal-browser.test.mjs` owns the behavioral contract and runs inside `npm test` and `npm run test:browser`.
 
 ## Operating-record lemon band
 

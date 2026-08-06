@@ -1,6 +1,8 @@
 import {
+  chipRevealCount,
   deriveScrollMetrics,
   resolveMediaState,
+  resolveOpeningMode,
   scrollStateFromScroll,
   timeFromProgress
 } from './hero-scroll.js';
@@ -32,6 +34,73 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
   let seekTimer = 0;
   let metadataTimer = 0;
   let ticking = false;
+
+  /* ---------- the opening: the page does not arrive fully formed ----------
+     First paint is the type alone — wordmark, claim, topbar — while the art side of the
+     stage holds its reserved blank box. After readiness (.arrived, the existing T0) the
+     wordmark keeps a beat to itself, the art then emerges slowly, and only once it has
+     fully settled do the five cards start earning their entrances from scroll progress
+     (hero first, cards second, never both at once). The pre-reveal hidden states in
+     style.css exist only under the .js-live class, which index.html's render-blocking head
+     script grants before any paint and releases again after 4s; this module takes ownership
+     of that release once it has wired the ceremony, and the belt below covers a script that
+     dies after taking ownership. Durations are mirrored in
+     style.css's opening block — keep in sync. */
+  const HERO_BEAT_MS = 600;    // the wordmark alone before the art moves (hero-emerge delay)
+  const HERO_EMERGE_MS = 1200; // the art's emergence (hero-emerge duration)
+  const CHIP_STAGGER_MS = 150; // measured reference stagger when one scroll earns several cards
+  let heroDone = false;
+  let lastProgress = 0;
+  let revealedChips = 0;
+  let earnedChips = 0;
+  let chipTimer = 0;
+
+  function drainChips() {
+    chipTimer = 0;
+    if (revealedChips >= earnedChips) return;
+    chips[revealedChips].classList.add('chip-in');
+    revealedChips += 1;
+    if (revealedChips < earnedChips) chipTimer = setTimeout(drainChips, CHIP_STAGGER_MS);
+  }
+
+  function revealChips(target, instant) {
+    earnedChips = Math.max(earnedChips, Math.min(target, chips.length));
+    if (instant) {
+      while (revealedChips < earnedChips) {
+        chips[revealedChips].classList.add('chip-in', 'settled');
+        revealedChips += 1;
+      }
+      return;
+    }
+    if (!chipTimer) drainChips();
+  }
+
+  function syncChipReveal() {
+    if (!heroDone) return;
+    revealChips(chipRevealCount(lastProgress, chips.length), false);
+  }
+
+  function openSettled(revealAll) {
+    heroDone = true;
+    stage.classList.add('arrived', 'settled');
+    const progress = scrollStateFromScroll(scrollY, pinStart, scrubDistance, holdDistance).progress;
+    lastProgress = Math.max(lastProgress, progress);
+    revealChips(revealAll ? chips.length : chipRevealCount(lastProgress, chips.length), true);
+  }
+
+  function takeOpeningOwnership() {
+    clearTimeout(window.__cbOpeningRelease);
+    window.__cbOpeningRelease = 0;
+  }
+
+  /* the ceremony needs every one of its pieces; without them nothing here can ever undo the
+     hidden states, so hand the page straight back to the head script's printed fallback */
+  const heroWired = Boolean(pin && stage && media && video);
+  if (!heroWired) {
+    takeOpeningOwnership();
+    document.documentElement.classList.remove('js-live');
+  }
+  let openingFailsafe = 0;
 
   function measureHero() {
     const rect = pin.getBoundingClientRect();
@@ -72,10 +141,18 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
     const viewportTop = scrollY;
     const viewportBottom = viewportTop + innerHeight;
     const pinBottom = pinStart + pinHeight;
-    if (viewportBottom <= pinStart || viewportTop >= pinBottom) return;
+    if (viewportTop >= pinBottom) {
+      /* the visitor is past the hero entirely (late anchor jump, restored scroll, or a
+         sprint through the pin): nothing above them may be left unrevealed */
+      if (revealedChips < chips.length) openSettled(false);
+      return;
+    }
+    if (viewportBottom <= pinStart) return;
     const scrollState = scrollStateFromScroll(viewportTop, pinStart, scrubDistance, holdDistance);
     const p = scrollState.progress;
     stage.dataset.scrollPhase = scrollState.phase;
+    lastProgress = p;
+    syncChipReveal();
     // foreground flip: smoothstep over the 0.45-0.75 slice of the interval
     const t = Math.min(1, Math.max(0, (p - 0.45) / 0.3));
     const pf = t * t * (3 - 2 * t);
@@ -138,13 +215,30 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
     requestAnimationFrame(update);
   }
 
-  if (reduced) {
+  const openingMode = heroWired
+    ? resolveOpeningMode({
+      reduced,
+      restoredScroll: scrollY > 1,
+      lateStart: performance.now() > 3000
+    })
+    : null;
+
+  if (!heroWired) {
+    // the page is already printed whole above; there is no stage to choreograph
+  } else if (openingMode === 'reduced') {
     // No pin, no scrub: show the revealed record state at rest.
     stage.style.setProperty('--p', '1');
     stage.style.setProperty('--pf', '1');
     chips.forEach(c => c.style.setProperty('--pc', '1'));
     media.dataset.state = 'reduced';
+    /* stamping the settled state costs nothing under reduce and means a visitor who turns the
+       preference off mid-visit lands on the printed page instead of a page that hid itself */
+    openSettled(true);
+    takeOpeningOwnership();
   } else {
+    // belt: if the wiring below dies after ownership passes here, print the page whole
+    openingFailsafe = setTimeout(() => openSettled(true), 4000);
+    takeOpeningOwnership();
     video.addEventListener('loadedmetadata', () => {
       if (!Number.isFinite(video.duration) || video.duration <= 0) {
         failVideo();
@@ -183,8 +277,26 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
         bud.addEventListener('error', resolve, { once: true });
       })
     ]);
-    Promise.race([heroReady, new Promise(resolve => setTimeout(resolve, 1500))])
-      .then(() => stage.classList.add('arrived'));
+    if (openingMode === 'settled') {
+      openSettled(false);
+    } else {
+      /* the cards may move only once the art has truly finished arriving: animationend is
+         the exact moment, the timer is the belt for an animation that never gets to run */
+      const finishHero = () => {
+        if (heroDone) return;
+        heroDone = true;
+        syncChipReveal();
+      };
+      media.addEventListener('animationend', (event) => {
+        if (event.animationName === 'hero-emerge') finishHero();
+      });
+      Promise.race([heroReady, new Promise(resolve => setTimeout(resolve, 1500))])
+        .then(() => {
+          stage.classList.add('arrived');
+          setTimeout(finishHero, HERO_BEAT_MS + HERO_EMERGE_MS + 400);
+        });
+    }
+    clearTimeout(openingFailsafe);
   }
 
   /* ---------- the record made physical: five stepped Candidate 03 lemons (captain-approved 2026-08-05) ----------
