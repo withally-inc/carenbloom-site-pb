@@ -62,6 +62,7 @@ section, footer { position: relative; }
 .reveal .line > span { display: block; transform: translateY(110%); transition: transform var(--dur-slow) var(--ease-out); }
 .reveal.in .line > span { transform: translateY(0); }
 .reveal .line:nth-child(2) > span { transition-delay: 60ms; }
+html:not(.js) .reveal .line > span { transform: none; }
 
 /* duplicated-line character roll (reference CTA voice) */
 .roll {
@@ -1117,7 +1118,7 @@ html:not(.js) .contact-display .line > span { transform: none; }
   font-style: normal;
   /* k3-v3: mid statement scale, between the page's --text-heading (56px) and the Careers
      display-s statement (120px, which only works because its copy is two short words).
-     At 1440/1280 the heading takes ~2 lines and the ledger + deck share the first viewport. */
+     Two-line statements and the ledger + deck share the first viewport at 1440/1280. */
   font-size: clamp(40px, 5.2vw, 76px);
   line-height: 1.04;
   letter-spacing: -0.02em;
@@ -1128,6 +1129,10 @@ html:not(.js) .contact-display .line > span { transform: none; }
   max-width: 13em;
   margin-bottom: var(--space-lg);
 }
+
+/* This heading is one deliberate line at every supported width, not a shortened two-line lockup. */
+#values .vt-display { max-width: none; }
+#values .vt-display .line > span { white-space: nowrap; }
 
 /* the token-lawful grounds — ink on yellow only, paper on cobalt, paper on ink, ink on paper-2 */
 .g-paper2 { background: var(--color-paper-2); color: var(--color-ink); }
@@ -1374,6 +1379,7 @@ html:not(.js) .contact-display .line > span { transform: none; }
 @media (max-width: 767px) {
   .model-grid, .coach-grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-sm); }
   .vt-display { font-size: clamp(34px, 9vw, 64px); }
+  #values .vt-display { font-size: clamp(19px, 6vw, 40px); }
   .value-card { aspect-ratio: auto; } /* natural-height blocks in the mobile list */
 }
 @media (prefers-reduced-motion: reduce) {

@@ -43,6 +43,7 @@ const commands = [
   ["tests/nav-float-browser.test.mjs"],
   ["tests/hero-reveal-browser.test.mjs"],
   ["tests/footer-wordmark.test.mjs"],
+  ["tests/values-heading.test.mjs"],
 ];
 
 async function waitForServer(baseUrl) {

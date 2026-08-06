@@ -11,7 +11,7 @@
     "test:api": "node tests/application-payload.test.mjs && node tests/applications-api.test.mjs",
     "test:deadline": "node tests/careers-deadline.test.mjs",
     "test:metadata": "node tests/role-location-metadata.test.mjs",
-    "test:browser": "node tests/careers-apply-submit.test.mjs && node tests/pb-role-apply.test.mjs && node tests/pb-integration.test.mjs && node tests/lemon-band.test.mjs && node tests/nav-float-browser.test.mjs && node tests/hero-reveal-browser.test.mjs && node tests/footer-wordmark.test.mjs",
+    "test:browser": "node tests/careers-apply-submit.test.mjs && node tests/pb-role-apply.test.mjs && node tests/pb-integration.test.mjs && node tests/lemon-band.test.mjs && node tests/nav-float-browser.test.mjs && node tests/hero-reveal-browser.test.mjs && node tests/footer-wordmark.test.mjs && node tests/values-heading.test.mjs",
     "test": "node scripts/test.mjs"
   },
   "dependencies": {
