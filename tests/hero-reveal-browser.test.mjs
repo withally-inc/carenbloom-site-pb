@@ -103,10 +103,18 @@ try {
     undefined,
     { timeout: 1000 }, // immediacy is the contract: far sooner than the ~2s ceremony could finish
   ).catch(() => assert.fail("a deep landing must skip the ceremony and print the earned state immediately"));
-  assert.equal(await heroOpacity(deep), 1, "a deep landing prints the hero immediately");
-  const deepCards = await chipStates(deep);
-  assert.ok(deepCards.every((chip) => chip.revealed && chip.opacity === 1),
+  assert.deepEqual((await chipStates(deep)).map((chip) => chip.revealed), [true, true, true, true, true],
     "a visitor landing mid-page must never find unrevealed cards above them");
+  // The settled state prints through a 1ms entrance, so the painted opacity necessarily resolves a
+  // frame after the class that earns it: reading both in the class's own tick races the animation
+  // start and reads the `both` fill's opening keyframe. Poll instead — still far inside the
+  // ceremony's ~2s, so immediacy stays the property under test.
+  await deep.waitForFunction(
+    () => Number(getComputedStyle(document.querySelector("#heroMedia")).opacity) === 1
+      && Array.from(document.querySelectorAll(".chip")).every((chip) => Number(getComputedStyle(chip).opacity) === 1),
+    undefined,
+    { timeout: 500 },
+  ).catch(() => assert.fail("a deep landing must paint the hero and every earned card immediately"));
   await deep.close();
 
   // ---------- phones: the same sequence at 390px and 320px ----------

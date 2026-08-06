@@ -215,11 +215,17 @@ try {
   await page.waitForFunction(() => document.querySelector("#heroStage")?.dataset.scrollPhase === "hold");
   assert.equal(await page.locator("#heroStage").evaluate((stage) => stage.style.getPropertyValue("--p")), "1.0000");
   assert.equal(await page.locator("#heroMedia").getAttribute("data-state"), "end");
-  assert.deepEqual(
-    await page.locator(".chip").evaluateAll((chips) => chips.map((chip) => chip.getBoundingClientRect().height)),
-    chipGeometryAtStart.map(({ height }) => height),
-    "chip boxes should not jump between scrub and hold states",
-  );
+  // Every chip is rotated, so its measured box is the rotated bounding box — a value the engine
+  // recomputes through the transform matrix on each read. That last step carries float noise on
+  // the order of 1e-5px, and it differs between rendering platforms, so binary float identity is
+  // not the property under test. A real jump is whole pixels; the tolerance stays far below one.
+  const chipHeightsAtHold = await page.locator(".chip").evaluateAll((chips) => chips.map((chip) => chip.getBoundingClientRect().height));
+  chipHeightsAtHold.forEach((height, index) => {
+    assert.ok(
+      Math.abs(height - chipGeometryAtStart[index].height) < 0.05,
+      `chip boxes should not jump between scrub and hold states (chip ${index + 1}: ${chipGeometryAtStart[index].height} -> ${height})`,
+    );
+  });
 
   const statBands = page.locator(".stat-band");
   assert.equal(await statBands.count(), 3, "the record should contain three full-bleed bands");
