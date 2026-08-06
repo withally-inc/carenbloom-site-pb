@@ -41,6 +41,7 @@ const commands = [
   ["tests/pb-integration.test.mjs"],
   ["tests/lemon-band.test.mjs"],
   ["tests/nav-float-browser.test.mjs"],
+  ["tests/hero-reveal-browser.test.mjs"],
 ];
 
 async function waitForServer(baseUrl) {

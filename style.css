@@ -348,16 +348,37 @@ html:not(.js) .nav-shell { position: absolute; }
 .chip-4 { right: 7%; bottom: 26%; --rot: 2deg; }
 .chip-5 { right: 26%; top: 6%; z-index: 0; --rot: -1.5deg; }
 
-/* arrival — the fix for "ours never arrives": each whole chip rises 50px and fades in ONCE,
-   800ms power2.out (--ease-arrive), 150ms uniform stagger, time-based and completing once started
-   (measured reference spec). Wrapper-level, so the scroll-driven --pc face crossfade composes
-   underneath untouched. T0 is the hero's own readiness: app.js adds .arrived after fonts + bloom. */
+/* the opening — the page does not arrive fully formed (captain, hero-reveal):
+   1. first paint is the type alone: wordmark, claim, and topbar print immediately while the
+      art side of the stage holds its reserved box, blank (the .bloom height/aspect-ratio
+      never depends on visibility, so nothing can shift when the art arrives).
+   2. after readiness (fonts + bud — the existing .arrived T0) the wordmark keeps a 600ms
+      beat to itself, then the art emerges over 1200ms on --ease-out: a 16px rise from 98%
+      scale settling into the frame, opacity/transform only.
+   3. the five cards stay down until the art has fully arrived AND the visitor scrolls:
+      app.js grants .chip-in per card as scroll progress crosses that card's threshold
+      (hero first, cards second, never both at once). Each card keeps the measured reference
+      entrance — 50px rise, 800ms power2.out, completing once started — wrapper-level, so
+      the scroll-driven --pc face crossfade composes underneath untouched.
+   Ownership: hiding requires .js-live, which only app.js grants at runtime — a blocked,
+   failed, or disabled script leaves every element printed at first paint. .settled is the
+   no-ceremony landing (restored scroll, deep anchor, late script): the earned state prints
+   immediately. Durations are mirrored in app.js (HERO_BEAT_MS / HERO_EMERGE_MS) — keep in sync. */
 @media (prefers-reduced-motion: no-preference) {
-  .js .chip { opacity: 0; }
-  .js .hero-stage.arrived .chip {
-    animation: chip-arrive var(--dur-slow) var(--ease-arrive) both;
-    animation-delay: calc(200ms + var(--d, 0) * 150ms);
+  .js-live .hero-media,
+  .js-live .chip { opacity: 0; }
+  .js-live .hero-stage.arrived .hero-media {
+    animation: hero-emerge 1200ms var(--ease-out) 600ms both;
   }
+  .js-live .chip.chip-in {
+    animation: chip-arrive var(--dur-slow) var(--ease-arrive) both;
+  }
+  .js-live .hero-stage.settled .hero-media,
+  .js-live .chip.chip-in.settled { animation-duration: 1ms; animation-delay: 0ms; }
+}
+@keyframes hero-emerge {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
 }
 @keyframes chip-arrive {
   from { opacity: 0; transform: translateY(50px) rotate(var(--rot, 0deg)); }
