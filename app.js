@@ -409,8 +409,8 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
 })();
 
 /* The footer sign-off is present by default. Motion becomes active only after a working
-   observer reports the wordmark fully offscreen, so blocked, failed, or absent scripting never
-   traps it and an already-painted wordmark is never retroactively hidden. */
+   observer reports either a safe offscreen preparation or an immediate arrival. Immediate
+   arrivals cross two animation frames so the hidden preparation receives a paint first. */
 (function () {
   const wordmark = document.querySelector('[data-footer-wordmark]');
   if (!wordmark) return;
@@ -418,10 +418,25 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
   if (reduced || typeof IntersectionObserver === 'undefined') return;
 
   const arriveRatio = 0.18;
+  const revealAfterPreparedPaint = () => {
+    wordmark.classList.add('is-motion-ready');
+    const text = wordmark.querySelector('.footer-wordmark-text');
+    if (text) getComputedStyle(text).opacity;
+    let revealed = false;
+    const reveal = () => {
+      if (revealed) return;
+      revealed = true;
+      wordmark.classList.add('is-visible');
+    };
+    requestAnimationFrame(() => {
+      requestAnimationFrame(reveal);
+    });
+    setTimeout(reveal, 100);
+  };
   const observer = new IntersectionObserver((entries, owner) => {
     const entry = entries[entries.length - 1];
     if (entry.intersectionRatio >= arriveRatio) {
-      wordmark.classList.add('is-motion-ready', 'is-visible');
+      revealAfterPreparedPaint();
       owner.unobserve(wordmark);
       return;
     }

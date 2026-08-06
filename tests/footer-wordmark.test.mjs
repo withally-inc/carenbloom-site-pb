@@ -42,6 +42,36 @@ async function wordmarkProbe(page) {
   });
 }
 
+async function installMotionSampler(page) {
+  await page.addInitScript(() => {
+    window.__wordmarkSamples = [];
+    addEventListener("DOMContentLoaded", () => {
+      const startedAt = performance.now();
+      const timer = setInterval(() => {
+        const text = document.querySelector("[data-footer-wordmark] .footer-wordmark-text");
+        if (text) {
+          const style = getComputedStyle(text);
+          window.__wordmarkSamples.push({
+            opacity: Number.parseFloat(style.opacity),
+            transform: style.transform,
+            animations: text.getAnimations().length,
+          });
+        }
+        if (performance.now() - startedAt > 1500) clearInterval(timer);
+      }, 16);
+    }, { once: true });
+  });
+}
+
+async function assertSampledMotion(page, message) {
+  await page.waitForTimeout(500);
+  const samples = await page.evaluate(() => window.__wordmarkSamples);
+  assert.ok(
+    samples.some((sample) => sample.animations > 0 || (sample.opacity > 0 && sample.opacity < 1)),
+    `${message}; sampled ${JSON.stringify(samples.slice(0, 8))}`,
+  );
+}
+
 try {
   const motionPage = await browser.newPage({ viewport: viewports[0] });
   const requestedUrls = [];
@@ -75,6 +105,23 @@ try {
   assert.equal(await wordmark.evaluate((element) => element.classList.contains("is-visible")), true, "the arrival should complete once");
   assert.equal(requestedUrls.some((url) => url.includes("wordmark-dither-stacked.png")), false, "the removed raster must never be requested");
   await motionPage.close();
+
+  const restoredPage = await browser.newPage({ viewport: viewports[0] });
+  await installMotionSampler(restoredPage);
+  await restoredPage.goto(`${baseUrl}/`, { waitUntil: "load" });
+  await scrollToFooter(restoredPage);
+  await restoredPage.waitForFunction(() => scrollY > 0 && document.querySelector("[data-footer-wordmark]")?.getBoundingClientRect().top < innerHeight);
+  await restoredPage.reload({ waitUntil: "load" });
+  assert.ok(await restoredPage.evaluate(() => scrollY > 0), "reload should restore the footer scroll position");
+  await assertSampledMotion(restoredPage, "a reload restored at the footer should animate");
+  await restoredPage.close();
+
+  const contactPage = await browser.newPage({ viewport: viewports[0] });
+  await installMotionSampler(contactPage);
+  await contactPage.goto(`${baseUrl}/#contact`, { waitUntil: "load" });
+  await scrollToFooter(contactPage);
+  await assertSampledMotion(contactPage, "a #contact arrival should animate");
+  await contactPage.close();
 
   for (const viewport of viewports) {
     const page = await browser.newPage({ viewport });
@@ -162,13 +209,48 @@ try {
   assert.equal(onScreenBelowThreshold.motionReady, false, "an on-screen wordmark must not be armed for hiding");
   assert.equal(onScreenBelowThreshold.opacity, "1", "an already-painted, on-screen wordmark must never pop out of view");
 
+  const initialContext = await browser.newContext({ viewport: viewports[0] });
+  const initialPage = await initialContext.newPage();
+  await initialPage.addInitScript(() => {
+    window.__observers = [];
+    window.IntersectionObserver = class {
+      constructor(callback, options) {
+        this.callback = callback;
+        this.options = options || {};
+        this.targets = [];
+        window.__observers.push(this);
+      }
+      observe(target) { this.targets.push(target); }
+      unobserve(target) { this.targets = this.targets.filter((candidate) => candidate !== target); }
+      disconnect() { this.targets = []; }
+      takeRecords() { return []; }
+    };
+  });
+  await initialPage.goto(`${baseUrl}/`, { waitUntil: "load" });
+  await initialPage.evaluate(async () => {
+    const wordmark = document.querySelector("[data-footer-wordmark]");
+    const text = wordmark.querySelector(".footer-wordmark-text");
+    getComputedStyle(text).opacity;
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const observer = window.__observers.find((candidate) => candidate.targets.includes(wordmark));
+    observer.callback([{ target: wordmark, intersectionRatio: 0.5, isIntersecting: true }], observer);
+  });
+  await initialPage.waitForTimeout(180);
+  const initialDuring = await wordmarkProbe(initialPage);
+  assert.ok(initialDuring.opacity > 0 && initialDuring.opacity < 1, `an initially intersecting wordmark should animate, received opacity ${initialDuring.opacity}`);
+  assert.notEqual(initialDuring.transform, "none", "an initially intersecting wordmark should visibly settle");
+  await initialContext.close();
+
   const offScreen = await deliver(0);
   assert.equal(offScreen.motionReady, true, "a fully offscreen wordmark should arm the arrival");
   assert.equal(offScreen.opacity, "0", "the armed wordmark should wait below its crop");
 
   const arrived = await deliver(0.5);
-  assert.equal(arrived.visible, true, "crossing the arrival ratio should reveal the wordmark");
   assert.equal(arrived.observed, false, "the arrival should be one-shot");
+  await racePage.waitForTimeout(180);
+  const arrivedDuring = await wordmarkProbe(racePage);
+  assert.ok(arrivedDuring.opacity > 0 && arrivedDuring.opacity < 1, `crossing the arrival ratio should animate, received opacity ${arrivedDuring.opacity}`);
+  assert.equal(await racePage.locator("[data-footer-wordmark]").evaluate((element) => element.classList.contains("is-visible")), true, "crossing the arrival ratio should reveal the wordmark");
   await raceContext.close();
 
   const noJsContext = await browser.newContext({ viewport: viewports[0], javaScriptEnabled: false });
