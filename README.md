@@ -36,7 +36,7 @@ Run the complete self-contained suite with:
 npm test
 ```
 
-The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, deployment packaging, hero behavior, the homepage opening reveal sequence, floating navigation, Monday HKT deadlines, application payload and API behavior, all eleven role routes, location metadata, form validation and multipart submission, responsive layouts, reduced motion, failed-video behavior, and no-JavaScript fallbacks.
+The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, deployment packaging, hero behavior, the homepage opening reveal sequence, the footer sign-off wordmark, floating navigation, Monday HKT deadlines, application payload and API behavior, all eleven role routes, location metadata, form validation and multipart submission, responsive layouts, reduced motion, failed-video behavior, and no-JavaScript fallbacks.
 
 Focused commands are also available:
 
@@ -85,6 +85,16 @@ The markup's default `object-position` values hold the five distinct phase offse
 The band keeps the approved 1400×500 proof aspect but caps its height so the first stat row's numbers are above the fold when the record section enters at desktop; `style.css` owns the exact caps (a 40vh cap, tightened on short desktops by an explicit entry reserve). Lemons are sized off the band height rather than its width, so the cap shrinks the march proportionally instead of clipping it, and mobile is unchanged because the proof aspect still governs below the cap. `tests/pb-integration.test.mjs` pins the above-the-fold, no-overlap, in-band, and legibility guarantees at 1440×900, 1280×800, and 390×844.
 
 Focused behavioral coverage lives in `tests/lemon-band.test.mjs` (distinct phases, pause/resume, offscreen and hidden-document suspension, reduced-motion and failure fallbacks, exact yellow, overflow, stat-band preservation) and runs inside `npm test` and `npm run test:browser`.
+
+## Footer sign-off wordmark
+
+The page closes on an oversized `Care & Bloom` sign-off set in live, selectable Syne rather than the earlier raster halftone image, so it inherits the site type system, scales without a bitmap, and is announced once by screen readers.
+
+The wordmark is present by default and arrives with a one-shot scroll-triggered transform-and-opacity motion in the homepage's unhurried character; it never loops.
+`prefers-reduced-motion: reduce` and disabled, blocked, or failed JavaScript all leave it fully visible at rest, and the motion is armed only after the wordmark has been observed offscreen, so an already-painted sign-off is never retroactively hidden.
+
+`tests/footer-wordmark.test.mjs` owns the behavioral contract — text, single announcement, no raster request, arrival, reduced-motion and no-JavaScript rest states, and an overflow-free edge-to-edge fit from 320px to 2560px — and runs inside `npm test` and `npm run test:browser`.
+`evidence/footer-wordmark-f1/README.md` holds the captured evidence and the honest divergences from the Mobbin reference.
 
 ## Role-location metadata
 

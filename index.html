@@ -639,7 +639,7 @@
     <a class="email-link" href="mailto:hello@carenbloom.com">hello@carenbloom.com</a>
 
     <div class="contact-foot">
-      <span class="cf-mark mono">Care &amp; Bloom</span>
+      <span class="cf-mark mono" aria-hidden="true">Care &amp; Bloom</span>
       <nav class="cf-nav mono" aria-label="Footer">
         <a href="#themes">Themes</a>
         <a href="#brands">Brands</a>
@@ -650,11 +650,10 @@
     </div>
   </div>
 
-  <!-- the sign-off: the wordmark, printed in dissolving dot halftone (PBv2 material) -->
-  <div class="wordmark-block">
-    <img class="wordmark" src="assets/wordmark-dither-stacked.png" width="2400" height="1189" loading="lazy"
-         alt="Care and Bloom — the wordmark, printed in dissolving dot halftone">
-  </div>
+  <!-- the sign-off: live display type, oversized and cropped against the page edge -->
+  <p class="footer-wordmark" data-footer-wordmark>
+    <span class="footer-wordmark-clip"><span class="footer-wordmark-text">Care &amp; Bloom</span></span>
+  </p>
 </footer>
 
 <script type="module" src="app.js"></script>
