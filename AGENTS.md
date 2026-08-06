@@ -8,6 +8,7 @@ This file is the project's committed home for project-intrinsic agent knowledge:
 - `scripts/package-deployment.mjs` owns the strict Vercel runtime allowlist for the existing `carenbloom-redesign-a` review project.
 - The (01) Operating record band is the captain-approved Candidate 03 stepped lemon march: `assets/lemon-march/` (one 3600×360 sprite + the static print-master fallback) driven by `#lemonBand` in `index.html` and the driver in `app.js`. Phases change via `object-position` only — never `img.src` swaps (they refetch). `tests/lemon-band.test.mjs` owns the behavioral contract.
 - `nav-float.js` owns the floating-navigation threshold/hysteresis state and is imported by `app.js`; `.nav-shell`/`.topbar` rules in `style.css` own the material, and `tests/nav-float*.test.mjs` cover top/floating/mobile/reduced-motion behavior.
+- `tokens.css` owns the production Syne display, PP Mori body, and Azeret Mono utility roles; the self-hosted Syne/Azeret binaries and OFL texts live in `fonts/`, and the 320px full-mark regression is pinned in `tests/nav-float-browser.test.mjs`.
 
 ## Maintaining this file
 
