@@ -448,7 +448,10 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
   const releaseIfStranded = () => {
     clearTimeout(safetyTimer);
     safetyTimer = setTimeout(() => {
-      if (!wordmark.classList.contains('is-visible')) wordmark.classList.remove('is-motion-ready');
+      if (wordmark.classList.contains('is-visible')) return;
+      if (!wordmark.classList.contains('is-motion-ready')) return;
+      const rect = wordmark.getBoundingClientRect();
+      if (rect.top < innerHeight && rect.bottom > 0) wordmark.classList.remove('is-motion-ready');
     }, 1500);
   };
   const revealAfterPreparedPaint = () => {
