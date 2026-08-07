@@ -206,6 +206,7 @@ import { careerRoles } from "./careers-roles.js";
   const status = document.querySelector(".application-form-status");
   const submitButton = form ? form.querySelector('button[type="submit"]') : null;
   const endpoint = window.CB_TALENTS_ENDPOINT || "/api/applications";
+  // Mirrors the authoritative upload limits in api/applications.js; keep in sync.
   const maxUploadBytes = 4 * 1024 * 1024;
   const maxTotalUploadBytes = 4 * 1024 * 1024;
   let isSubmitting = false;
