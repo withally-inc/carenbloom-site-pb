@@ -45,6 +45,7 @@ const commands = [
   ["tests/hero-reveal-browser.test.mjs"],
   ["tests/footer-wordmark.test.mjs"],
   ["tests/values-heading.test.mjs"],
+  ["tests/people-grid-browser.test.mjs"],
 ];
 
 async function waitForServer(baseUrl) {

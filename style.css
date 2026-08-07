@@ -260,6 +260,10 @@ html:not(.js) .nav-shell { position: absolute; }
 .hero-media > picture,
 .brand-slide > picture,
 .person > picture { display: contents; }
+/* `display: contents` promotes a picture's children into the parent's grid/flex box, and a bare
+   <source> would then take a real track of its own — pushing the portrait out of column one. Source
+   selection is a picture algorithm, not a layout one, so hiding them costs nothing. */
+picture > source { display: none; }
 .hero-frame,
 .hero-grow-video {
   position: absolute;
