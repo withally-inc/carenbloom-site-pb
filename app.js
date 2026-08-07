@@ -424,70 +424,8 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
   }
 })();
 
-/* The footer sign-off is present by default. Motion becomes active only after a working
-   observer reports either a safe offscreen preparation or an immediate arrival. Immediate
-   arrivals cross two animation frames so the hidden preparation receives a paint first. */
-(function () {
-  const wordmark = document.querySelector('[data-footer-wordmark]');
-  if (!wordmark) return;
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduced || typeof IntersectionObserver === 'undefined') return;
-
-  const arriveRatio = 0.18;
-  const text = wordmark.querySelector('.footer-wordmark-text');
-  let safetyTimer = 0;
-  const prepare = () => {
-    wordmark.classList.add('is-motion-ready');
-    if (!text) return false;
-    const style = getComputedStyle(text);
-    if (style.opacity === '0' && style.transform !== 'none') return true;
-    wordmark.classList.remove('is-motion-ready');
-    wordmark.classList.add('is-visible');
-    return false;
-  };
-  const releaseIfStranded = () => {
-    clearTimeout(safetyTimer);
-    safetyTimer = setTimeout(() => {
-      if (wordmark.classList.contains('is-visible')) return;
-      if (!wordmark.classList.contains('is-motion-ready')) return;
-      const rect = wordmark.getBoundingClientRect();
-      if (rect.top < innerHeight && rect.bottom > 0) wordmark.classList.remove('is-motion-ready');
-    }, 1500);
-  };
-  const revealAfterPreparedPaint = () => {
-    if (!prepare()) return;
-    releaseIfStranded();
-    let revealed = false;
-    const reveal = () => {
-      if (revealed) return;
-      revealed = true;
-      wordmark.classList.add('is-visible');
-      clearTimeout(safetyTimer);
-    };
-    requestAnimationFrame(() => {
-      requestAnimationFrame(reveal);
-    });
-    setTimeout(reveal, 100);
-  };
-  const observer = new IntersectionObserver((entries, owner) => {
-    const entry = entries[entries.length - 1];
-    if (entry.intersectionRatio >= arriveRatio) {
-      revealAfterPreparedPaint();
-      owner.unobserve(wordmark);
-      return;
-    }
-    if (entry.intersectionRatio === 0 && prepare()) releaseIfStranded();
-  }, { threshold: [0, arriveRatio] });
-
-  observer.observe(wordmark);
-  const revealIfRestoredOnscreen = () => {
-    if (!wordmark.classList.contains('is-motion-ready') || wordmark.classList.contains('is-visible')) return;
-    const rect = wordmark.getBoundingClientRect();
-    if (rect.top < innerHeight && rect.bottom > 0) revealAfterPreparedPaint();
-  };
-  addEventListener('scroll', revealIfRestoredOnscreen, { passive: true });
-  addEventListener('pageshow', () => requestAnimationFrame(() => requestAnimationFrame(revealIfRestoredOnscreen)), { once: true });
-})();
+/* The footer sign-off is flat, static and always present: no arming, no observer, no motion.
+   Its typography, oversize scale and bottom crop are owned entirely by the stylesheet. */
 
 /* Mother Fable carousel law: one image at a time, a 4.5-second dwell and a
    deterministically restarted progress fill. Start-on-view law (k3 carousel bars):

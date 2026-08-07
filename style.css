@@ -913,7 +913,7 @@ html:not(.js) .contact-display .line > span { transform: none; }
 .cf-nav { display: flex; gap: var(--space-xs); font-size: var(--text-mono-s); }
 .cf-loc { font-family: var(--font-mono); opacity: 0.75; }
 /* The live sign-off carries the reference's one-line, bottom-cropped scale in the site's own
-   display face. Its line box owns stable geometry; only the inner text moves and fades. */
+   display face. It is flat, static and always present — the clip owns the bottom crop. */
 .footer-wordmark {
   max-width: 100%;
   margin: clamp(24px, 2.5vw, 40px) 0 0;
@@ -941,7 +941,6 @@ html:not(.js) .contact-display .line > span { transform: none; }
   line-height: 0.8;
   -webkit-text-stroke: clamp(1px, 0.14vw, 2px) var(--color-ink-2);
   paint-order: stroke fill;
-  transform-origin: 50% 100%;
 }
 /* ---------- responsive ---------- */
 @media (max-width: 991px) {
@@ -1086,12 +1085,6 @@ html:not(.js) .contact-display .line > span { transform: none; }
   .hero-media .hero-frame-end { opacity: 1; }
   .hero-media .hero-frame-start,
   .hero-media .hero-grow-video { opacity: 0; }
-  .footer-wordmark .footer-wordmark-text {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-    will-change: auto !important;
-  }
 }
 /* ---------- (05) + (06): values & teams (k3-v2, stage 2 — root base)
    Hallmark · macrostructure: Manifesto (Stat-Led lean) · theme: studied-DNA (locked: root)

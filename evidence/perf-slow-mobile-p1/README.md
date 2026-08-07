@@ -11,44 +11,50 @@ The supplied live-site scout remains the external reference at FCP 11.88s, DOMCo
 
 | Metric | Before | After | Change |
 | --- | ---: | ---: | ---: |
-| First contentful paint | 8.388s | 4.784s | −43.0% |
-| DOMContentLoaded | 15.248s | 8.967s | −41.2% |
-| Load event | 40.159s | 17.266s | −57.0% |
-| Settled transferred bytes | 1,569,720 | 727,312 | −53.7% |
+| First contentful paint | 8.388s | 6.188s | −26.2% |
+| DOMContentLoaded | 15.248s | 8.688s | −43.0% |
+| Load event | 40.159s | 17.957s | −55.3% |
+| Settled transferred bytes | 1,569,720 | 746,388 | −52.5% |
+
+The after column was re-measured on the same profile after `critical.css` was extended to the whole stylesheet.
+A same-session control run of the earlier above-fold-only `critical.css` reproduced FCP 5.008s, DOMContentLoaded 9.079s, load 17.531s and 724,199 bytes against its recorded 4.784s / 8.967s / 17.266s / 727,312 bytes, so the before column is measured on a comparable profile and the FCP cost of the extension is real rather than drift.
 
 ## First-paint diagnosis
 
 The reveal gate was not holding back first contentful paint.
 Before the change, the 49,347-byte render-blocking `style.css` response ended at 8.207s and FCP followed at 8.388s.
-After the change, the blocking path is `tokens.css` plus the 9,826-byte `critical.css`; the latter ended at 4.664s and FCP followed at 4.784s.
-The full stylesheet now downloads with non-matching `media="print"` and activates on load, so it no longer blocks the first paint.
-Reloads, restored-scroll navigations, and hash navigations keep the full stylesheet blocking so the browser calculates final document geometry before restoring the viewport.
+After the change, the blocking path is `tokens.css` plus the 32,315-byte `critical.css`; the latter ended at 6.041s and FCP followed at 6.188s.
+`critical.css` is the minified whole of `style.css`, so the blocking sheet already carries every section: nothing below the fold can paint unstyled and the deferred sheet's activation reflows nothing.
+That completeness costs 1.4s of the earlier first-paint win and buys the correct, fully styled page for a reader who scrolls before the deferred sheet lands.
+Fresh top-level visits still take `style.css` with non-matching `media="print"`, while reloads, hash navigations and history back/forward re-parses take it as a parser-inserted blocking link so document geometry is final before the viewport is restored.
 
 ## Waterfall
 
 | Request or event | Before end | After end | Effect |
 | --- | ---: | ---: | --- |
-| HTML response | 2.988s | 3.045s | Same document cost |
-| `tokens.css` | 4.338s | 4.335s | Still blocking and small |
-| `critical.css` | — | 4.664s | New above-fold blocking owner |
-| `style.css` | 8.207s | 11.146s | Deferred from first paint |
-| FCP | 8.388s | 4.784s | Follows the blocking CSS in both runs |
-| `app.js` | 7.606s | 8.956s | Module dependencies now preload in parallel |
-| Last module / DOMContentLoaded | 15.248s | 8.967s | Serial module discovery removed |
-| Hero start still | 29.179s, 326,318B PNG | 7.275s, 68,768B AVIF | Same 896×1200 art |
-| Hero end still | 40.158s, 747,563B PNG | 16.212s, 147,580B AVIF | Same 896×1200 art |
+| HTML response | 2.988s | 3.041s | Same document cost |
+| `tokens.css` | 4.338s | 4.573s | Still blocking and small |
+| `critical.css` | — | 6.041s, 32,315B | Blocking owner of the whole page |
+| `style.css` | 8.207s | 12.551s | Deferred from first paint |
+| FCP | 8.388s | 6.188s | Follows the blocking CSS in both runs |
+| `app.js` | 7.606s | 8.652s | Module dependencies now preload in parallel |
+| Last module / DOMContentLoaded | 15.248s | 8.688s | Serial module discovery removed |
+| Hero start still | 29.179s, 326,318B PNG | 8.367s, 69,068B AVIF | Same 896×1200 art |
+| Hero end still | 40.158s, 747,563B PNG | 16.692s, 147,880B AVIF | Same 896×1200 art |
 | Hero video | Requested at 15.276s, aborted at 34.189s | Not requested | Mobile static crossfade |
-| Last font / load event | 21.137s / 40.159s | 17.264s / 17.266s | Fonts do not block FCP |
+| Last font / load event | 21.137s / 40.159s | 17.952s / 17.957s | Fonts do not block FCP |
+
+## Remaining deferral tradeoff
+
+`critical.css` and `style.css` now carry the same rules, so a fresh visit transfers the 49,349-byte `style.css` a second time after first paint — the +19,076 bytes and +0.4s load-event difference against the control run above.
+It is kept because it is the readable source of record and lands last, so a future edit to `style.css` alone cannot ship a stale minified copy: the deferred sheet corrects it, and reload, hash and back/forward paths take it blocking.
+The generated `critical.css` must be regenerated whenever `style.css` changes; `tests/footer-wordmark.test.mjs` pins the sign-off's typography, scale and below-fold layout against `critical.css` alone.
 
 ## Footer correctness route
 
-The small prepared, visible, transition, and reduced-motion rule set for `.footer-wordmark-text` is inline in the document head.
-The deferred bundle no longer owns those states, so the arming script cannot hide the wordmark before its state styles exist.
-The script also verifies the prepared computed style and immediately falls back to visible static text if the expected hidden transform is unavailable; a second timeout releases any stranded prepared state.
-
-Fresh top-level visits retain the deferred full stylesheet and its FCP gain.
-Reloads, restored-scroll visits, and `/#contact` use a parser-inserted blocking full stylesheet because browser testing showed that deferral allowed scroll restoration against incomplete document geometry.
-This hybrid route preserves the optimization where safe while favoring the footer's visibility and arrival contract everywhere else.
+The sign-off is flat, static and always visible: there is no arming, no observer, no prepared or hidden state and no motion, so no stylesheet arrival order can hide it and no scroll can catch it mid-transition.
+Its typography, oversize scale, bottom crop and ink stroke live in the stylesheet, which is complete in the blocking `critical.css`.
+A gradual scroll-down, a restored-scroll reload, `/#contact`, a history back navigation, reduced motion and disabled JavaScript all render the same finished sign-off; `tests/footer-wordmark.test.mjs` samples every one of those paths and fails on any opacity, transform, transition or animation.
 
 ## Visual-quality evidence
 

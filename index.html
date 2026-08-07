@@ -8,34 +8,18 @@
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="critical.css">
 <script>
-/* Scroll restoration and deep anchors require complete document geometry before layout.
-   Fresh top-level visits keep the full sheet off the render path; reload/hash visits use a
-   parser-inserted blocking link so the browser restores against final section heights. */
+/* critical.css is the minified whole of style.css, so the blocking sheet already carries every
+   section: nothing below the fold can paint unstyled and no activation reflows the page.
+   style.css stays the readable source of record and follows; scroll restoration, deep anchors and
+   history re-parses take it as a parser-inserted blocking link so geometry is final before layout. */
 (function () {
   var navigation = performance.getEntriesByType('navigation')[0];
-  var restoreLayout = location.hash || (navigation && navigation.type === 'reload');
-  document.write(restoreLayout
+  var restoredType = navigation && (navigation.type === 'reload' || navigation.type === 'back_forward');
+  document.write(location.hash || restoredType
     ? '<link rel="stylesheet" href="style.css">'
     : '<link rel="stylesheet" href="style.css" media="print" onload="this.media=\'all\'">');
 })();
 </script>
-<style>
-/* Footer motion states are critical because app.js may arm them before the deferred sheet lands.
-   The unarmed, reduced-motion, no-JS, and missing-stylesheet state is always visible and static. */
-.footer-wordmark-text { opacity: 1; transform: none; }
-.js .footer-wordmark.is-motion-ready:not(.is-visible) .footer-wordmark-text {
-  opacity: 0;
-  transform: translate3d(2.5vw, 78%, 0) scale(0.965);
-}
-.js .footer-wordmark.is-motion-ready.is-visible .footer-wordmark-text {
-  opacity: 1;
-  transform: none;
-  transition: transform 1100ms var(--ease-out), opacity 800ms var(--ease-arrive);
-}
-@media (prefers-reduced-motion: reduce) {
-  .footer-wordmark-text { opacity: 1 !important; transform: none !important; transition: none !important; }
-}
-</style>
 <noscript><link rel="stylesheet" href="style.css"></noscript>
 <link rel="modulepreload" href="hero-scroll.js">
 <link rel="modulepreload" href="nav-float.js">

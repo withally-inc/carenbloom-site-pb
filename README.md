@@ -90,11 +90,11 @@ Focused behavioral coverage lives in `tests/lemon-band.test.mjs` (distinct phase
 
 The page closes on an oversized `Care & Bloom` sign-off set in live, selectable PP Mori rather than the earlier raster halftone image, so it inherits the site type system, scales without a bitmap, and is announced once by screen readers.
 
-The wordmark is present by default and arrives with a one-shot transform-and-opacity motion in the homepage's unhurried character; it never loops.
-The motion runs on every arrival path — a normal scroll down, and pages that initialize already at the footer (a restored-scroll reload or a `/#contact` landing), where the hidden prepared state is painted for a frame before the reveal.
-`prefers-reduced-motion: reduce` and disabled, blocked, or failed JavaScript all leave it fully visible at rest, and an already-painted sign-off is never retroactively hidden.
+The sign-off is intentionally flat, static, and always visible: it carries no arrival motion, no observer, and no prepared or hidden state.
+Every arrival path — a gradual scroll down, a restored-scroll reload, a `/#contact` landing, a history back navigation, reduced motion, and disabled or blocked JavaScript — renders the same finished sign-off, so it can never be caught mid-transition or stranded out of view.
+Its typography, oversize scale, bottom crop, ink stroke, and viewport-filling fit are owned entirely by the stylesheet.
 
-`tests/footer-wordmark.test.mjs` owns the behavioral contract — text, single announcement, no raster request, arrival on scroll and on already-at-footer initialization (restored-scroll reload, `/#contact`, and an at-threshold initial intersection, asserted as actual motion rather than class presence), reduced-motion and no-JavaScript rest states, and an overflow-free edge-to-edge fit from 320px to 2560px — and runs inside `npm test` and `npm run test:browser`.
+`tests/footer-wordmark.test.mjs` owns the behavioral contract — text, single announcement, no raster request, no animation or transition on any of those arrival paths, the sign-off rendered from `critical.css` alone, and an overflow-free edge-to-edge fit from 320px to 2560px — and runs inside `npm test` and `npm run test:browser`.
 `evidence/footer-wordmark-f1/README.md` holds the captured evidence and the honest divergences from the Mobbin reference.
 
 ## Role-location metadata
