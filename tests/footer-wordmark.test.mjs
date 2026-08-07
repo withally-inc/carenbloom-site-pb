@@ -80,7 +80,12 @@ async function installStaticSampler(page) {
       });
     };
     const timer = setInterval(sample, 16);
-    addEventListener("load", () => setTimeout(() => clearInterval(timer), 2000), { once: true });
+    /* A navigation that resolves faster than the first interval tick — a restored history entry,
+       for example — would otherwise be read with an empty log, so the load frame is always sampled. */
+    addEventListener("load", () => {
+      sample();
+      setTimeout(() => clearInterval(timer), 2000);
+    }, { once: true });
   });
 }
 
@@ -98,6 +103,7 @@ function assertSampledStatic(samples, message) {
 }
 
 async function readSamples(page) {
+  await page.waitForFunction(() => window.__wordmarkSamples?.length > 0, undefined, { timeout: 5000 });
   return page.evaluate(() => window.__wordmarkSamples);
 }
 

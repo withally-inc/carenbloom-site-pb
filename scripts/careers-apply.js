@@ -206,7 +206,9 @@ import { careerRoles } from "./careers-roles.js";
   const status = document.querySelector(".application-form-status");
   const submitButton = form ? form.querySelector('button[type="submit"]') : null;
   const endpoint = window.CB_TALENTS_ENDPOINT || "/api/applications";
-  const maxUploadBytes = 8 * 1024 * 1024;
+  // Mirrors the authoritative upload limits in api/applications.js; keep in sync.
+  const maxUploadBytes = 4 * 1024 * 1024;
+  const maxTotalUploadBytes = 4 * 1024 * 1024;
   let isSubmitting = false;
   const setStatus = (message, state) => {
     if (!status) return;
@@ -230,7 +232,14 @@ import { careerRoles } from "./careers-roles.js";
       const additionalAttachmentFile = data.get("additional_attachment");
       const oversizedFile = [resumeFile, additionalAttachmentFile].find((file) => file instanceof File && file.size > maxUploadBytes);
       if (oversizedFile) {
-        setStatus("Keep file uploads under 8 MB each.", "error");
+        setStatus("Each file must be under 4 MB.", "error");
+        return;
+      }
+      const totalUploadBytes = [resumeFile, additionalAttachmentFile]
+        .filter((file) => file instanceof File)
+        .reduce((total, file) => total + file.size, 0);
+      if (totalUploadBytes > maxTotalUploadBytes) {
+        setStatus("Your files together are too large. Keep their combined size under 4 MB.", "error");
         return;
       }
 

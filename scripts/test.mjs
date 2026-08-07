@@ -37,6 +37,7 @@ const commands = [
   ["tests/server-runtime.test.mjs"],
   ["tests/role-location-metadata.test.mjs"],
   ["tests/careers-apply-submit.test.mjs"],
+  ["tests/careers-upload-limits.test.mjs"],
   ["tests/pb-role-apply.test.mjs"],
   ["tests/pb-integration.test.mjs"],
   ["tests/hero-performance-browser.test.mjs"],

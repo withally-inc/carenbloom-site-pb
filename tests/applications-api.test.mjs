@@ -116,10 +116,30 @@ assert.equal(_private.validatePayload(samplePayload({ questions: [{ question: "O
 assert.equal(
   _private.validatePayload(samplePayload({
     files: {
-      resume: { arrayBuffer() {}, size: 8 * 1024 * 1024 + 1, name: "huge-resume.pdf" },
+      resume: { arrayBuffer() {}, size: 4 * 1024 * 1024 - 1, name: "under-limit-resume.pdf" },
     },
   })).error,
-  "Keep file uploads under 8 MB each."
+  undefined,
+  "a file just under the per-file limit should be accepted"
+);
+assert.equal(
+  _private.validatePayload(samplePayload({
+    files: {
+      resume: { arrayBuffer() {}, size: 4 * 1024 * 1024 + 1, name: "over-limit-resume.pdf" },
+    },
+  })).error,
+  "Each file must be under 4 MB.",
+  "a file just over the per-file limit should be rejected"
+);
+assert.equal(
+  _private.validatePayload(samplePayload({
+    files: {
+      resume: { arrayBuffer() {}, size: 2 * 1024 * 1024 + 1, name: "resume.pdf" },
+      additionalAttachment: { arrayBuffer() {}, size: 2 * 1024 * 1024, name: "work-sample.pdf" },
+    },
+  })).error,
+  "Your files together are too large. Keep their combined size under 4 MB.",
+  "two individually valid files over the combined limit should be rejected"
 );
 
 {
