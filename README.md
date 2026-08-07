@@ -113,13 +113,13 @@ Focused behavioral coverage lives in `tests/lemon-band.test.mjs` (distinct phase
 
 ## Footer sign-off wordmark
 
-The page closes on an oversized `Care & Bloom` sign-off set in live, selectable PP Mori rather than the earlier raster halftone image, so it inherits the site type system, scales without a bitmap, and is announced once by screen readers.
+The page closes on the real Care & Bloom SVG lockup, rendered from the same inline `currentColor` symbol as the header brand and announced once by screen readers.
 
 The sign-off is intentionally flat, static, and always visible: it carries no arrival motion, no observer, and no prepared or hidden state.
 Every arrival path — a gradual scroll down, a restored-scroll reload, a `/#contact` landing, a history back navigation, reduced motion, and disabled or blocked JavaScript — renders the same finished sign-off, so it can never be caught mid-transition or stranded out of view.
-Its typography, oversize scale, bottom crop, ink stroke, and viewport-filling fit are owned entirely by the stylesheet.
+Its oversized scale, subtle bottom crop, cobalt fill, and viewport-filling fit are owned entirely by the stylesheet.
 
-`tests/footer-wordmark.test.mjs` owns the behavioral contract — text, single announcement, no raster request, no animation or transition on any of those arrival paths, the sign-off rendered from `critical.css` alone, and an overflow-free edge-to-edge fit from 320px to 2560px — and runs inside `npm test` and `npm run test:browser`.
+`tests/footer-wordmark.test.mjs` owns the behavioral contract — inline SVG, single announcement, no raster request, no animation or transition on any of those arrival paths, the sign-off rendered from `critical.css` alone, and an overflow-free edge-to-edge fit from 320px to 2560px — and runs inside `npm test` and `npm run test:browser`.
 `evidence/footer-wordmark-f1/README.md` holds the captured evidence and the honest divergences from the Mobbin reference.
 
 ## Role-location metadata

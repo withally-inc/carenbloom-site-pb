@@ -165,6 +165,12 @@ html:not(.js) .nav-shell { position: absolute; }
   /* phones tighten this measure on arrival — travel with the bar, never snap */
   transition: padding var(--dur-base) var(--ease-out);
 }
+.logo-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
 .topbar {
   pointer-events: auto;
   display: flex;
@@ -208,7 +214,21 @@ html:not(.js) .nav-shell { position: absolute; }
   scroll-margin-top: calc(var(--topbar-h) + var(--nav-offset) + var(--space-2xs));
 }
 .topbar nav { display: flex; gap: var(--space-xs); }
-.topbar > a[aria-label="Care and Bloom home"] { white-space: nowrap; }
+.topbar > a[aria-label="Care and Bloom home"] {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  color: inherit;
+}
+.brand-logo {
+  display: block;
+  width: 126px;
+  max-width: 100%;
+  height: auto;
+  color: inherit;
+  fill: currentColor;
+}
+.brand-logo use { fill: currentColor; }
 .topbar .roles-chip {
   white-space: nowrap;
   background: var(--color-accent);
@@ -916,36 +936,30 @@ html:not(.js) .contact-display .line > span { transform: none; }
 }
 .cf-nav { display: flex; gap: var(--space-xs); font-size: var(--text-mono-s); }
 .cf-loc { font-family: var(--font-mono); opacity: 0.75; }
-/* The live sign-off carries the reference's one-line, bottom-cropped scale in the site's own
-   display face. It is flat, static and always present — the clip owns the bottom crop. */
+/* The live sign-off carries the real one-line lockup at a bottom-cropped scale.
+   It is flat, static and always present — the clip owns the bottom crop. */
 .footer-wordmark {
   max-width: 100%;
   margin: clamp(24px, 2.5vw, 40px) 0 0;
   overflow: clip;
-  font-family: var(--font-display);
-  font-size: max(38px, 12.7vw);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  text-align: center;
-  text-transform: uppercase;
-  white-space: nowrap;
 }
 .footer-wordmark-clip {
   display: block;
-  height: 0.8em;
+  width: 100%;
+  height: 16.6vw;
+  aspect-ratio: 241 / 40;
   overflow: clip;
 }
 .footer-wordmark-text {
-  display: inline-block;
+  display: block;
   position: relative;
-  top: -0.025em;
-  padding-inline: 0.02em;
+  left: -1%;
+  width: 102%;
+  height: auto;
   color: var(--color-accent);
-  line-height: 0.8;
-  -webkit-text-stroke: clamp(1px, 0.14vw, 2px) var(--color-ink-2);
-  paint-order: stroke fill;
+  fill: currentColor;
 }
+.footer-wordmark-text use { fill: currentColor; }
 /* ---------- responsive ---------- */
 @media (max-width: 991px) {
   :root { --pad-x: var(--space-sm); }
@@ -981,10 +995,8 @@ html:not(.js) .contact-display .line > span { transform: none; }
   .topbar > a[aria-label="Care and Bloom home"] {
     min-width: 0;
     overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 12px;
-    letter-spacing: -0.01em;
   }
+  .brand-logo { width: 114px; }
   .topbar .roles-chip { flex: none; }
   .display-word { font-size: clamp(56px, 17.5vw, 80px); }
   .stage-center { margin: -0.25em 0; }

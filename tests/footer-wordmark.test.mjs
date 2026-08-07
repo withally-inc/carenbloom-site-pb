@@ -119,8 +119,15 @@ try {
 
   const wordmark = staticPage.locator("[data-footer-wordmark]");
   assert.equal(await wordmark.count(), 1, "the footer should expose one live wordmark");
-  assert.equal(await wordmark.evaluate((element) => element.tagName), "P", "the wordmark should be semantic text, not an image role");
-  assert.equal((await wordmark.textContent()).replace(/\s+/g, " ").trim(), "Care & Bloom");
+  const footerLogo = wordmark.locator("svg.footer-wordmark-text");
+  assert.equal(await footerLogo.count(), 1, "the footer should render the real lockup as inline SVG");
+  assert.equal(await footerLogo.getAttribute("role"), "img", "the sign-off should expose one image role");
+  assert.equal((await footerLogo.locator("title").textContent()).trim(), "Care & Bloom", "the sign-off should retain its accessible name");
+  const footerInk = await footerLogo.evaluate((logo) => ({
+    fill: getComputedStyle(logo.querySelector("use")).fill,
+    color: getComputedStyle(logo).color,
+  }));
+  assert.equal(footerInk.fill, footerInk.color, "the footer logo should inherit the accent through currentColor");
   assert.equal(await staticPage.locator("#contact img.wordmark").count(), 0, "the footer should not render the raster wordmark");
   assert.equal(await staticPage.locator("#contact .cf-mark").getAttribute("aria-hidden"), "true", "the compact duplicate mark should not be announced twice");
   assert.equal(requestedUrls.some((url) => url.includes("wordmark-dither-stacked.png")), false, "the removed raster must never be requested");
@@ -148,8 +155,7 @@ try {
   await criticalOnlyPage.evaluate(() => document.fonts.ready);
   await scrollToFooter(criticalOnlyPage);
   const criticalOnly = await wordmarkProbe(criticalOnlyPage);
-  assert.match(criticalOnly.fontFamily, /PP Mori/, "critical.css alone should carry the sign-off's display face");
-  assert.ok(criticalOnly.textRect.width >= viewports[0].width * 0.88, "critical.css alone should carry the sign-off's oversize scale");
+  assert.ok(criticalOnly.textRect.width >= viewports[0].width, "critical.css alone should carry the sign-off's oversize scale");
   assert.equal(criticalOnly.opacity, 1, "critical.css alone should leave the sign-off visible");
   const criticalOnlyBelowFold = await criticalOnlyPage.evaluate(() => {
     const probe = (selector) => {
@@ -217,14 +223,12 @@ try {
     assert.ok(state, `${viewport.width}px should render the live wordmark`);
     assert.equal(state.overflow, 0, `${viewport.width}px must not overflow horizontally`);
     assert.ok(state.wordmarkRect.left >= -0.5 && state.wordmarkRect.right <= viewport.width + 0.5, `${viewport.width}px wordmark container should stay inside the viewport`);
-    assert.ok(state.textRect.left >= -0.5 && state.textRect.right <= viewport.width + 0.5, `${viewport.width}px wordmark ink should stay inside the viewport`);
-    assert.ok(state.textRect.width >= viewport.width * 0.88, `${viewport.width}px wordmark should fill the footer width`);
+    assert.ok(state.textRect.left <= 0.5 && state.textRect.right >= viewport.width - 0.5, `${viewport.width}px wordmark ink should overscan both page edges`);
+    assert.ok(state.textRect.width >= viewport.width, `${viewport.width}px wordmark should fill the footer width`);
     assert.ok(state.textRect.top >= state.clipRect.top - 0.5, `${viewport.width}px wordmark should preserve every letter top`);
     const bottomCrop = state.textRect.bottom - state.clipRect.bottom;
-    assert.ok(bottomCrop >= state.fontSize * 0.04, `${viewport.width}px wordmark should keep an intentional bottom crop`);
-    assert.ok(bottomCrop <= state.fontSize * 0.1, `${viewport.width}px wordmark crop should not cut too deeply into PP Mori`);
-    assert.match(state.fontFamily, /PP Mori/, `${viewport.width}px wordmark should inherit the display face`);
-    assert.ok(Number.parseFloat(state.textStroke) >= 1, `${viewport.width}px wordmark should keep its ink stroke`);
+    assert.ok(bottomCrop >= state.textRect.height * 0.04, `${viewport.width}px wordmark should keep an intentional bottom crop`);
+    assert.ok(bottomCrop <= state.textRect.height * 0.08, `${viewport.width}px wordmark crop should preserve the lockup`);
     assert.notEqual(state.userSelect, "none", `${viewport.width}px wordmark should remain selectable`);
     assert.equal(state.opacity, 1, `${viewport.width}px wordmark should render fully present`);
     assert.equal(state.transform, "none", `${viewport.width}px wordmark should render static`);

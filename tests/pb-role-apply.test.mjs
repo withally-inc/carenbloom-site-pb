@@ -34,20 +34,8 @@ assert.deepEqual(renderedRoles, expectedRoles);
 
 const pbHeaderMetrics = await page.evaluate(() => {
   const header = document.querySelector(".topbar");
-  const logo = header.querySelector(":scope > a");
   const headerRect = header.getBoundingClientRect();
-  const logoRect = logo.getBoundingClientRect();
-  const logoStyle = getComputedStyle(logo);
-  return {
-    header: { x: headerRect.x, width: headerRect.width, height: headerRect.height },
-    logo: {
-      width: logoRect.width,
-      height: logoRect.height,
-      fontSize: logoStyle.fontSize,
-      fontWeight: logoStyle.fontWeight,
-      letterSpacing: logoStyle.letterSpacing,
-    },
-  };
+  return { x: headerRect.x, width: headerRect.width, height: headerRect.height };
 });
 
 await page.goto(`${baseUrl}/careers/apply/?role=chief-of-staff`, { waitUntil: "networkidle" });
@@ -63,22 +51,12 @@ assert.deepEqual(
   ],
 );
 const applicationHeaderMetrics = await applicationHeader.evaluate((header) => {
-  const logo = header.querySelector(":scope > a");
   const headerRect = header.getBoundingClientRect();
-  const logoRect = logo.getBoundingClientRect();
-  const logoStyle = getComputedStyle(logo);
-  return {
-    header: { x: headerRect.x, width: headerRect.width, height: headerRect.height },
-    logo: {
-      width: logoRect.width,
-      height: logoRect.height,
-      fontSize: logoStyle.fontSize,
-      fontWeight: logoStyle.fontWeight,
-      letterSpacing: logoStyle.letterSpacing,
-    },
-  };
+  return { x: headerRect.x, width: headerRect.width, height: headerRect.height };
 });
-assert.deepEqual(applicationHeaderMetrics, pbHeaderMetrics);
+assert.deepEqual(applicationHeaderMetrics, pbHeaderMetrics, "the application header should retain the integrated home geometry");
+assert.equal(await applicationHeader.locator(':scope > a[aria-label="Care and Bloom home"] svg').count(), 0, "the logo replacement should stay within the two homepage locations in scope");
+assert.equal((await applicationHeader.locator(':scope > a[aria-label="Care and Bloom home"]').textContent()).trim(), "Care & Bloom");
 await page.goto(`${baseUrl}/`, { waitUntil: "networkidle" });
 
 for (const [, slug] of expectedRoles) {

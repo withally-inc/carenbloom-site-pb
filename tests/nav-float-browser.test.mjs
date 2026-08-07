@@ -47,6 +47,31 @@ try {
   const wordTop = await desktop.locator(".word-top").evaluate((word) => word.getBoundingClientRect().y);
   assert.equal(wordTop, 59.5, "the hero composition should be pixel-identical to the inline header");
   assert.equal(await desktop.locator(".topbar > a").first().getAttribute("aria-label"), "Care and Bloom home");
+  const desktopLogo = await desktop.locator('.topbar > a[aria-label="Care and Bloom home"] svg').evaluate((logo) => ({
+    role: logo.getAttribute("aria-hidden"),
+    fill: getComputedStyle(logo.querySelector("use")).fill,
+    color: getComputedStyle(logo).color,
+    width: logo.getBoundingClientRect().width,
+    height: logo.getBoundingClientRect().height,
+  }));
+  assert.equal(desktopLogo.role, "true", "the labelled home link should hide its decorative inline logo from assistive technology");
+  assert.equal(desktopLogo.fill, desktopLogo.color, "the inline logo should inherit the active nav theme through currentColor");
+  assert.ok(desktopLogo.width > 100 && desktopLogo.width < 150, "the desktop lockup should retain an optical wordmark scale");
+  assert.ok(desktopLogo.height >= 20 && desktopLogo.height <= 24, "the desktop lockup should align to the old type's visual line box");
+  const inheritedThemeFills = await desktop.locator('.topbar > a[aria-label="Care and Bloom home"]').evaluate((brand) => {
+    const logoUse = brand.querySelector("use");
+    const sample = (color) => {
+      brand.style.color = color;
+      return { color: getComputedStyle(brand).color, fill: getComputedStyle(logoUse).fill };
+    };
+    const light = sample("var(--color-accent)");
+    const dark = sample("var(--color-ink-2)");
+    brand.style.removeProperty("color");
+    return { light, dark };
+  });
+  assert.equal(inheritedThemeFills.light.fill, inheritedThemeFills.light.color, "the light-theme logo should inherit cobalt");
+  assert.equal(inheritedThemeFills.dark.fill, inheritedThemeFills.dark.color, "the dark-theme logo should inherit the pale-white ink");
+  assert.notEqual(inheritedThemeFills.light.fill, inheritedThemeFills.dark.fill, "the two theme states should resolve to distinct logo fills");
   assert.deepEqual(
     await desktop.locator('.topbar nav[aria-label="Primary"] a').evaluateAll((links) => links.map((link) => [link.textContent, link.getAttribute("href")])),
     [["Themes", "#themes"], ["Brands", "#brands"], ["People", "#people"], ["Careers", "#careers"]],
@@ -206,7 +231,7 @@ try {
       contained.brandScrollWidth <= contained.brandClientWidth + 1,
       `the full Care & Bloom mark should render at ${width}px, not ellipsize (${contained.brandScrollWidth}px ink / ${contained.brandClientWidth}px box)`,
     );
-    assert.equal(await narrow.locator('.topbar > a[aria-label="Care and Bloom home"]').textContent(), "Care & Bloom");
+    assert.equal(await narrow.locator('.topbar > a[aria-label="Care and Bloom home"]').getAttribute("aria-label"), "Care and Bloom home");
     assert.equal(await narrow.locator(".topbar .roles-chip").textContent(), "Open roles (11)");
     await narrow.close();
   }

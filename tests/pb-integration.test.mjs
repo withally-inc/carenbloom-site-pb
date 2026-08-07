@@ -439,30 +439,19 @@ try {
     const headerPage = await browser.newPage({ viewport });
     await openPage(headerPage, `${baseUrl}/`);
     const homeMetrics = await headerPage.locator(".topbar").evaluate((header) => {
-      const logo = header.querySelector(":scope > a");
       const headerRect = header.getBoundingClientRect();
-      const logoRect = logo.getBoundingClientRect();
-      const logoStyle = getComputedStyle(logo);
-      return {
-        header: { x: headerRect.x, width: headerRect.width, height: headerRect.height },
-        logo: { width: logoRect.width, height: logoRect.height, fontSize: logoStyle.fontSize, fontWeight: logoStyle.fontWeight, letterSpacing: logoStyle.letterSpacing },
-      };
+      return { x: headerRect.x, width: headerRect.width, height: headerRect.height };
     });
     await openPage(headerPage, `${baseUrl}/careers/apply/?role=creative-strategist-performance-marketing`);
     for (const favicon of ["favicon.svg", "favicon-16.png", "favicon-32.png", "favicon-512.png", "apple-touch-icon-180.png"]) {
       assert.equal(await headerPage.locator(`link[href="/${favicon}"]`).count(), 1, `${viewport.width}px application page should declare ${favicon}`);
     }
     const applicationMetrics = await headerPage.locator(".application-topbar").evaluate((header) => {
-      const logo = header.querySelector(":scope > a");
       const headerRect = header.getBoundingClientRect();
-      const logoRect = logo.getBoundingClientRect();
-      const logoStyle = getComputedStyle(logo);
-      return {
-        header: { x: headerRect.x, width: headerRect.width, height: headerRect.height },
-        logo: { width: logoRect.width, height: logoRect.height, fontSize: logoStyle.fontSize, fontWeight: logoStyle.fontWeight, letterSpacing: logoStyle.letterSpacing },
-      };
+      return { x: headerRect.x, width: headerRect.width, height: headerRect.height };
     });
-    assert.deepEqual(applicationMetrics, homeMetrics, `${viewport.width}px application header should match the integrated home`);
+    assert.deepEqual(applicationMetrics, homeMetrics, `${viewport.width}px application header should retain the integrated home geometry`);
+    assert.equal(await headerPage.locator('.application-topbar > a[aria-label="Care and Bloom home"] svg').count(), 0, `${viewport.width}px logo replacement should stay within the two homepage locations in scope`);
     if (viewport.width === 320) {
       const applicationBrand = await headerPage.locator('.application-topbar > a[aria-label="Care and Bloom home"]').evaluate((brand) => ({
         clientWidth: brand.clientWidth,
