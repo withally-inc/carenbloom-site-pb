@@ -6,7 +6,10 @@ import { careerRoles } from "../scripts/careers-roles.js";
 import Busboy from "busboy";
 
 const DEFAULT_DATABASE_ID = "3792b7ec4597800fab56f5a61ff00187";
-const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+const MAX_TOTAL_UPLOAD_BYTES = 4 * 1024 * 1024;
+const PER_FILE_UPLOAD_ERROR = "Each file must be under 4 MB.";
+const TOTAL_UPLOAD_ERROR = "Your files together are too large. Keep their combined size under 4 MB.";
 const ALLOWED_TIME_ZONES = new Set(["US", "Europe", "Asia"]);
 const CANONICAL_ROLES = new Map(careerRoles.map((role) => [role.slug, role]));
 
@@ -40,6 +43,8 @@ function readMultipartPayload(req, contentType) {
     const fileWrites = [];
     let payloadText = "{}";
     let fileTooLarge = false;
+    let totalUploadBytes = 0;
+    let totalUploadTooLarge = false;
     const parser = Busboy({
       headers: { ...req.headers, "content-type": contentType },
       limits: {
@@ -57,7 +62,9 @@ function readMultipartPayload(req, contentType) {
       let size = 0;
       stream.on("data", (chunk) => {
         size += chunk.length;
-        chunks.push(chunk);
+        totalUploadBytes += chunk.length;
+        if (totalUploadBytes > MAX_TOTAL_UPLOAD_BYTES) totalUploadTooLarge = true;
+        if (!totalUploadTooLarge) chunks.push(chunk);
       });
       stream.on("limit", () => {
         fileTooLarge = true;
@@ -66,7 +73,7 @@ function readMultipartPayload(req, contentType) {
       fileWrites.push(new Promise((resolveFile, rejectFile) => {
         stream.on("error", rejectFile);
         stream.on("end", () => {
-          if (!fileTooLarge && size > 0) {
+          if (!fileTooLarge && !totalUploadTooLarge && size > 0) {
             const file = bufferBackedFile(Buffer.concat(chunks, size), info.filename, info.mimeType);
             if (name === "resume") files.resume = file;
             if (name === "additional_attachment") files.additionalAttachment = file;
@@ -80,7 +87,8 @@ function readMultipartPayload(req, contentType) {
     parser.on("finish", async () => {
       try {
         await Promise.all(fileWrites);
-        if (fileTooLarge) throw publicError(400, "Keep file uploads under 8 MB each.");
+        if (fileTooLarge) throw publicError(400, PER_FILE_UPLOAD_ERROR);
+        if (totalUploadTooLarge) throw publicError(400, TOTAL_UPLOAD_ERROR);
         resolve({
           payload: JSON.parse(payloadText || "{}"),
           files,
@@ -126,11 +134,13 @@ function isUploadFile(file) {
 }
 
 function uploadSizeError(files = {}) {
-  for (const file of [files.resume, files.additionalAttachment]) {
+  const uploads = [files.resume, files.additionalAttachment].filter(isUploadFile);
+  for (const file of uploads) {
     if (isUploadFile(file) && file.size > MAX_UPLOAD_BYTES) {
-      return "Keep file uploads under 8 MB each.";
+      return PER_FILE_UPLOAD_ERROR;
     }
   }
+  if (uploads.reduce((total, file) => total + file.size, 0) > MAX_TOTAL_UPLOAD_BYTES) return TOTAL_UPLOAD_ERROR;
   return null;
 }
 
