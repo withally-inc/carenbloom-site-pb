@@ -122,8 +122,10 @@ try {
   });
   const response = await openPage(page, `${baseUrl}/`);
   assert.equal(response?.status(), 200, "the canonical PB review route should resolve");
-  assert.equal(await page.locator('link[rel="icon"][href="/images/cb-logo-white.svg"]').count(), 1, "the PB page should declare a valid shared favicon");
-  assert.equal((await page.request.get(`${baseUrl}/images/cb-logo-white.svg`)).status(), 200, "the shared favicon should resolve without a browser console error");
+  for (const favicon of ["favicon.svg", "favicon-16.png", "favicon-32.png", "favicon-512.png", "apple-touch-icon-180.png"]) {
+    assert.equal(await page.locator(`link[href="/${favicon}"]`).count(), 1, `the PB page should declare ${favicon}`);
+    assert.equal((await page.request.get(`${baseUrl}/${favicon}`)).status(), 200, `${favicon} should resolve without a browser console error`);
+  }
   assert.equal(
     await page.locator("body > .hero-pin").count(),
     1,
@@ -447,7 +449,9 @@ try {
       };
     });
     await openPage(headerPage, `${baseUrl}/careers/apply/?role=creative-strategist-performance-marketing`);
-    assert.equal(await headerPage.locator('link[rel="icon"][href="/images/cb-logo-white.svg"]').count(), 1, `${viewport.width}px application page should declare the shared favicon`);
+    for (const favicon of ["favicon.svg", "favicon-16.png", "favicon-32.png", "favicon-512.png", "apple-touch-icon-180.png"]) {
+      assert.equal(await headerPage.locator(`link[href="/${favicon}"]`).count(), 1, `${viewport.width}px application page should declare ${favicon}`);
+    }
     const applicationMetrics = await headerPage.locator(".application-topbar").evaluate((header) => {
       const logo = header.querySelector(":scope > a");
       const headerRect = header.getBoundingClientRect();
