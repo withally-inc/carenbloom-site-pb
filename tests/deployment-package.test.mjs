@@ -29,7 +29,27 @@ test("the emitted deployment tree contains runtime files and no private developm
     .filter((entry) => entry.isFile())
     .map((entry) => path.relative(deploymentRoot, path.join(entry.parentPath, entry.name)))
     .sort();
-  for (const required of ["index.html", "careers/apply/index.html", "api/applications.js", "assets/hero-grow.mp4", "package.json", "vercel.json"]) {
+  for (const required of [
+    "index.html",
+    "critical.css",
+    "careers/apply/index.html",
+    "api/applications.js",
+    "assets/hero-grow.mp4",
+    "assets/hero-grow-start.avif",
+    "assets/hero-grow-start-448.avif",
+    "assets/hero-grow-end.avif",
+    "assets/hero-grow-end-448.avif",
+    "assets/leader-rahul.avif",
+    "assets/leader-rahul-540.avif",
+    "assets/leader-momoko.avif",
+    "assets/leader-momoko-540.avif",
+    "images/carenbloom-v3/nancy-raspberry.avif",
+    "images/carenbloom-v3/nancy-avocado.avif",
+    "images/carenbloom-v3/biird-glass-sky.avif",
+    "images/carenbloom-v3/biird-lilac-first-timer.avif",
+    "package.json",
+    "vercel.json",
+  ]) {
     assert.equal(files.includes(required), true, `${required} should be packaged`);
   }
   assert.equal(files.some((file) => /(?:^|\/)(?:\.git|\.vercel|tests?|evidence|reports?)(?:\/|$)/i.test(file)), false, `forbidden development surface packaged: ${files.join(", ")}`);

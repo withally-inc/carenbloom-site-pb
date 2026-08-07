@@ -3,6 +3,7 @@ import {
   deriveScrollMetrics,
   resolveMediaState,
   resolveOpeningMode,
+  shouldLoadHeroVideo,
   scrollStateFromScroll,
   timeFromProgress
 } from './hero-scroll.js';
@@ -22,6 +23,13 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const media = document.getElementById('heroMedia');
   const video = document.getElementById('heroGrowVideo');
+  const connection = navigator.connection;
+  const loadHeroVideo = shouldLoadHeroVideo({
+    reduced,
+    viewportWidth: innerWidth,
+    saveData: connection?.saveData,
+    effectiveType: connection?.effectiveType
+  });
   const PREFERRED_SCRUB_DISTANCE = 1000;
   let pinStart = 0;
   let pinHeight = 0;
@@ -166,13 +174,15 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
       chip.style.setProperty('--pc', pc.toFixed(4));
     });
 
-    const mediaState = resolveMediaState({
-      reduced,
-      failed: videoFailed,
-      metadataReady,
-      frameReady,
-      progress: p
-    });
+    const mediaState = loadHeroVideo
+      ? resolveMediaState({
+        reduced,
+        failed: videoFailed,
+        metadataReady,
+        frameReady,
+        progress: p
+      })
+      : 'static';
     media.dataset.state = mediaState;
     if (metadataReady) seekVideo(p);
   }
@@ -239,22 +249,26 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
     // belt: if the wiring below dies after ownership passes here, print the page whole
     openingFailsafe = setTimeout(() => openSettled(true), 4000);
     takeOpeningOwnership();
-    video.addEventListener('loadedmetadata', () => {
-      if (!Number.isFinite(video.duration) || video.duration <= 0) {
-        failVideo();
-        return;
-      }
-      clearTimeout(metadataTimer);
-      videoDuration = video.duration;
-      metadataReady = true;
-      scheduleUpdate();
-    }, { once: true });
-    video.addEventListener('seeked', () => {
-      clearTimeout(seekTimer);
-      frameReady = true;
-      scheduleUpdate();
-    });
-    video.addEventListener('error', failVideo, { once: true });
+    if (loadHeroVideo) {
+      video.addEventListener('loadedmetadata', () => {
+        if (!Number.isFinite(video.duration) || video.duration <= 0) {
+          failVideo();
+          return;
+        }
+        clearTimeout(metadataTimer);
+        videoDuration = video.duration;
+        metadataReady = true;
+        scheduleUpdate();
+      }, { once: true });
+      video.addEventListener('seeked', () => {
+        clearTimeout(seekTimer);
+        frameReady = true;
+        scheduleUpdate();
+      });
+      video.addEventListener('error', failVideo, { once: true });
+    } else {
+      media.dataset.state = 'static';
+    }
     addEventListener('scroll', scheduleUpdate, { passive: true });
     addEventListener('resize', () => {
       measureHero();
@@ -262,9 +276,11 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
     });
     measureHero();
     scheduleUpdate();
-    video.src = video.dataset.src;
-    video.load();
-    metadataTimer = setTimeout(failVideo, 8000);
+    if (loadHeroVideo) {
+      video.src = video.dataset.src;
+      video.load();
+      metadataTimer = setTimeout(failVideo, 8000);
+    }
 
     /* Arrival T0 composes beneath the shared GROW/colour/chip progress owner.
        The exact bud still replaces the old bloom image as the readiness asset. */
@@ -408,43 +424,8 @@ initNavFloat(document.querySelector('[data-nav-shell]'));
   }
 })();
 
-/* The footer sign-off is present by default. Motion becomes active only after a working
-   observer reports either a safe offscreen preparation or an immediate arrival. Immediate
-   arrivals cross two animation frames so the hidden preparation receives a paint first. */
-(function () {
-  const wordmark = document.querySelector('[data-footer-wordmark]');
-  if (!wordmark) return;
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduced || typeof IntersectionObserver === 'undefined') return;
-
-  const arriveRatio = 0.18;
-  const revealAfterPreparedPaint = () => {
-    wordmark.classList.add('is-motion-ready');
-    const text = wordmark.querySelector('.footer-wordmark-text');
-    if (text) getComputedStyle(text).opacity;
-    let revealed = false;
-    const reveal = () => {
-      if (revealed) return;
-      revealed = true;
-      wordmark.classList.add('is-visible');
-    };
-    requestAnimationFrame(() => {
-      requestAnimationFrame(reveal);
-    });
-    setTimeout(reveal, 100);
-  };
-  const observer = new IntersectionObserver((entries, owner) => {
-    const entry = entries[entries.length - 1];
-    if (entry.intersectionRatio >= arriveRatio) {
-      revealAfterPreparedPaint();
-      owner.unobserve(wordmark);
-      return;
-    }
-    if (entry.intersectionRatio === 0) wordmark.classList.add('is-motion-ready');
-  }, { threshold: [0, arriveRatio] });
-
-  observer.observe(wordmark);
-})();
+/* The footer sign-off is flat, static and always present: no arming, no observer, no motion.
+   Its typography, oversize scale and bottom crop are owned entirely by the stylesheet. */
 
 /* Mother Fable carousel law: one image at a time, a 4.5-second dwell and a
    deterministically restarted progress fill. Start-on-view law (k3 carousel bars):

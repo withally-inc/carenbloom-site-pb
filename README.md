@@ -36,7 +36,7 @@ Run the complete self-contained suite with:
 npm test
 ```
 
-The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, deployment packaging, hero behavior, the homepage opening reveal sequence, the single-line values heading, the footer sign-off wordmark, floating navigation, Monday HKT deadlines, application payload and API behavior, all eleven role routes, location metadata, form validation and multipart submission, responsive layouts, reduced motion, failed-video behavior, and no-JavaScript fallbacks.
+The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, deployment packaging, hero behavior, slow-mobile homepage performance, the homepage opening reveal sequence, the single-line values heading, the footer sign-off wordmark, floating navigation, Monday HKT deadlines, application payload and API behavior, all eleven role routes, location metadata, form validation and multipart submission, responsive layouts, reduced motion, failed-video behavior, and no-JavaScript fallbacks.
 
 Focused commands are also available:
 
@@ -74,6 +74,21 @@ The pre-reveal hidden states exist only under a runtime-granted `.js-live` class
 
 `tests/hero-reveal-browser.test.mjs` owns the behavioral contract and runs inside `npm test` and `npm run test:browser`.
 
+## Homepage performance
+
+The home page is tuned for a cold visit on a slow mobile connection, and `evidence/perf-slow-mobile-p1/README.md` holds the measured same-profile before and after baseline, the per-request waterfall, and the visual-quality crops.
+
+`critical.css` is the only render-blocking stylesheet and is a generated minification of the whole of `style.css`, so no section can paint unstyled and deep anchors and restored scroll positions calculate against final geometry.
+It must be regenerated whenever `style.css` changes, and `tests/repository-contract.test.mjs` fails when the two carry different rules.
+`style.css` itself is loaded deferred on every path as the readable source of record.
+
+Photographic stills ship as AVIF `<picture>` sources with narrow-viewport variants, and the original PNGs remain as fallbacks, so the design is unchanged where AVIF is unsupported.
+
+The 1.8MB hero grow video is not fetched at all under `prefers-reduced-motion: reduce`, Save-Data, a viewport of 767px or narrower, or a `slow-2g`, `2g`, or `3g` connection — `shouldLoadHeroVideo` in `hero-scroll.js` owns that decision.
+Those visits scrub the static bud and bloom stills instead, and a video that is fetched and then fails still falls back to the same stills.
+
+`tests/hero-performance-browser.test.mjs` owns this contract and runs inside `npm test`.
+
 ## Operating-record lemon band
 
 The (01) Operating record section carries the captain-approved Candidate 03 stepped lemon march (decision: five whole leafless lemons on exact `--color-sun` `#FDFF6D`, distinct stepped rotational phases, left-to-right), replacing the earlier dot-field mechanism.
@@ -90,11 +105,11 @@ Focused behavioral coverage lives in `tests/lemon-band.test.mjs` (distinct phase
 
 The page closes on an oversized `Care & Bloom` sign-off set in live, selectable PP Mori rather than the earlier raster halftone image, so it inherits the site type system, scales without a bitmap, and is announced once by screen readers.
 
-The wordmark is present by default and arrives with a one-shot transform-and-opacity motion in the homepage's unhurried character; it never loops.
-The motion runs on every arrival path — a normal scroll down, and pages that initialize already at the footer (a restored-scroll reload or a `/#contact` landing), where the hidden prepared state is painted for a frame before the reveal.
-`prefers-reduced-motion: reduce` and disabled, blocked, or failed JavaScript all leave it fully visible at rest, and an already-painted sign-off is never retroactively hidden.
+The sign-off is intentionally flat, static, and always visible: it carries no arrival motion, no observer, and no prepared or hidden state.
+Every arrival path — a gradual scroll down, a restored-scroll reload, a `/#contact` landing, a history back navigation, reduced motion, and disabled or blocked JavaScript — renders the same finished sign-off, so it can never be caught mid-transition or stranded out of view.
+Its typography, oversize scale, bottom crop, ink stroke, and viewport-filling fit are owned entirely by the stylesheet.
 
-`tests/footer-wordmark.test.mjs` owns the behavioral contract — text, single announcement, no raster request, arrival on scroll and on already-at-footer initialization (restored-scroll reload, `/#contact`, and an at-threshold initial intersection, asserted as actual motion rather than class presence), reduced-motion and no-JavaScript rest states, and an overflow-free edge-to-edge fit from 320px to 2560px — and runs inside `npm test` and `npm run test:browser`.
+`tests/footer-wordmark.test.mjs` owns the behavioral contract — text, single announcement, no raster request, no animation or transition on any of those arrival paths, the sign-off rendered from `critical.css` alone, and an overflow-free edge-to-edge fit from 320px to 2560px — and runs inside `npm test` and `npm run test:browser`.
 `evidence/footer-wordmark-f1/README.md` holds the captured evidence and the honest divergences from the Mobbin reference.
 
 ## Role-location metadata

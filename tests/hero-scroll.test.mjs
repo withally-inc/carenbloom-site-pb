@@ -7,9 +7,19 @@ import {
   progressFromScroll,
   resolveMediaState,
   resolveOpeningMode,
+  shouldLoadHeroVideo,
   scrollStateFromScroll,
   timeFromProgress
 } from '../hero-scroll.js';
+
+test('mobile and constrained visitors keep the hero stills without downloading video', () => {
+  const fastDesktop = { reduced: false, viewportWidth: 1440, saveData: false, effectiveType: '4g' };
+  assert.equal(shouldLoadHeroVideo(fastDesktop), true);
+  assert.equal(shouldLoadHeroVideo({ ...fastDesktop, viewportWidth: 390 }), false);
+  assert.equal(shouldLoadHeroVideo({ ...fastDesktop, saveData: true }), false);
+  assert.equal(shouldLoadHeroVideo({ ...fastDesktop, effectiveType: '3g' }), false);
+  assert.equal(shouldLoadHeroVideo({ ...fastDesktop, reduced: true }), false);
+});
 
 test('progress clamps below and above the hero interval', () => {
   assert.equal(clampProgress(-0.5), 0);

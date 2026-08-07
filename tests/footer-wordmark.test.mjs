@@ -17,6 +17,22 @@ async function scrollToFooter(page) {
   await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" }));
 }
 
+/* A real reader travels the page in frames, not in one jump: the sign-off must cross every
+   threshold the old arming machinery watched without ever moving, fading or transitioning. */
+async function scrollToFooterGradually(page) {
+  await page.evaluate(async () => {
+    const step = Math.max(40, Math.round(innerHeight / 8));
+    const frame = () => new Promise((resolve) => requestAnimationFrame(resolve));
+    while (scrollY + innerHeight < document.documentElement.scrollHeight - 1) {
+      const before = scrollY;
+      window.scrollBy({ top: step, behavior: "instant" });
+      await frame();
+      if (scrollY === before) break;
+    }
+    await frame();
+  });
+}
+
 async function wordmarkProbe(page) {
   return page.evaluate(() => {
     const wordmark = document.querySelector("[data-footer-wordmark]");
@@ -29,107 +45,174 @@ async function wordmarkProbe(page) {
     const style = getComputedStyle(text);
     return {
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-      viewportWidth: innerWidth,
       wordmarkRect: { left: wordmarkRect.left, right: wordmarkRect.right, width: wordmarkRect.width, height: wordmarkRect.height },
       textRect: { left: textRect.left, right: textRect.right, top: textRect.top, bottom: textRect.bottom, width: textRect.width, height: textRect.height },
       clipRect: { top: clipRect.top, bottom: clipRect.bottom, height: clipRect.height },
       fontFamily: style.fontFamily,
       fontSize: Number.parseFloat(style.fontSize),
+      textStroke: style.webkitTextStrokeWidth,
       opacity: Number.parseFloat(style.opacity),
       transform: style.transform,
+      transition: style.transitionProperty,
+      animationName: style.animationName,
+      animations: text.getAnimations().length,
+      classes: wordmark.className,
       userSelect: style.userSelect,
     };
   });
 }
 
-async function installMotionSampler(page) {
+/* Samples the sign-off from the first paint onward: any frame that is not fully present,
+   or that carries a running animation or a declared transition, is a regression. */
+async function installStaticSampler(page) {
   await page.addInitScript(() => {
     window.__wordmarkSamples = [];
-    addEventListener("DOMContentLoaded", () => {
-      const startedAt = performance.now();
-      const timer = setInterval(() => {
-        const text = document.querySelector("[data-footer-wordmark] .footer-wordmark-text");
-        if (text) {
-          const style = getComputedStyle(text);
-          window.__wordmarkSamples.push({
-            opacity: Number.parseFloat(style.opacity),
-            transform: style.transform,
-            animations: text.getAnimations().length,
-          });
-        }
-        if (performance.now() - startedAt > 1500) clearInterval(timer);
-      }, 16);
-    }, { once: true });
+    const sample = () => {
+      const text = document.querySelector("[data-footer-wordmark] .footer-wordmark-text");
+      if (!text) return;
+      const style = getComputedStyle(text);
+      window.__wordmarkSamples.push({
+        opacity: style.opacity,
+        transform: style.transform,
+        transition: style.transitionProperty,
+        animationName: style.animationName,
+        animations: text.getAnimations().length,
+      });
+    };
+    const timer = setInterval(sample, 16);
+    addEventListener("load", () => setTimeout(() => clearInterval(timer), 2000), { once: true });
   });
 }
 
-async function assertSampledMotion(page, message) {
-  await page.waitForTimeout(500);
-  const samples = await page.evaluate(() => window.__wordmarkSamples);
-  assert.ok(
-    samples.some((sample) => sample.animations > 0 || (sample.opacity > 0 && sample.opacity < 1)),
-    `${message}; sampled ${JSON.stringify(samples.slice(0, 8))}`,
+function assertSampledStatic(samples, message) {
+  assert.ok(samples.length > 0, `${message}; no samples were captured`);
+  const moving = samples.filter(
+    (sample) =>
+      sample.opacity !== "1" ||
+      sample.transform !== "none" ||
+      sample.animations > 0 ||
+      sample.animationName !== "none" ||
+      (sample.transition !== "none" && sample.transition !== "all"),
   );
+  assert.equal(moving.length, 0, `${message}; ${JSON.stringify(moving.slice(0, 4))}`);
+}
+
+async function readSamples(page) {
+  return page.evaluate(() => window.__wordmarkSamples);
+}
+
+async function stylesheetLinkState(page) {
+  return page.evaluate(() => {
+    const link = [...document.querySelectorAll('link[rel="stylesheet"]')].find((candidate) => candidate.getAttribute("href") === "style.css");
+    if (!link) return null;
+    return { media: link.getAttribute("media"), deferred: link.hasAttribute("onload") };
+  });
 }
 
 try {
-  const motionPage = await browser.newPage({ viewport: viewports[0] });
+  const staticPage = await browser.newPage({ viewport: viewports[0] });
+  await installStaticSampler(staticPage);
   const requestedUrls = [];
-  motionPage.on("request", (request) => requestedUrls.push(request.url()));
-  await motionPage.goto(`${baseUrl}/`, { waitUntil: "load" });
-  await motionPage.evaluate(() => document.fonts.ready);
+  staticPage.on("request", (request) => requestedUrls.push(request.url()));
+  await staticPage.goto(`${baseUrl}/`, { waitUntil: "load" });
+  await staticPage.evaluate(() => document.fonts.ready);
 
-  const wordmark = motionPage.locator("[data-footer-wordmark]");
+  const wordmark = staticPage.locator("[data-footer-wordmark]");
   assert.equal(await wordmark.count(), 1, "the footer should expose one live wordmark");
   assert.equal(await wordmark.evaluate((element) => element.tagName), "P", "the wordmark should be semantic text, not an image role");
   assert.equal((await wordmark.textContent()).replace(/\s+/g, " ").trim(), "Care & Bloom");
-  assert.equal(await motionPage.locator("#contact img.wordmark").count(), 0, "the footer should not render the raster wordmark");
-  assert.equal(await motionPage.locator("#contact .cf-mark").getAttribute("aria-hidden"), "true", "the compact duplicate mark should not be announced twice");
-
-  await motionPage.waitForFunction(() => document.querySelector("[data-footer-wordmark]")?.classList.contains("is-motion-ready"));
-  const before = await wordmarkProbe(motionPage);
-  assert.equal(before.opacity, 0, "the prepared offscreen wordmark should wait below its crop");
-  assert.notEqual(before.transform, "none", "the prepared offscreen wordmark should have an arrival transform");
-
-  await scrollToFooter(motionPage);
-  await motionPage.waitForFunction(() => document.querySelector("[data-footer-wordmark]")?.classList.contains("is-visible"));
-  await motionPage.waitForTimeout(180);
-  const during = await wordmarkProbe(motionPage);
-  assert.ok(during.opacity > 0 && during.opacity < 1, `the arrival should be visibly running, received opacity ${during.opacity}`);
-  assert.notEqual(during.transform, "none", "the wordmark should still be settling during the captured transition");
-
-  await motionPage.waitForTimeout(1100);
-  const after = await wordmarkProbe(motionPage);
-  assert.equal(after.opacity, 1, "the wordmark should finish fully present");
-  assert.equal(after.transform, "none", "the wordmark should finish on its natural layout geometry");
-  assert.equal(await wordmark.evaluate((element) => element.classList.contains("is-visible")), true, "the arrival should complete once");
+  assert.equal(await staticPage.locator("#contact img.wordmark").count(), 0, "the footer should not render the raster wordmark");
+  assert.equal(await staticPage.locator("#contact .cf-mark").getAttribute("aria-hidden"), "true", "the compact duplicate mark should not be announced twice");
   assert.equal(requestedUrls.some((url) => url.includes("wordmark-dither-stacked.png")), false, "the removed raster must never be requested");
-  await motionPage.close();
+
+  const onLoad = await wordmarkProbe(staticPage);
+  assert.equal(onLoad.opacity, 1, "the sign-off should be fully present on a fresh load");
+  assert.equal(onLoad.transform, "none", "the sign-off should sit on its natural layout geometry");
+  assert.equal(onLoad.animations, 0, "the sign-off should carry no animation");
+  assert.equal(onLoad.animationName, "none", "the sign-off should declare no keyframe animation");
+  assert.equal(onLoad.classes, "footer-wordmark", "no arming state should ever be applied to the sign-off");
+
+  await scrollToFooterGradually(staticPage);
+  const afterGradualScroll = await wordmarkProbe(staticPage);
+  assert.equal(afterGradualScroll.opacity, 1, "a gradual scroll-down should leave the sign-off fully present");
+  assert.equal(afterGradualScroll.transform, "none", "a gradual scroll-down should never displace the sign-off");
+  assert.equal(afterGradualScroll.classes, "footer-wordmark", "a gradual scroll-down should not arm any state");
+  assertSampledStatic(await readSamples(staticPage), "a fresh load and gradual scroll must never animate the sign-off");
+  await staticPage.close();
+
+  /* critical.css is the whole stylesheet, so a reader who scrolls before style.css lands sees the
+     finished page: below-fold sections must already carry their styled geometry without it. */
+  const criticalOnlyPage = await browser.newPage({ viewport: viewports[0] });
+  await criticalOnlyPage.route("**/style.css", (route) => route.abort());
+  await criticalOnlyPage.goto(`${baseUrl}/`, { waitUntil: "load" });
+  await criticalOnlyPage.evaluate(() => document.fonts.ready);
+  await scrollToFooter(criticalOnlyPage);
+  const criticalOnly = await wordmarkProbe(criticalOnlyPage);
+  assert.match(criticalOnly.fontFamily, /PP Mori/, "critical.css alone should carry the sign-off's display face");
+  assert.ok(criticalOnly.textRect.width >= viewports[0].width * 0.88, "critical.css alone should carry the sign-off's oversize scale");
+  assert.equal(criticalOnly.opacity, 1, "critical.css alone should leave the sign-off visible");
+  const criticalOnlyBelowFold = await criticalOnlyPage.evaluate(() => {
+    const probe = (selector) => {
+      const element = document.querySelector(selector);
+      if (!element) return null;
+      const style = getComputedStyle(element);
+      return { display: style.display, maxWidth: style.maxWidth, position: style.position };
+    };
+    return { wrap: probe("#contact .wrap"), band: probe(".stat-band"), deck: probe(".value-deck") };
+  });
+  assert.notEqual(criticalOnlyBelowFold.wrap, null, "the contact section should exist below the fold");
+  assert.notEqual(criticalOnlyBelowFold.wrap.maxWidth, "none", "below-fold sections must not paint unstyled before style.css arrives");
+  assert.notEqual(criticalOnlyBelowFold.band, null, "the stat band should exist below the fold");
+  assert.equal(criticalOnlyBelowFold.band.position, "relative", "the stat band must already be laid out by critical.css");
+  await criticalOnlyPage.close();
 
   const restoredPage = await browser.newPage({ viewport: viewports[0] });
-  await installMotionSampler(restoredPage);
   await restoredPage.goto(`${baseUrl}/`, { waitUntil: "load" });
   await scrollToFooter(restoredPage);
   await restoredPage.waitForFunction(() => scrollY > 0 && document.querySelector("[data-footer-wordmark]")?.getBoundingClientRect().top < innerHeight);
+  await installStaticSampler(restoredPage);
   await restoredPage.reload({ waitUntil: "load" });
   assert.ok(await restoredPage.evaluate(() => scrollY > 0), "reload should restore the footer scroll position");
-  await assertSampledMotion(restoredPage, "a reload restored at the footer should animate");
+  assert.deepEqual(await stylesheetLinkState(restoredPage), { media: "all", deferred: true }, "a reload should keep the source-of-record stylesheet off the render path");
+  const restoredState = await wordmarkProbe(restoredPage);
+  assert.equal(restoredState.opacity, 1, "a reload restored at the footer should render the sign-off present");
+  assert.equal(restoredState.transform, "none", "a reload restored at the footer should render the sign-off static");
+  assertSampledStatic(await readSamples(restoredPage), "a reload restored at the footer must not animate the sign-off");
   await restoredPage.close();
 
   const contactPage = await browser.newPage({ viewport: viewports[0] });
-  await installMotionSampler(contactPage);
+  await installStaticSampler(contactPage);
   await contactPage.goto(`${baseUrl}/#contact`, { waitUntil: "load" });
-  await scrollToFooter(contactPage);
-  await assertSampledMotion(contactPage, "a #contact arrival should animate");
+  await contactPage.evaluate(() => document.fonts.ready);
+  assert.deepEqual(await stylesheetLinkState(contactPage), { media: "all", deferred: true }, "a hash arrival should keep the source-of-record stylesheet off the render path");
+  const contactState = await wordmarkProbe(contactPage);
+  assert.equal(contactState.opacity, 1, "a #contact arrival should render the sign-off present");
+  assert.equal(contactState.transform, "none", "a #contact arrival should render the sign-off static");
+  assertSampledStatic(await readSamples(contactPage), "a #contact arrival must not animate the sign-off");
   await contactPage.close();
+
+  /* A history re-parse restores the viewport, so the blocking sheet alone must already carry the
+     final geometry — the deferred source-of-record sheet may never be needed for layout. */
+  const historyPage = await browser.newPage({ viewport: viewports[0] });
+  await historyPage.goto(`${baseUrl}/`, { waitUntil: "load" });
+  await scrollToFooter(historyPage);
+  await historyPage.waitForFunction(() => scrollY > 0);
+  await historyPage.goto(`${baseUrl}/careers/apply/`, { waitUntil: "load" });
+  await installStaticSampler(historyPage);
+  await historyPage.goBack({ waitUntil: "load" });
+  assert.deepEqual(await stylesheetLinkState(historyPage), { media: "all", deferred: true }, "a back/forward navigation should keep the source-of-record stylesheet off the render path");
+  assert.ok(await historyPage.evaluate(() => scrollY > 0), "back should restore the footer scroll position");
+  const historyState = await wordmarkProbe(historyPage);
+  assert.equal(historyState.opacity, 1, "a restored back navigation should render the sign-off present");
+  assert.equal(historyState.transform, "none", "a restored back navigation should render the sign-off static");
+  assertSampledStatic(await readSamples(historyPage), "a restored back navigation must not animate the sign-off");
+  await historyPage.close();
 
   for (const viewport of viewports) {
     const page = await browser.newPage({ viewport });
     await page.goto(`${baseUrl}/`, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
     await scrollToFooter(page);
-    await page.waitForFunction(() => document.querySelector("[data-footer-wordmark]")?.classList.contains("is-visible"));
-    await page.waitForTimeout(1200);
     const state = await wordmarkProbe(page);
     assert.ok(state, `${viewport.width}px should render the live wordmark`);
     assert.equal(state.overflow, 0, `${viewport.width}px must not overflow horizontally`);
@@ -141,8 +224,10 @@ try {
     assert.ok(bottomCrop >= state.fontSize * 0.04, `${viewport.width}px wordmark should keep an intentional bottom crop`);
     assert.ok(bottomCrop <= state.fontSize * 0.1, `${viewport.width}px wordmark crop should not cut too deeply into PP Mori`);
     assert.match(state.fontFamily, /PP Mori/, `${viewport.width}px wordmark should inherit the display face`);
+    assert.ok(Number.parseFloat(state.textStroke) >= 1, `${viewport.width}px wordmark should keep its ink stroke`);
     assert.notEqual(state.userSelect, "none", `${viewport.width}px wordmark should remain selectable`);
-    assert.equal(state.opacity, 1, `${viewport.width}px wordmark should finish visible`);
+    assert.equal(state.opacity, 1, `${viewport.width}px wordmark should render fully present`);
+    assert.equal(state.transform, "none", `${viewport.width}px wordmark should render static`);
     if (viewport.width === 320) {
       const conversationLine = await page.locator(".contact-display .line:nth-child(2) > span").evaluate((line) => {
         const style = getComputedStyle(line);
@@ -157,101 +242,16 @@ try {
   }
 
   const reducedPage = await browser.newPage({ viewport: viewports[0], reducedMotion: "reduce" });
+  await installStaticSampler(reducedPage);
   await reducedPage.goto(`${baseUrl}/`, { waitUntil: "load" });
   await reducedPage.evaluate(() => document.fonts.ready);
-  const reducedWordmark = reducedPage.locator("[data-footer-wordmark]");
-  assert.equal(await reducedWordmark.evaluate((element) => element.classList.contains("is-motion-ready")), false, "reduced motion should not prepare choreography");
+  await scrollToFooter(reducedPage);
   const reducedState = await wordmarkProbe(reducedPage);
-  assert.equal(reducedState.opacity, 1, "reduced motion should render the final state immediately");
-  assert.equal(reducedState.transform, "none");
+  assert.equal(reducedState.opacity, 1, "reduced motion should render the sign-off present");
+  assert.equal(reducedState.transform, "none", "reduced motion should render the sign-off static");
+  assert.equal(reducedState.classes, "footer-wordmark", "reduced motion should not apply any arming state");
+  assertSampledStatic(await readSamples(reducedPage), "reduced motion must not animate the sign-off");
   await reducedPage.close();
-
-  /* A deferred module runs after the wordmark has already painted, so hiding it may only be armed
-     once the observer proves it is fully offscreen — never while it is on screen below threshold. */
-  const raceContext = await browser.newContext({ viewport: viewports[0] });
-  const racePage = await raceContext.newPage();
-  await racePage.addInitScript(() => {
-    window.__observers = [];
-    window.IntersectionObserver = class {
-      constructor(callback, options) {
-        this.callback = callback;
-        this.options = options || {};
-        this.targets = [];
-        window.__observers.push(this);
-      }
-      observe(target) { this.targets.push(target); }
-      unobserve(target) { this.targets = this.targets.filter((candidate) => candidate !== target); }
-      disconnect() { this.targets = []; }
-      takeRecords() { return []; }
-    };
-  });
-  await racePage.goto(`${baseUrl}/`, { waitUntil: "load" });
-  await racePage.evaluate(() => document.fonts.ready);
-
-  const deliver = (ratio) => racePage.evaluate((intersectionRatio) => {
-    const wordmark = document.querySelector("[data-footer-wordmark]");
-    const observer = window.__observers.find((candidate) => candidate.targets.includes(wordmark));
-    if (!observer) return null;
-    const thresholds = [].concat(observer.options.threshold ?? 0);
-    observer.callback([{ target: wordmark, intersectionRatio, isIntersecting: thresholds.some((value) => intersectionRatio >= value && intersectionRatio > 0) }], observer);
-    return {
-      thresholds,
-      motionReady: wordmark.classList.contains("is-motion-ready"),
-      visible: wordmark.classList.contains("is-visible"),
-      observed: observer.targets.includes(wordmark),
-      opacity: getComputedStyle(wordmark.querySelector(".footer-wordmark-text")).opacity,
-    };
-  }, ratio);
-
-  const onScreenBelowThreshold = await deliver(0.1);
-  assert.ok(onScreenBelowThreshold, "the wordmark should register an intersection observer");
-  assert.ok(onScreenBelowThreshold.thresholds.includes(0), "the observer must watch the fully-offscreen boundary");
-  assert.equal(onScreenBelowThreshold.motionReady, false, "an on-screen wordmark must not be armed for hiding");
-  assert.equal(onScreenBelowThreshold.opacity, "1", "an already-painted, on-screen wordmark must never pop out of view");
-
-  const initialContext = await browser.newContext({ viewport: viewports[0] });
-  const initialPage = await initialContext.newPage();
-  await initialPage.addInitScript(() => {
-    window.__observers = [];
-    window.IntersectionObserver = class {
-      constructor(callback, options) {
-        this.callback = callback;
-        this.options = options || {};
-        this.targets = [];
-        window.__observers.push(this);
-      }
-      observe(target) { this.targets.push(target); }
-      unobserve(target) { this.targets = this.targets.filter((candidate) => candidate !== target); }
-      disconnect() { this.targets = []; }
-      takeRecords() { return []; }
-    };
-  });
-  await initialPage.goto(`${baseUrl}/`, { waitUntil: "load" });
-  await initialPage.evaluate(async () => {
-    const wordmark = document.querySelector("[data-footer-wordmark]");
-    const text = wordmark.querySelector(".footer-wordmark-text");
-    getComputedStyle(text).opacity;
-    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-    const observer = window.__observers.find((candidate) => candidate.targets.includes(wordmark));
-    observer.callback([{ target: wordmark, intersectionRatio: 0.5, isIntersecting: true }], observer);
-  });
-  await initialPage.waitForTimeout(180);
-  const initialDuring = await wordmarkProbe(initialPage);
-  assert.ok(initialDuring.opacity > 0 && initialDuring.opacity < 1, `an initially intersecting wordmark should animate, received opacity ${initialDuring.opacity}`);
-  assert.notEqual(initialDuring.transform, "none", "an initially intersecting wordmark should visibly settle");
-  await initialContext.close();
-
-  const offScreen = await deliver(0);
-  assert.equal(offScreen.motionReady, true, "a fully offscreen wordmark should arm the arrival");
-  assert.equal(offScreen.opacity, "0", "the armed wordmark should wait below its crop");
-
-  const arrived = await deliver(0.5);
-  assert.equal(arrived.observed, false, "the arrival should be one-shot");
-  await racePage.waitForTimeout(180);
-  const arrivedDuring = await wordmarkProbe(racePage);
-  assert.ok(arrivedDuring.opacity > 0 && arrivedDuring.opacity < 1, `crossing the arrival ratio should animate, received opacity ${arrivedDuring.opacity}`);
-  assert.equal(await racePage.locator("[data-footer-wordmark]").evaluate((element) => element.classList.contains("is-visible")), true, "crossing the arrival ratio should reveal the wordmark");
-  await raceContext.close();
 
   const noJsContext = await browser.newContext({ viewport: viewports[0], javaScriptEnabled: false });
   const noJsPage = await noJsContext.newPage();
@@ -259,6 +259,7 @@ try {
   const noJsState = await wordmarkProbe(noJsPage);
   assert.equal(noJsState.opacity, 1, "without JavaScript the wordmark should remain fully visible");
   assert.equal(noJsState.transform, "none");
+  assert.equal(noJsState.classes, "footer-wordmark", "the no-JavaScript state should carry no arming class");
   assert.equal(await noJsPage.locator("html").getAttribute("class"), null, "the no-JavaScript state should not depend on a stale enhancement class");
   const noJsContactHeading = await noJsPage.locator(".contact-display .line > span").evaluateAll((lines) => lines.map((line) => ({
     opacity: getComputedStyle(line).opacity,
@@ -273,3 +274,5 @@ try {
 } finally {
   await browser.close();
 }
+
+console.log("footer sign-off browser tests passed");

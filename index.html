@@ -6,7 +6,15 @@
 <title>Care &amp; Bloom</title>
 <link rel="icon" href="/images/cb-logo-white.svg" type="image/svg+xml">
 <link rel="stylesheet" href="tokens.css">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="critical.css">
+<!-- critical.css is the minified whole of style.css, so the one blocking sheet already carries every
+     section: no path can paint unstyled, scroll restoration and deep anchors calculate against final
+     geometry, and nothing reflows later. style.css follows deferred on every path purely as the
+     readable source of record, so a stale minified copy would still be corrected. -->
+<link rel="stylesheet" href="style.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="style.css"></noscript>
+<link rel="modulepreload" href="hero-scroll.js">
+<link rel="modulepreload" href="nav-float.js">
 <script>
 /* Render-blocking, in <head>: no paint may ever happen without .js-live, or the opening's
    hidden states would flash their content and then take it away. The reveal must also never
@@ -53,13 +61,23 @@
       <div class="stage-center">
         <div class="hero-media bloom" id="heroMedia" data-state="loading" role="img"
              aria-label="A hand grows a flower from a true-stem bud into a yellow-breaking-through bloom">
-          <img class="hero-frame hero-frame-start" src="assets/hero-grow-start.png" fetchpriority="high"
-               alt="" width="896" height="1200">
+          <picture>
+            <source type="image/avif"
+                    srcset="assets/hero-grow-start-448.avif 448w, assets/hero-grow-start.avif 896w"
+                    sizes="(max-width: 767px) 76vw, 463px">
+            <img class="hero-frame hero-frame-start" src="assets/hero-grow-start.png" fetchpriority="high"
+                 alt="" width="896" height="1200">
+          </picture>
           <video class="hero-grow-video" id="heroGrowVideo" muted playsinline preload="metadata"
-                 poster="assets/hero-grow-start.png" disablepictureinpicture disableremoteplayback
+                 poster="assets/hero-grow-start.avif" disablepictureinpicture disableremoteplayback
                  data-src="assets/hero-grow.mp4" aria-hidden="true"></video>
-          <img class="hero-frame hero-frame-end" src="assets/hero-grow-end.png" alt=""
-               width="896" height="1200">
+          <picture>
+            <source type="image/avif"
+                    srcset="assets/hero-grow-end-448.avif 448w, assets/hero-grow-end.avif 896w"
+                    sizes="(max-width: 767px) 76vw, 463px">
+            <img class="hero-frame hero-frame-end" src="assets/hero-grow-end.png" alt=""
+                 width="896" height="1200">
+          </picture>
         </div>
 
         <div class="chips-mobile">
@@ -279,12 +297,22 @@
                  alt="Hello Nancy's Lem product photographed on a bright yellow set with lemon slices">
           </div>
           <div class="brand-slide" aria-hidden="true">
-            <img class="brand-img" src="images/carenbloom-v3/nancy-raspberry.png" width="800" height="800" loading="lazy"
-                 alt="Hello Nancy raspberry-form product held in a hand on a pink ground">
+            <picture>
+              <source type="image/avif"
+                      srcset="images/carenbloom-v3/nancy-raspberry-540.avif 540w, images/carenbloom-v3/nancy-raspberry.avif 800w"
+                      sizes="(max-width: 767px) calc(100vw - 64px), 50vw">
+              <img class="brand-img" src="images/carenbloom-v3/nancy-raspberry.png" width="800" height="800" loading="lazy"
+                   alt="Hello Nancy raspberry-form product held in a hand on a pink ground">
+            </picture>
           </div>
           <div class="brand-slide" aria-hidden="true">
-            <img class="brand-img" src="images/carenbloom-v3/nancy-avocado.png" width="1080" height="1080" loading="lazy"
-                 alt="Hello Nancy avocado-form product arranged among avocados on a green ground">
+            <picture>
+              <source type="image/avif"
+                      srcset="images/carenbloom-v3/nancy-avocado-540.avif 540w, images/carenbloom-v3/nancy-avocado.avif 1080w"
+                      sizes="(max-width: 767px) calc(100vw - 64px), 50vw">
+              <img class="brand-img" src="images/carenbloom-v3/nancy-avocado.png" width="1080" height="1080" loading="lazy"
+                   alt="Hello Nancy avocado-form product arranged among avocados on a green ground">
+            </picture>
           </div>
         </div>
         <div class="progress" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span></div>
@@ -307,12 +335,22 @@
                  alt="Biird's blue glass object resting on a bare branch against a blue backdrop">
           </div>
           <div class="brand-slide" aria-hidden="true">
-            <img class="brand-img" src="images/carenbloom-v3/biird-glass-sky.png" width="1080" height="1080" loading="lazy"
-                 alt="Biird glass wand held against a blue sky and white clouds">
+            <picture>
+              <source type="image/avif"
+                      srcset="images/carenbloom-v3/biird-glass-sky-540.avif 540w, images/carenbloom-v3/biird-glass-sky.avif 1080w"
+                      sizes="(max-width: 767px) calc(100vw - 64px), 50vw">
+              <img class="brand-img" src="images/carenbloom-v3/biird-glass-sky.png" width="1080" height="1080" loading="lazy"
+                   alt="Biird glass wand held against a blue sky and white clouds">
+            </picture>
           </div>
           <div class="brand-slide" aria-hidden="true">
-            <img class="brand-img" src="images/carenbloom-v3/biird-lilac-first-timer.png" width="800" height="800" loading="lazy"
-                 alt="Biird lilac product in an on-body lifestyle photograph with first-timer guidance">
+            <picture>
+              <source type="image/avif"
+                      srcset="images/carenbloom-v3/biird-lilac-first-timer-540.avif 540w, images/carenbloom-v3/biird-lilac-first-timer.avif 800w"
+                      sizes="(max-width: 767px) calc(100vw - 64px), 50vw">
+              <img class="brand-img" src="images/carenbloom-v3/biird-lilac-first-timer.png" width="800" height="800" loading="lazy"
+                   alt="Biird lilac product in an on-body lifestyle photograph with first-timer guidance">
+            </picture>
           </div>
         </div>
         <div class="progress" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span></div>
@@ -368,8 +406,12 @@
 
     <div class="people-grid">
       <article class="person">
-        <img class="p-img" src="assets/leader-rahul.png" width="800" height="800" loading="lazy"
-             alt="Portrait of Rahul Ramchand, printed in cobalt duotone">
+        <picture>
+          <source type="image/avif" srcset="assets/leader-rahul-540.avif 540w, assets/leader-rahul.avif 800w"
+                  sizes="(max-width: 767px) calc(100vw - 64px), 50vw">
+          <img class="p-img" src="assets/leader-rahul.png" width="800" height="800" loading="lazy"
+               alt="Portrait of Rahul Ramchand, printed in cobalt duotone">
+        </picture>
         <div class="p-meta">
           <span class="p-index count-chip">01</span>
           <h3 class="p-name">Rahul Ramchand</h3>
@@ -381,8 +423,12 @@
       </article>
 
       <article class="person">
-        <img class="p-img" src="assets/leader-momoko.png" width="800" height="800" loading="lazy"
-             alt="Portrait of Momoko Kashiwabara, printed in cobalt duotone">
+        <picture>
+          <source type="image/avif" srcset="assets/leader-momoko-540.avif 540w, assets/leader-momoko.avif 800w"
+                  sizes="(max-width: 767px) calc(100vw - 64px), 50vw">
+          <img class="p-img" src="assets/leader-momoko.png" width="800" height="800" loading="lazy"
+               alt="Portrait of Momoko Kashiwabara, printed in cobalt duotone">
+        </picture>
         <div class="p-meta">
           <span class="p-index count-chip">02</span>
           <h3 class="p-name">Momoko Kashiwabara</h3>

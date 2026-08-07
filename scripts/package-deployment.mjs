@@ -7,6 +7,7 @@ const target = path.join(root, ".vercel-deploy");
 const runtimeAllowlist = [
   ".vercelignore",
   "index.html",
+  "critical.css",
   "style.css",
   "app.js",
   "tokens.css",
