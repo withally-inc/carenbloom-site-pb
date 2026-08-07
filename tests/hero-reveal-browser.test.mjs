@@ -12,6 +12,27 @@ const browser = await chromium.launch({ headless: true });
 const heroOpacity = (page) =>
   page.locator("#heroMedia").evaluate((media) => Number(getComputedStyle(media).opacity));
 
+/* "The art side begins blank" is a first-paint property, and the blank beat before hero-emerge
+   lasts only HERO_BEAT_MS after arrival — which itself lands a few frames into the navigation.
+   Reading it back over an async round trip after goto() therefore samples whenever the driver
+   happens to get a turn, and a loaded machine spends longer than the beat there, catching the
+   emergence already underway. Record the value in the page on its first frame instead: same
+   assertion, sampled at the moment the contract is actually about. */
+const armFirstPaintHeroOpacity = (page) =>
+  page.addInitScript(() => {
+    const capture = () => {
+      const media = document.querySelector("#heroMedia");
+      if (!media) return requestAnimationFrame(capture);
+      window.__firstPaintHeroOpacity = Number(getComputedStyle(media).opacity);
+    };
+    requestAnimationFrame(capture);
+  });
+
+const firstPaintHeroOpacity = async (page) => {
+  await page.waitForFunction(() => typeof window.__firstPaintHeroOpacity === "number");
+  return page.evaluate(() => window.__firstPaintHeroOpacity);
+};
+
 const chipStates = (page) =>
   page.locator(".chip").evaluateAll((chips) => chips.map((chip) => ({
     revealed: chip.classList.contains("chip-in"),
@@ -34,6 +55,7 @@ async function scrollInstant(page, y) {
 try {
   // ---------- desktop fresh landing: type first, blank art side, cards down ----------
   const desktop = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await armFirstPaintHeroOpacity(desktop);
   await desktop.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
   assert.equal(
     await desktop.locator(".word-top").evaluate((word) => Number(getComputedStyle(word).opacity)),
@@ -45,7 +67,7 @@ try {
     true,
     "the head script must grant .js-live before any paint, so nothing can flash and then hide",
   );
-  assert.equal(await heroOpacity(desktop), 0, "the art side must begin blank");
+  assert.equal(await firstPaintHeroOpacity(desktop), 0, "the art side must begin blank");
   const blankBox = await heroLayoutBox(desktop);
   assert.ok(blankBox.width > 0 && blankBox.height > 0, "the blank art side must hold its reserved box");
   assert.equal(
@@ -120,8 +142,9 @@ try {
   // ---------- phones: the same sequence at 390px and 320px ----------
   for (const width of [390, 320]) {
     const phone = await browser.newPage({ viewport: { width, height: 844 } });
+    await armFirstPaintHeroOpacity(phone);
     await phone.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
-    assert.equal(await heroOpacity(phone), 0, `${width}px must open with the blank art side`);
+    assert.equal(await firstPaintHeroOpacity(phone), 0, `${width}px must open with the blank art side`);
     const phoneBlankBox = await heroLayoutBox(phone);
     await phone.waitForFunction(
       () => Number(getComputedStyle(document.querySelector("#heroMedia")).opacity) === 1,
