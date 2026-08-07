@@ -4,6 +4,8 @@ Captured locally with `chrome-devtools-axi` on 2026-08-07.
 
 The baseline images were captured from the untouched task `HEAD` served separately from the implementation worktree.
 
+`after/desktop-footer.png` and `after/mobile-footer.png` were re-captured with the repository's Playwright browser against the contained build, replacing the earlier frames that showed the reverted lateral overscan; every other frame is the original capture.
+
 ## Desktop header — 1440×900
 
 | Before | After |
@@ -44,9 +46,13 @@ The production SVG therefore follows the surrounding theme through `currentColor
 | --- | --- |
 | ![Mobile footer before](before/mobile-footer.png) | ![Mobile footer after](after/mobile-footer.png) |
 
-The footer SVG overscans the viewport by 1% per side and clips the bottom 6.6% of its rendered height.
+The footer SVG spans the full viewport width with no lateral overscan and clips only the bottom ~6% of its rendered height, so the complete lockup stays inside both page edges.
 
-At 1440px the SVG measured 1468.8×255.97px inside a 1440×239.03px clip, with 0px document overflow.
+At 1440px the SVG measured 1440.00×250.95px inside a 1440.00×236.02px clip — a 5.95% bottom crop, left edge at x=0, right edge at x=1440, with 0px document overflow.
+
+At 390px the SVG measured 390.00×67.95px inside a 390.00×63.91px clip — a 5.96% bottom crop, left edge at x=0, right edge at x=390, with 0px document overflow.
+
+Because the wordmark glyphs end at y≈32.4 of the 241×42 viewBox, the crop line falls inside the flower mark: every letterform is whole and only the lowest petal is flat-cut.
 
 The footer logo computed to `rgb(35, 49, 228)` from `--color-accent`, reported zero animations, and remained fully present.
 
