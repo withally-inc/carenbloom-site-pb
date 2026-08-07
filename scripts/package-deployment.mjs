@@ -7,6 +7,11 @@ const target = path.join(root, ".vercel-deploy");
 const runtimeAllowlist = [
   ".vercelignore",
   "index.html",
+  "favicon.svg",
+  "favicon-16.png",
+  "favicon-32.png",
+  "favicon-512.png",
+  "apple-touch-icon-180.png",
   "critical.css",
   "style.css",
   "app.js",

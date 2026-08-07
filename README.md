@@ -36,7 +36,7 @@ Run the complete self-contained suite with:
 npm test
 ```
 
-The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, deployment packaging, hero behavior, slow-mobile homepage performance, the homepage opening reveal sequence, the single-line values heading, the footer sign-off wordmark, floating navigation, Monday HKT deadlines, application payload and API behavior, all eleven role routes, location metadata, form validation and multipart submission, responsive layouts, reduced motion, failed-video behavior, and no-JavaScript fallbacks.
+The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, the approved favicon assets and their declarations, deployment packaging, hero behavior, slow-mobile homepage performance, the homepage opening reveal sequence, the single-line values heading, the footer sign-off wordmark, floating navigation, Monday HKT deadlines, application payload and API behavior, all eleven role routes, location metadata, form validation and multipart submission, responsive layouts, reduced motion, failed-video behavior, and no-JavaScript fallbacks.
 
 Focused commands are also available:
 
@@ -61,6 +61,16 @@ PP Mori ships in regular and semibold weights, and `fonts/AzeretMono-VF.ttf` rem
 The mobile navigation keeps the Azeret Mono Care & Bloom mark whole at 320px by tightening the two-item gap and setting the mark at a legible 12px with slight negative tracking.
 
 `tests/repository-contract.test.mjs` owns the font and licence dependency contract, and `tests/nav-float-browser.test.mjs` pins the complete mobile mark before and after the bar floats.
+
+## Favicon
+
+Both HTML entry points — the home page and the shared application page — carry the captain-approved Care & Bloom flower icon, which replaced the earlier full-wordmark favicon that was illegible at tab size.
+
+Five durable assets ship from the repository root: `favicon.svg`, the optically strengthened `favicon-16.png`, `favicon-32.png`, `favicon-512.png`, and `apple-touch-icon-180.png`.
+
+Every head declares all five, and no web app manifest is used.
+
+The assets are approved artwork rather than build output, so they are pinned by SHA-256 and must not be regenerated or re-exported; `tests/repository-contract.test.mjs` owns those hashes and the exact declarations, `tests/deployment-package.test.mjs` proves all five reach the deployment tree, and `tests/pb-integration.test.mjs` proves each one resolves in a real browser on both pages.
 
 ## Homepage opening sequence
 
@@ -140,7 +150,7 @@ Create the strict runtime deployment directory with:
 npm run package:deployment
 ```
 
-The generated `.vercel-deploy/` directory contains only runtime HTML, CSS, browser JavaScript, API files, fonts, icons, images, video, a minimal runtime package manifest, and Vercel configuration.
+The generated `.vercel-deploy/` directory contains only runtime HTML, CSS, browser JavaScript, API files, fonts, favicons, icons, images, video, a minimal runtime package manifest, and Vercel configuration.
 
 It excludes Git data, Vercel link state, tests, evidence, reports, environment files, local artifacts, and private material.
 

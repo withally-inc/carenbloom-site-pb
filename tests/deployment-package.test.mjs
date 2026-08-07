@@ -31,6 +31,11 @@ test("the emitted deployment tree contains runtime files and no private developm
     .sort();
   for (const required of [
     "index.html",
+    "favicon.svg",
+    "favicon-16.png",
+    "favicon-32.png",
+    "favicon-512.png",
+    "apple-touch-icon-180.png",
     "critical.css",
     "careers/apply/index.html",
     "api/applications.js",

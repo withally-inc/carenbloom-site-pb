@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 import path from "node:path";
@@ -7,9 +8,24 @@ import { careerRoles } from "../scripts/careers-roles.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const decodeEntities = (value) => value.replace(/&amp;/g, "&");
+const faviconAssets = {
+  "favicon.svg": "a2e3aceeee7439b4df0a7ae619c5df16441b11968286f561aa2039f8c6b34cf2",
+  "favicon-16.png": "3df6cd3925d90752e8e25250e7eb041849a991e973dd9c41d98efc2073667e8d",
+  "favicon-32.png": "a1dc5a0165f8f95d500979c82bafb6129db53dc1d316c8059d32258053d35286",
+  "favicon-512.png": "cb52f30b187e47cf2df5522b16f867c365deb6083a08b67ecdab2ee25e0e1413",
+  "apple-touch-icon-180.png": "a8c8d7a6c0ef8f01a37b89265407427d52fbbdad7acb3a7b54cdfa3e525bfccc",
+};
+const faviconTags = [
+  '<link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">',
+  '<link rel="icon" href="/favicon-16.png" type="image/png" sizes="16x16">',
+  '<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">',
+  '<link rel="icon" href="/favicon-512.png" type="image/png" sizes="512x512">',
+  '<link rel="apple-touch-icon" href="/apple-touch-icon-180.png" sizes="180x180">',
+];
 
 const runtimeFiles = [
   "index.html",
+  ...Object.keys(faviconAssets),
   "style.css",
   "app.js",
   "tokens.css",
@@ -36,6 +52,22 @@ test("the clean repository owns the PB home at root", () => {
 test("the runtime dependency closure is complete", () => {
   const missing = runtimeFiles.filter((file) => !existsSync(path.join(root, file)));
   assert.deepEqual(missing, [], `missing runtime files: ${missing.join(", ")}`);
+});
+
+test("the approved favicon assets and declarations ship unchanged", () => {
+  for (const [file, expectedHash] of Object.entries(faviconAssets)) {
+    const contents = readFileSync(path.join(root, file));
+    const actualHash = createHash("sha256").update(contents).digest("hex");
+    assert.equal(actualHash, expectedHash, `${file} should match the captain-approved durable asset`);
+  }
+
+  for (const file of ["index.html", "careers/apply/index.html"]) {
+    const html = readFileSync(path.join(root, file), "utf8");
+    for (const tag of faviconTags) {
+      assert.equal(html.split(tag).length - 1, 1, `${file} should declare ${tag} exactly once`);
+    }
+    assert.doesNotMatch(html, /<link rel="icon" href="\/images\/cb-logo-white\.svg"/, `${file} should not declare the obsolete wordmark favicon`);
+  }
 });
 
 test("production owns only the approved PP Mori and Azeret typography", () => {
