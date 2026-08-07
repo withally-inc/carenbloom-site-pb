@@ -58,7 +58,8 @@ The production type system is self-hosted PP Mori for display roles and body cop
 
 PP Mori ships in regular and semibold weights, and `fonts/AzeretMono-VF.ttf` remains the exact utility-face runtime binary with its SIL Open Font License 1.1 text beside it as `fonts/OFL-AzeretMono.txt`.
 
-The mobile navigation keeps the Azeret Mono Care & Bloom mark whole at 320px by tightening the two-item gap and setting the mark at a legible 12px with slight negative tracking.
+The homepage header brand is no longer type: it renders the Care & Bloom SVG lockup, and the mobile navigation keeps that lockup whole at 320px by tightening the two-item gap and narrowing the mark to 114px.
+The shared application page still carries the Azeret Mono text mark.
 
 `tests/repository-contract.test.mjs` owns the font and licence dependency contract, and `tests/nav-float-browser.test.mjs` pins the complete mobile mark before and after the bar floats.
 
@@ -120,7 +121,7 @@ Every arrival path — a gradual scroll down, a restored-scroll reload, a `/#con
 Its oversized scale, subtle bottom crop, cobalt fill, and viewport-filling fit are owned entirely by the stylesheet.
 
 `tests/footer-wordmark.test.mjs` owns the behavioral contract — inline SVG, single announcement, no raster request, no animation or transition on any of those arrival paths, the sign-off rendered from `critical.css` alone, and an overflow-free edge-to-edge fit from 320px to 2560px — and runs inside `npm test` and `npm run test:browser`.
-`evidence/footer-wordmark-f1/README.md` holds the captured evidence and the honest divergences from the Mobbin reference.
+`evidence/logo-header-footer-l2/README.md` holds the current before/after evidence, sizing, and breakpoint declarations for the lockup; `evidence/footer-wordmark-f1/README.md` remains the earlier type-era record of the divergences from the Mobbin reference.
 
 ## Role-location metadata
 
