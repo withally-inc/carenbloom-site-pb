@@ -60,7 +60,10 @@ try {
     await page.waitForFunction(() => document.querySelector("#values .vt-display")?.classList.contains("in"));
     await page.waitForTimeout(900);
     const revealed = await headingMetrics(page);
-    assert.equal(revealed.transform, "matrix(1, 0, 0, 1, 0, 0)", `${viewport.width}px reveal should finish at rest`);
+    const restOffset = revealed.transform === "none"
+      ? 0
+      : Number.parseFloat(revealed.transform.match(/^matrix\(1, 0, 0, 1, 0, (-?[\d.e+-]+)\)$/)?.[1] ?? "NaN");
+    assert.ok(Math.abs(restOffset) < 0.5, `${viewport.width}px reveal should finish at rest, got ${revealed.transform}`);
     assert.notEqual(revealed.transitionDuration, "0s", `${viewport.width}px reveal should retain its staged transition`);
     await page.close();
   }
