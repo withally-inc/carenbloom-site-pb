@@ -138,3 +138,26 @@ test("all local HTML and CSS dependencies resolve inside the repository", () => 
 
   assert.deepEqual(missing, [], `missing local dependencies: ${missing.join(", ")}`);
 });
+
+/* critical.css is the sole blocking sheet that governs first paint for the whole page, and it is a
+   generated minification of style.css. If the two ever disagree the page paints from the stale copy
+   and then reflows when the deferred sheet activates, so hold them to the same rules. */
+test("critical.css carries exactly the rules of style.css", () => {
+  const normalize = (css) =>
+    css
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/\s+/g, " ")
+      .replace(/\s*([{};,>~])\s*/g, "$1")
+      .replace(/:\s+/g, ":")
+      .replace(/;\}/g, "}")
+      .trim();
+
+  const critical = normalize(readFileSync(path.join(root, "critical.css"), "utf8"));
+  const full = normalize(readFileSync(path.join(root, "style.css"), "utf8"));
+
+  assert.equal(
+    critical,
+    full,
+    "critical.css has drifted from style.css — regenerate it so the blocking sheet is the whole stylesheet",
+  );
+});

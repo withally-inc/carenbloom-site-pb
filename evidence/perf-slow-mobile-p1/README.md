@@ -26,7 +26,7 @@ Before the change, the 49,347-byte render-blocking `style.css` response ended at
 After the change, the blocking path is `tokens.css` plus the 32,315-byte `critical.css`; the latter ended at 6.041s and FCP followed at 6.188s.
 `critical.css` is the minified whole of `style.css`, so the blocking sheet already carries every section: nothing below the fold can paint unstyled and the deferred sheet's activation reflows nothing.
 That completeness costs 1.4s of the earlier first-paint win and buys the correct, fully styled page for a reader who scrolls before the deferred sheet lands.
-Fresh top-level visits still take `style.css` with non-matching `media="print"`, while reloads, hash navigations and history back/forward re-parses take it as a parser-inserted blocking link so document geometry is final before the viewport is restored.
+Every path takes `style.css` with non-matching `media="print"`: because the blocking `critical.css` is already the whole stylesheet, scroll restoration, deep anchors and history re-parses all calculate against final geometry without it, so no navigation pays for a second blocking copy.
 
 ## Waterfall
 
@@ -44,11 +44,27 @@ Fresh top-level visits still take `style.css` with non-matching `media="print"`,
 | Hero video | Requested at 15.276s, aborted at 34.189s | Not requested | Mobile static crossfade |
 | Last font / load event | 21.137s / 40.159s | 17.952s / 17.957s | Fonts do not block FCP |
 
+## Every navigation path, same profile
+
+`style.css` is deferred on every path, so no navigation pays for a second blocking copy of rules `critical.css` already carries.
+All four paths measured at 390×844×3, `Slow 3G`, 4× CPU.
+
+| Path | Navigation type | FCP | DOMContentLoaded | Load | Bytes | Restored offset |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| Fresh top-level visit | `navigate` | 6.124s | 8.765s | 17.853s | 746,069 | 0 (top) |
+| `/#contact` | `navigate` | 6.360s | 8.645s | 17.878s | 746,069 | 15,051 (contact) |
+| Reload parked at the footer | `reload` | 6.260s | 8.709s | 17.907s | 746,069 | 15,051 (footer) |
+| Back after leaving to `/careers/apply/` | `back_forward` | 0.224s | 0.385s | 0.399s | 0 (cache) | 15,062 (footer) |
+
+Every cold path lands in the same 6.1–6.4s band, and each restored path lands on the offset it left from, so the blocking sheet alone already carries final geometry.
+The back/forward row was forced to re-parse rather than restore from bfcache (an `unload` listener registered before leaving); with bfcache available the same navigation restores instantly to the same 15,062 offset without re-fetching anything.
+On all four the `style.css` link is `media="print"` with its `onload` handoff, never render-blocking.
+
 ## Remaining deferral tradeoff
 
 `critical.css` and `style.css` now carry the same rules, so a fresh visit transfers the 49,349-byte `style.css` a second time after first paint — the +19,076 bytes and +0.4s load-event difference against the control run above.
-It is kept because it is the readable source of record and lands last, so a future edit to `style.css` alone cannot ship a stale minified copy: the deferred sheet corrects it, and reload, hash and back/forward paths take it blocking.
-The generated `critical.css` must be regenerated whenever `style.css` changes; `tests/footer-wordmark.test.mjs` pins the sign-off's typography, scale and below-fold layout against `critical.css` alone.
+It is kept because it is the readable source of record and lands last, so a future edit to `style.css` alone cannot ship a stale minified copy: the deferred sheet corrects it. It is never render-blocking on any path, so it costs no first paint anywhere.
+The generated `critical.css` must be regenerated whenever `style.css` changes, and `tests/repository-contract.test.mjs` fails if the two ever carry different rules. `tests/footer-wordmark.test.mjs` pins the sign-off's typography, scale and below-fold layout against `critical.css` alone, and asserts on the reload, `/#contact` and back/forward paths that the source-of-record sheet stays off the render path.
 
 ## Footer correctness route
 

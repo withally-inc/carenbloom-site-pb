@@ -173,7 +173,7 @@ try {
   await installStaticSampler(restoredPage);
   await restoredPage.reload({ waitUntil: "load" });
   assert.ok(await restoredPage.evaluate(() => scrollY > 0), "reload should restore the footer scroll position");
-  assert.deepEqual(await stylesheetLinkState(restoredPage), { media: null, deferred: false }, "a reload should keep the full stylesheet blocking");
+  assert.deepEqual(await stylesheetLinkState(restoredPage), { media: "all", deferred: true }, "a reload should keep the source-of-record stylesheet off the render path");
   const restoredState = await wordmarkProbe(restoredPage);
   assert.equal(restoredState.opacity, 1, "a reload restored at the footer should render the sign-off present");
   assert.equal(restoredState.transform, "none", "a reload restored at the footer should render the sign-off static");
@@ -184,15 +184,15 @@ try {
   await installStaticSampler(contactPage);
   await contactPage.goto(`${baseUrl}/#contact`, { waitUntil: "load" });
   await contactPage.evaluate(() => document.fonts.ready);
-  assert.deepEqual(await stylesheetLinkState(contactPage), { media: null, deferred: false }, "a hash arrival should keep the full stylesheet blocking");
+  assert.deepEqual(await stylesheetLinkState(contactPage), { media: "all", deferred: true }, "a hash arrival should keep the source-of-record stylesheet off the render path");
   const contactState = await wordmarkProbe(contactPage);
   assert.equal(contactState.opacity, 1, "a #contact arrival should render the sign-off present");
   assert.equal(contactState.transform, "none", "a #contact arrival should render the sign-off static");
   assertSampledStatic(await readSamples(contactPage), "a #contact arrival must not animate the sign-off");
   await contactPage.close();
 
-  /* A history re-parse restores the viewport, so it must calculate against the final geometry the
-     same way a reload does — never against a document still waiting on the deferred stylesheet. */
+  /* A history re-parse restores the viewport, so the blocking sheet alone must already carry the
+     final geometry — the deferred source-of-record sheet may never be needed for layout. */
   const historyPage = await browser.newPage({ viewport: viewports[0] });
   await historyPage.goto(`${baseUrl}/`, { waitUntil: "load" });
   await scrollToFooter(historyPage);
@@ -200,10 +200,7 @@ try {
   await historyPage.goto(`${baseUrl}/careers/apply/`, { waitUntil: "load" });
   await installStaticSampler(historyPage);
   await historyPage.goBack({ waitUntil: "load" });
-  const historyNavigationType = await historyPage.evaluate(() => performance.getEntriesByType("navigation")[0]?.type);
-  if (historyNavigationType === "back_forward") {
-    assert.deepEqual(await stylesheetLinkState(historyPage), { media: null, deferred: false }, "a back/forward re-parse should keep the full stylesheet blocking");
-  }
+  assert.deepEqual(await stylesheetLinkState(historyPage), { media: "all", deferred: true }, "a back/forward navigation should keep the source-of-record stylesheet off the render path");
   assert.ok(await historyPage.evaluate(() => scrollY > 0), "back should restore the footer scroll position");
   const historyState = await wordmarkProbe(historyPage);
   assert.equal(historyState.opacity, 1, "a restored back navigation should render the sign-off present");

@@ -7,19 +7,11 @@
 <link rel="icon" href="/images/cb-logo-white.svg" type="image/svg+xml">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="critical.css">
-<script>
-/* critical.css is the minified whole of style.css, so the blocking sheet already carries every
-   section: nothing below the fold can paint unstyled and no activation reflows the page.
-   style.css stays the readable source of record and follows; scroll restoration, deep anchors and
-   history re-parses take it as a parser-inserted blocking link so geometry is final before layout. */
-(function () {
-  var navigation = performance.getEntriesByType('navigation')[0];
-  var restoredType = navigation && (navigation.type === 'reload' || navigation.type === 'back_forward');
-  document.write(location.hash || restoredType
-    ? '<link rel="stylesheet" href="style.css">'
-    : '<link rel="stylesheet" href="style.css" media="print" onload="this.media=\'all\'">');
-})();
-</script>
+<!-- critical.css is the minified whole of style.css, so the one blocking sheet already carries every
+     section: no path can paint unstyled, scroll restoration and deep anchors calculate against final
+     geometry, and nothing reflows later. style.css follows deferred on every path purely as the
+     readable source of record, so a stale minified copy would still be corrected. -->
+<link rel="stylesheet" href="style.css" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="style.css"></noscript>
 <link rel="modulepreload" href="hero-scroll.js">
 <link rel="modulepreload" href="nav-float.js">
