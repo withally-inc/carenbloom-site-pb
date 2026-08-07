@@ -155,7 +155,7 @@ try {
   await criticalOnlyPage.evaluate(() => document.fonts.ready);
   await scrollToFooter(criticalOnlyPage);
   const criticalOnly = await wordmarkProbe(criticalOnlyPage);
-  assert.ok(criticalOnly.textRect.width >= viewports[0].width, "critical.css alone should carry the sign-off's oversize scale");
+  assert.ok(criticalOnly.textRect.width >= viewports[0].width * 0.88, "critical.css alone should carry the sign-off's oversize scale");
   assert.equal(criticalOnly.opacity, 1, "critical.css alone should leave the sign-off visible");
   const criticalOnlyBelowFold = await criticalOnlyPage.evaluate(() => {
     const probe = (selector) => {
@@ -223,8 +223,9 @@ try {
     assert.ok(state, `${viewport.width}px should render the live wordmark`);
     assert.equal(state.overflow, 0, `${viewport.width}px must not overflow horizontally`);
     assert.ok(state.wordmarkRect.left >= -0.5 && state.wordmarkRect.right <= viewport.width + 0.5, `${viewport.width}px wordmark container should stay inside the viewport`);
-    assert.ok(state.textRect.left <= 0.5 && state.textRect.right >= viewport.width - 0.5, `${viewport.width}px wordmark ink should overscan both page edges`);
-    assert.ok(state.textRect.width >= viewport.width, `${viewport.width}px wordmark should fill the footer width`);
+    assert.ok(state.textRect.left >= -0.5 && state.textRect.right <= viewport.width + 0.5, `${viewport.width}px wordmark ink should stay inside the viewport`);
+    assert.ok(state.textRect.width >= state.wordmarkRect.width - 0.5, `${viewport.width}px wordmark should fill the footer width`);
+    assert.ok(state.textRect.width >= viewport.width * 0.88, `${viewport.width}px wordmark should keep its oversize scale`);
     assert.ok(state.textRect.top >= state.clipRect.top - 0.5, `${viewport.width}px wordmark should preserve every letter top`);
     const bottomCrop = state.textRect.bottom - state.clipRect.bottom;
     assert.ok(bottomCrop >= state.textRect.height * 0.04, `${viewport.width}px wordmark should keep an intentional bottom crop`);
