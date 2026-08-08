@@ -4,6 +4,7 @@ import { createReadStream, existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import applicationHandler from "../api/applications.js";
+import roleStateHandler from "../api/role-state.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const port = Number.parseInt(process.env.PORT || "49279", 10);
@@ -75,6 +76,11 @@ const server = createServer(async (req, res) => {
 
   if (requestUrl.pathname === "/api/applications") {
     await applicationHandler(req, res);
+    return;
+  }
+
+  if (requestUrl.pathname === "/api/role-state") {
+    await roleStateHandler(req, res);
     return;
   }
 

@@ -11,7 +11,8 @@ The provenance integration remains available at https://github.com/withally-inc/
 | Route | Owner |
 | --- | --- |
 | `/` | Pattern Breaking home |
-| `/careers/apply/?role=<slug>` | Continuous role details and application form for one of eleven canonical roles |
+| `/careers/apply/?role=<slug>` | Authoritative open, closed, unknown, or unavailable state for one canonical role |
+| `/api/role-state` | Non-cacheable canonical role lifecycle and open-role collection API |
 | `/api/applications` | Application intake API |
 | `/pb-live/` | Compatibility redirect to `/`; no duplicate implementation exists |
 
@@ -36,7 +37,7 @@ Run the complete self-contained suite with:
 npm test
 ```
 
-The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, the approved favicon assets and their declarations, deployment packaging, hero behavior, slow-mobile homepage performance, the homepage opening reveal sequence, the single-line values heading, the footer sign-off wordmark, floating navigation, Monday HKT deadlines, application payload and API behavior, all eleven role routes, location metadata, form validation and multipart submission, per-file and combined upload size limits, responsive layouts, reduced motion, failed-video behavior, and no-JavaScript fallbacks.
+The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, the approved favicon assets and their declarations, deployment packaging, hero behavior, slow-mobile homepage performance, the homepage opening reveal sequence, the single-line values heading, the footer sign-off wordmark, floating navigation, server-authoritative Monday HKT role state, application payload and API closure behavior, all eleven role routes, location metadata, form validation and multipart submission, per-file and combined upload size limits, responsive layouts, reduced motion, failed-video behavior, and fail-closed no-JavaScript fallbacks.
 
 Focused commands are also available:
 
@@ -44,6 +45,7 @@ Focused commands are also available:
 npm run test:contracts
 npm run test:api
 npm run test:deadline
+npm run test:role-state
 BASE_URL=http://127.0.0.1:49279 npm run test:metadata
 BASE_URL=http://127.0.0.1:49279 npm run test:browser
 ```
@@ -123,11 +125,21 @@ Its oversized scale, subtle bottom crop, cobalt fill, and viewport-filling fit a
 `tests/footer-wordmark.test.mjs` owns the behavioral contract — inline SVG, single announcement, no raster request, no animation or transition on any of those arrival paths, the sign-off rendered from `critical.css` alone, and an overflow-free edge-to-edge fit from 320px to 2560px — and runs inside `npm test` and `npm run test:browser`.
 `evidence/logo-header-footer-l2/README.md` holds the current before/after evidence, sizing, and breakpoint declarations for the lockup; `evidence/footer-wordmark-f1/README.md` remains the earlier type-era record of the divergences from the Mobbin reference.
 
-## Role-location metadata
+## Canonical role data and lifecycle
 
-`scripts/careers-roles.js` is the authoritative owner of all eleven role records.
+`scripts/careers-roles.js` is the authoritative owner of all eleven role records, their optional physical locations, homepage groups, and any factual `closesAt` or explicit `inactive` or `filled` state.
 
-The application page and `/api/applications` both import that module, so the API rejects unknown role slugs and decides the intro-video requirement from the canonical record rather than from client input.
+`api/_lib/role-state.js` is the one server-safe lifecycle resolver used by `/api/role-state`, `/api/applications`, and the boundary tests.
+
+It accepts an injected server instant and resolves the HKT Monday window start, HKT `datePosted`, the default close exactly fourteen days later, the earlier effective factual close, the next refresh boundary, and `isOpen`.
+
+`/api/role-state` supplies the browser with non-cacheable authoritative role state and a captured server instant.
+
+The application countdown anchors that server instant to monotonic elapsed time, and the homepage renders every role row and advertised count from the same open-role response.
+
+Static, unknown, closed, and endpoint-failure states contain no form, active `JobPosting`, role row, numeric open-role claim, or fallback role.
+
+`/api/applications` resolves the same canonical role state using its own server clock before any Notion operation, returns HTTP 410 at and after factual closure, and ignores client-supplied date or open-state claims.
 
 Roles with an explicit physical `locationType` use that exact string in visible role copy, accessible role details, meta descriptions, Open Graph descriptions, and physical JobPosting data.
 
@@ -137,9 +149,9 @@ The implementation does not invent city, country, or hybrid data, so remote post
 
 Google requires a factual applicant-country restriction alongside `TELECOMMUTE` for remote-job rich results, so those roles are not yet eligible; the real hiring-eligible countries must be decided and added to the role records before that eligibility can be claimed.
 
-`careers/apply/index.html` is one shared template for all eleven role URLs, so its static markup is role-agnostic throughout: the meta description, the Open Graph description, the visible location line, the accessible Location and Level entries, the role title, summary, mission, responsibilities, requirements, and the hidden role field all carry neutral placeholder copy rather than any single role's data.
+`careers/apply/index.html` is one shared template for all eleven role URLs, so its static markup starts in a neutral availability-checking state and keeps all role content and the form hidden until server authority confirms an open role.
 
-Crawlers that do not execute JavaScript therefore never see a location, title, or requirement asserted for the wrong role; browsers receive the canonical per-role copy and metadata at runtime.
+Crawlers that do not execute JavaScript therefore never see a location, title, requirement, date, availability claim, application form, or active `JobPosting` asserted for a role.
 
 ## Vercel review deployment
 
@@ -169,17 +181,11 @@ For rollback, identify the deployment that served `carenbloom-redesign-a.vercel.
 
 Never guess a deployment identifier or roll back another Care and Bloom project.
 
-## Production blockers
+## Production blocker
 
-Two named blockers remain open. Neither is addressed by any change in this repository, and both must be resolved and tested before this site is promoted to production.
+One separately deferred blocker remains open and must be resolved and tested before this site is promoted to production.
 
-### 1. Unresolved factual `datePosted` policy
-
-The factual `datePosted` policy for JobPosting structured data is unresolved.
-
-The integrated implementation currently derives `datePosted` from the browser date, and this repository deliberately preserves that behavior pending a captain decision.
-
-### 2. Server-side enforcement of required application answers, resume, and portfolio
+### Server-side enforcement of required application answers, resume, and portfolio
 
 `/api/applications` validates only the answers, resume, and portfolio material the client chooses to send: a direct POST that omits `questions` still passes validation, and `portfolioRequired` is not enforced server-side even though `scripts/careers-roles.js` already carries the canonical questions and portfolio flags the handler uses for `introVideoRequired`.
 

@@ -10,8 +10,9 @@
     "test:contracts": "node --test tests/repository-contract.test.mjs tests/deployment-package.test.mjs tests/hero-scroll.test.mjs tests/nav-float.test.mjs",
     "test:api": "node tests/application-payload.test.mjs && node tests/applications-api.test.mjs",
     "test:deadline": "node tests/careers-deadline.test.mjs",
+    "test:role-state": "node tests/role-state-api.test.mjs",
     "test:metadata": "node tests/role-location-metadata.test.mjs",
-    "test:browser": "node tests/careers-apply-submit.test.mjs && node tests/careers-upload-limits.test.mjs && node tests/pb-role-apply.test.mjs && node tests/pb-integration.test.mjs && node tests/lemon-band.test.mjs && node tests/nav-float-browser.test.mjs && node tests/hero-reveal-browser.test.mjs && node tests/footer-wordmark.test.mjs && node tests/values-heading.test.mjs && node tests/people-grid-browser.test.mjs",
+    "test:browser": "node tests/careers-apply-submit.test.mjs && node tests/careers-upload-limits.test.mjs && node tests/pb-role-apply.test.mjs && node tests/role-state-browser.test.mjs && node tests/pb-integration.test.mjs && node tests/lemon-band.test.mjs && node tests/nav-float-browser.test.mjs && node tests/hero-reveal-browser.test.mjs && node tests/footer-wordmark.test.mjs && node tests/values-heading.test.mjs && node tests/people-grid-browser.test.mjs",
     "test": "node scripts/test.mjs"
   },
   "dependencies": {

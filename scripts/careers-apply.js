@@ -1,13 +1,59 @@
-import { getClosingPresentation } from "./careers-deadline.js";
-import { careerRoles } from "./careers-roles.js";
-
-(function () {
-  const roles = careerRoles;
+(async function () {
   const params = new URLSearchParams(window.location.search);
-  const slug = params.get("role") || roles[0]?.slug;
-  const role = roles.find((item) => item.slug === slug) || roles[0];
+  const slug = params.get("role");
+  const pageState = document.querySelector("[data-role-page-state]");
+  const unavailable = document.querySelector("[data-role-unavailable]");
+  const stateTitle = document.querySelector("[data-role-state-title]");
+  const stateMessage = document.querySelector("[data-role-state-message]");
+  const roleContent = [...document.querySelectorAll("[data-role-content]")];
 
-  if (!role) return;
+  const showUnavailable = (state, heading, message) => {
+    if (pageState) pageState.dataset.rolePageState = state;
+    roleContent.forEach((element) => { element.hidden = true; });
+    if (unavailable) unavailable.hidden = false;
+    if (stateTitle) stateTitle.textContent = heading;
+    if (stateMessage) stateMessage.textContent = message;
+  };
+
+  if (!slug) {
+    showUnavailable("unknown", "Role not found", "Choose a current opening from the Care & Bloom careers page.");
+    return;
+  }
+
+  let authoritative;
+  try {
+    const response = await fetch(`/api/role-state?role=${encodeURIComponent(slug)}`, {
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+    });
+    authoritative = await response.json().catch(() => null);
+    if (response.status === 404 || authoritative?.status === "unknown") {
+      showUnavailable("unknown", "Role not found", "This role is not one of our current openings.");
+      return;
+    }
+    if (!response.ok) throw new Error("Role authority request failed.");
+  } catch {
+    showUnavailable("unavailable", "Role unavailable", "We could not confirm this role right now. Please return to careers and try again.");
+    return;
+  }
+
+  const { role, state, serverNow, openRoleCount } = authoritative || {};
+  if (!role || role.slug !== slug || !state || !serverNow) {
+    showUnavailable("unavailable", "Role unavailable", "We could not confirm this role right now. Please return to careers and try again.");
+    return;
+  }
+  document.querySelectorAll("[data-open-role-count]").forEach((element) => {
+    element.textContent = `Open roles (${openRoleCount})`;
+  });
+  if (authoritative.status === "closed" || state.isOpen !== true) {
+    document.title = `${role.title} — Closed | Care & Bloom`;
+    showUnavailable("closed", "This role is closed", `${role.title} is no longer accepting applications.`);
+    return;
+  }
+
+  if (pageState) pageState.dataset.rolePageState = "open";
+  if (unavailable) unavailable.hidden = true;
+  roleContent.forEach((element) => { element.hidden = false; });
 
   const location = role.locationType || "Remote";
   const isRemote = location === "Remote";
@@ -58,15 +104,14 @@ import { careerRoles } from "./careers-roles.js";
   const locationDd = document.querySelector(".role-meta dd");
   if (locationDd) locationDd.textContent = location;
 
-  // Google Jobs structured data (JSON-LD)
-  const initialClosing = getClosingPresentation(new Date(), role.title);
+  // Google Jobs structured data is inserted only after the server confirms the role is open.
   const jobPosting = {
     "@context": "https://schema.org/",
     "@type": "JobPosting",
     title: role.title,
     description: `${role.mission} Responsibilities: ${role.responsibilities.join(". ")}. Requirements: ${role.requirements.join(". ")}.`,
-    datePosted: new Date().toISOString().split("T")[0],
-    validThrough: initialClosing.dateTime,
+    datePosted: state.datePosted,
+    validThrough: state.validThrough,
     employmentType: "FULL_TIME",
     hiringOrganization: {
       "@type": "Organization",
@@ -89,19 +134,29 @@ import { careerRoles } from "./careers-roles.js";
   jsonLd.textContent = JSON.stringify(jobPosting);
   document.head.appendChild(jsonLd);
 
+  const responseAnchor = performance.now();
+  const remainingAtResponse = Date.parse(state.validThrough) - Date.parse(serverNow);
+  const formatCountdown = (remainingMs) => {
+    const totalSeconds = Math.floor(Math.max(0, remainingMs) / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  };
   const syncClosingWindow = () => {
-    const closing = getClosingPresentation(new Date(), role.title);
-    if (closeDate) closeDate.textContent = closing.visibleLabel;
+    const remainingMs = remainingAtResponse - (performance.now() - responseAnchor);
+    if (closeDate) closeDate.textContent = state.visibleCloseLabel;
     if (countdown) {
-      countdown.dateTime = closing.dateTime;
-      countdown.textContent = closing.countdown;
+      countdown.dateTime = state.validThrough;
+      countdown.textContent = formatCountdown(remainingMs);
     }
-    if (closeApply) closeApply.setAttribute("aria-label", closing.applyLabel);
-    jobPosting.validThrough = closing.dateTime;
-    jsonLd.textContent = JSON.stringify(jobPosting);
+    if (closeApply) closeApply.setAttribute("aria-label", state.applyLabel);
   };
   syncClosingWindow();
   setInterval(syncClosingWindow, 1000);
+  const refreshAtMs = Math.min(Date.parse(state.nextRefreshAt), Date.parse(state.effectiveClosesAt)) - Date.parse(serverNow);
+  setTimeout(() => window.location.reload(), Math.max(0, refreshAtMs));
 
   document.querySelectorAll(".application-tooltip").forEach((tooltip) => {
     const row = tooltip.closest(".application-label-row");
@@ -261,7 +316,6 @@ import { careerRoles } from "./careers-roles.js";
         timeZones: data.getAll("open_time_zone"),
         location: data.get("location"),
         questions: collectQuestions(),
-        submittedAt: new Date().toISOString(),
         url: window.location.href,
         referrer: document.referrer,
       };

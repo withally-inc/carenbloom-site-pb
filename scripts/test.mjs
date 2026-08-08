@@ -32,6 +32,7 @@ const listening = new Promise((resolve, reject) => {
 const commands = [
   ["--test", "tests/repository-contract.test.mjs", "tests/deployment-package.test.mjs", "tests/hero-scroll.test.mjs", "tests/nav-float.test.mjs"],
   ["tests/careers-deadline.test.mjs"],
+  ["tests/role-state-api.test.mjs"],
   ["tests/application-payload.test.mjs"],
   ["tests/applications-api.test.mjs"],
   ["tests/server-runtime.test.mjs"],
@@ -39,6 +40,7 @@ const commands = [
   ["tests/careers-apply-submit.test.mjs"],
   ["tests/careers-upload-limits.test.mjs"],
   ["tests/pb-role-apply.test.mjs"],
+  ["tests/role-state-browser.test.mjs"],
   ["tests/pb-integration.test.mjs"],
   ["tests/hero-performance-browser.test.mjs"],
   ["tests/lemon-band.test.mjs"],

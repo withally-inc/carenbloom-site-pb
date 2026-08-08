@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { EventEmitter } from "node:events";
-import handler, { _private } from "../api/applications.js";
+import handler, { _private, createApplicationsHandler } from "../api/applications.js";
 import { careerRoles } from "../scripts/careers-roles.js";
 
 function samplePayload(overrides = {}) {
@@ -62,14 +62,19 @@ function makeRes() {
   };
 }
 
-async function runHandler(body, env = {}, fetchImpl = async () => ({ ok: true, text: async () => "{}" })) {
+async function runHandler(
+  body,
+  env = {},
+  fetchImpl = async () => ({ ok: true, text: async () => "{}" }),
+  handlerImpl = handler,
+) {
   const oldEnv = { ...process.env };
   const oldFetch = global.fetch;
   process.env = { ...oldEnv, ...env };
   global.fetch = fetchImpl;
   const res = makeRes();
   try {
-    await handler(makeReq(body), res);
+    await handlerImpl(makeReq(body), res);
     return { res, json: JSON.parse(res.body) };
   } finally {
     process.env = oldEnv;
@@ -204,6 +209,82 @@ assert.equal(
   assert.equal(pageCall.body.properties.Resume.files[0].type, "file_upload");
   assert.equal(pageCall.body.properties.Resume.files[0].file_upload.id, "upload-1");
   assert.equal(pageCall.body.properties["Additional Attachment"].files[0].file_upload.id, "upload-2");
+}
+
+{
+  const factualClose = "2026-08-12T10:00:00.000Z";
+  const closingRoles = careerRoles.map((role) => role.slug === "chief-of-staff" ? { ...role, closesAt: factualClose } : role);
+  const justBeforeHandler = createApplicationsHandler({
+    now: () => new Date("2026-08-12T09:59:59.999Z"),
+    roles: closingRoles,
+  });
+  const { res, json } = await runHandler(
+    samplePayload({ datePosted: "1900-01-01", validThrough: "2999-01-01T00:00:00.000Z", isOpen: false }),
+    { NOTION_INTAKE_DRY_RUN: "1" },
+    undefined,
+    justBeforeHandler,
+  );
+  assert.equal(res.statusCode, 200, "an otherwise valid application is accepted immediately before factual close");
+  assert.equal(json.success, true);
+}
+
+{
+  const authoritativeNow = "2026-08-12T09:00:00.000Z";
+  const authoritativeHandler = createApplicationsHandler({ now: () => new Date(authoritativeNow) });
+  const notionCalls = [];
+  const { res } = await runHandler(
+    samplePayload({ submittedAt: "1900-01-01T00:00:00.000Z", datePosted: "2999-01-01", isOpen: true }),
+    { NOTION_KEY: "secret_test", NOTION_CB_TALENTS_DB_ID: "target-db" },
+    async (url, options) => {
+      notionCalls.push({ url, body: options.body ? JSON.parse(options.body) : null });
+      return { ok: true, text: async () => JSON.stringify({ id: "notion-page-id" }) };
+    },
+    authoritativeHandler,
+  );
+  assert.equal(res.statusCode, 200);
+  assert.equal(notionCalls.length, 1);
+  assert.equal(
+    notionCalls[0].body.properties["Applied At"].date.start,
+    authoritativeNow,
+    "the server instant must replace every client-supplied date before Notion",
+  );
+}
+
+for (const serverNow of ["2026-08-12T10:00:00.000Z", "2026-08-12T10:00:00.001Z"]) {
+  const factualClose = "2026-08-12T10:00:00.000Z";
+  const closingRoles = careerRoles.map((role) => role.slug === "chief-of-staff" ? { ...role, closesAt: factualClose } : role);
+  const closedHandler = createApplicationsHandler({ now: () => new Date(serverNow), roles: closingRoles });
+  const notionCalls = [];
+  const { res, json } = await runHandler(
+    samplePayload({ datePosted: "2999-01-01", validThrough: "2999-02-01T00:00:00.000Z", isOpen: true }),
+    { NOTION_KEY: "secret_test" },
+    async (...args) => {
+      notionCalls.push(args);
+      return { ok: true, text: async () => "{}" };
+    },
+    closedHandler,
+  );
+  assert.equal(res.statusCode, 410, `${serverNow} should reject the closed role`);
+  assert.equal(json.success, false);
+  assert.equal(json.error, "This role is closed.");
+  assert.equal(notionCalls.length, 0, "a closed role must perform no Notion activity");
+}
+
+{
+  const filledRoles = careerRoles.map((role) => role.slug === "chief-of-staff" ? { ...role, status: "filled" } : role);
+  const filledHandler = createApplicationsHandler({ now: () => new Date("2026-08-12T09:00:00.000Z"), roles: filledRoles });
+  const notionCalls = [];
+  const { res } = await runHandler(
+    samplePayload({ isOpen: true }),
+    { NOTION_KEY: "secret_test" },
+    async (...args) => {
+      notionCalls.push(args);
+      return { ok: true, text: async () => "{}" };
+    },
+    filledHandler,
+  );
+  assert.equal(res.statusCode, 410);
+  assert.equal(notionCalls.length, 0);
 }
 
 console.log("applications api test passed");

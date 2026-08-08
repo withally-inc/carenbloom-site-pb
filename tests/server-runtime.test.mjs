@@ -32,4 +32,13 @@ const avif = await fetch(`${baseUrl}/assets/hero-grow-start.avif`);
 assert.equal(avif.status, 200, "optimized hero still should be served");
 assert.equal(avif.headers.get("content-type"), "image/avif");
 
+const roleState = await fetch(`${baseUrl}/api/role-state?role=chief-of-staff`);
+assert.equal(roleState.status, 200, "the dry-run server should route the authoritative role-state endpoint");
+assert.equal(roleState.headers.get("cache-control"), "no-store, max-age=0");
+const authoritativeRole = await roleState.json();
+assert.equal(authoritativeRole.status, "open");
+assert.equal(authoritativeRole.role.slug, "chief-of-staff");
+assert.equal(authoritativeRole.state.datePosted.length, 10);
+assert.equal(authoritativeRole.state.isOpen, true);
+
 console.log("server content-type and media range tests passed");

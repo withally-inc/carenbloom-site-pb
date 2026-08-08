@@ -2,6 +2,7 @@
 // under api/ as its own serverless function.
 import { buildApplicationPayload, clean, safeUrl } from "./_lib/application-payload.js";
 import { createPage, uploadFile } from "./_lib/notion-client.js";
+import { resolveRoleState } from "./_lib/role-state.js";
 import { careerRoles } from "../scripts/careers-roles.js";
 import Busboy from "busboy";
 
@@ -157,15 +158,15 @@ function normalizeTimeZones(payload) {
   return values.map(clean).filter(Boolean);
 }
 
-function canonicalRole(payload) {
-  return CANONICAL_ROLES.get(clean(payload.roleSlug));
+function canonicalRole(payload, canonicalRoles = CANONICAL_ROLES) {
+  return canonicalRoles.get(clean(payload.roleSlug));
 }
 
-function introVideoIsRequired(payload) {
-  return canonicalRole(payload)?.introVideoRequired === true;
+function introVideoIsRequired(payload, canonicalRoles = CANONICAL_ROLES) {
+  return canonicalRole(payload, canonicalRoles)?.introVideoRequired === true;
 }
 
-function validatePayload(payload) {
+function validatePayload(payload, canonicalRoles = CANONICAL_ROLES) {
   const required = [
     "role",
     "roleSlug",
@@ -181,11 +182,11 @@ function validatePayload(payload) {
     if (!clean(payload[field])) return { error: `Missing required field: ${field}` };
   }
 
-  if (!canonicalRole(payload)) return { error: "Unknown role." };
+  if (!canonicalRole(payload, canonicalRoles)) return { error: "Unknown role." };
   if (!emailIsValid(clean(payload.email))) return { error: "Enter a valid email address." };
   if (clean(payload.linkedIn) && !safeUrl(payload.linkedIn)) return { error: "Enter a valid LinkedIn URL." };
   if (clean(payload.introVideoUrl) && !safeUrl(payload.introVideoUrl)) return { error: "Enter a valid intro video URL." };
-  if (introVideoIsRequired(payload) && !safeUrl(payload.introVideoUrl)) return { error: "Intro video is required for this role." };
+  if (introVideoIsRequired(payload, canonicalRoles) && !safeUrl(payload.introVideoUrl)) return { error: "Intro video is required for this role." };
   if (!/^\+\d{1,4}$/.test(clean(payload.phoneCountryCode))) return { error: "Choose a valid country / area code." };
   if (!/^[0-9][0-9\s().-]{3,}$/.test(clean(payload.phoneNumber))) return { error: "Enter a valid phone number." };
   if (!/^\d+$/.test(clean(payload.monthlyIncomeUsd))) return { error: "Monthly income must be numbers only." };
@@ -206,77 +207,93 @@ function validatePayload(payload) {
   return { questions };
 }
 
-export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+export function createApplicationsHandler({ now = () => new Date(), roles = careerRoles } = {}) {
+  const canonicalRoles = new Map(roles.map((role) => [role.slug, role]));
 
-  if (req.method === "OPTIONS") {
-    res.statusCode = 204;
-    res.end();
-    return;
-  }
+  return async function handler(req, res) {
+    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  if (req.method !== "POST") {
-    sendJson(res, 405, { success: false, error: "Method not allowed." });
-    return;
-  }
+    if (req.method === "OPTIONS") {
+      res.statusCode = 204;
+      res.end();
+      return;
+    }
 
-  let payload;
-  try {
-    const submission = await readPayload(req);
-    payload = submission.payload || submission;
-    payload.files = submission.files || {};
-  } catch (error) {
-    sendJson(res, error.statusCode || 400, { success: false, error: error.publicMessage || "Invalid JSON payload." });
-    return;
-  }
+    if (req.method !== "POST") {
+      sendJson(res, 405, { success: false, error: "Method not allowed." });
+      return;
+    }
 
-  const validation = validatePayload(payload);
-  if (validation.error) {
-    sendJson(res, 400, { success: false, error: validation.error });
-    return;
-  }
+    let payload;
+    try {
+      const submission = await readPayload(req);
+      payload = submission.payload || submission;
+      payload.files = submission.files || {};
+    } catch (error) {
+      sendJson(res, error.statusCode || 400, { success: false, error: error.publicMessage || "Invalid JSON payload." });
+      return;
+    }
 
-  const applicationRef = clean(payload.applicationRef) || undefined;
-  const databaseId = clean(process.env.NOTION_CB_TALENTS_DB_ID) || DEFAULT_DATABASE_ID;
-  const baseNotionPayload = {
-    ...payload,
-    phone: `${clean(payload.phoneCountryCode)} ${clean(payload.phoneNumber)}`,
-    timeZones: normalizeTimeZones(payload),
-    introVideoRequired: introVideoIsRequired(payload),
-    applicationRef,
+    const validation = validatePayload(payload, canonicalRoles);
+    if (validation.error) {
+      sendJson(res, 400, { success: false, error: validation.error });
+      return;
+    }
+
+    const role = canonicalRole(payload, canonicalRoles);
+    const authoritativeNow = new Date(now());
+    if (!resolveRoleState(authoritativeNow, role).isOpen) {
+      sendJson(res, 410, { success: false, error: "This role is closed." });
+      return;
+    }
+
+    const applicationRef = clean(payload.applicationRef) || undefined;
+    const databaseId = clean(process.env.NOTION_CB_TALENTS_DB_ID) || DEFAULT_DATABASE_ID;
+    const baseNotionPayload = {
+      ...payload,
+      submittedAt: authoritativeNow.toISOString(),
+      phone: `${clean(payload.phoneCountryCode)} ${clean(payload.phoneNumber)}`,
+      timeZones: normalizeTimeZones(payload),
+      introVideoRequired: introVideoIsRequired(payload, canonicalRoles),
+      applicationRef,
+    };
+
+    if (process.env.NOTION_INTAKE_DRY_RUN === "1") {
+      const notionPayload = buildApplicationPayload(databaseId, baseNotionPayload);
+      sendJson(res, 200, { success: true, ref: notionPayload.applicationRef, dryRun: true });
+      return;
+    }
+
+    const token = process.env.NOTION_KEY || process.env.NOTION_API_KEY;
+    if (!token) {
+      sendJson(res, 500, { success: false, error: "Notion intake is not configured." });
+      return;
+    }
+
+    try {
+      const [resumeUpload, additionalAttachmentUpload] = await Promise.all([
+        isUploadFile(payload.files.resume) ? uploadFile(token, payload.files.resume) : null,
+        isUploadFile(payload.files.additionalAttachment) ? uploadFile(token, payload.files.additionalAttachment) : null,
+      ]);
+      const notionPayload = buildApplicationPayload(databaseId, {
+        ...baseNotionPayload,
+        resumeUpload,
+        additionalAttachmentUpload,
+      });
+      const { applicationRef: ref, ...pagePayload } = notionPayload;
+      const page = await createPage(token, pagePayload);
+      sendJson(res, 200, { success: true, ref: notionPayload.applicationRef, notionPageId: page.id });
+    } catch (error) {
+      console.error("C&B talent intake failed", error);
+      sendJson(res, 502, { success: false, error: "Could not save application right now." });
+    }
   };
-
-  if (process.env.NOTION_INTAKE_DRY_RUN === "1") {
-    const notionPayload = buildApplicationPayload(databaseId, baseNotionPayload);
-    sendJson(res, 200, { success: true, ref: notionPayload.applicationRef, dryRun: true });
-    return;
-  }
-
-  const token = process.env.NOTION_KEY || process.env.NOTION_API_KEY;
-  if (!token) {
-    sendJson(res, 500, { success: false, error: "Notion intake is not configured." });
-    return;
-  }
-
-  try {
-    const [resumeUpload, additionalAttachmentUpload] = await Promise.all([
-      isUploadFile(payload.files.resume) ? uploadFile(token, payload.files.resume) : null,
-      isUploadFile(payload.files.additionalAttachment) ? uploadFile(token, payload.files.additionalAttachment) : null,
-    ]);
-    const notionPayload = buildApplicationPayload(databaseId, {
-      ...baseNotionPayload,
-      resumeUpload,
-      additionalAttachmentUpload,
-    });
-    const { applicationRef: ref, ...pagePayload } = notionPayload;
-    const page = await createPage(token, pagePayload);
-    sendJson(res, 200, { success: true, ref: notionPayload.applicationRef, notionPageId: page.id });
-  } catch (error) {
-    console.error("C&B talent intake failed", error);
-    sendJson(res, 502, { success: false, error: "Could not save application right now." });
-  }
 }
+
+const handler = createApplicationsHandler();
+
+export default handler;
 
 export const _private = {
   buildApplicationPayload,

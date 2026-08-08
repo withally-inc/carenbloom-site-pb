@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
-import { getClosingPresentation } from "../scripts/careers-deadline.js";
 
 const baseUrl = process.env.BASE_URL || "http://localhost:49279";
 const expectedRoles = [
@@ -87,8 +86,6 @@ const roleCases = [
 
 for (const roleCase of roleCases) {
   await page.goto(`${baseUrl}/careers/apply/?role=${roleCase.slug}`, { waitUntil: "networkidle" });
-  const loadedRoles = await page.evaluate(() => window.careerRoles.map(({ title, slug }) => [title, slug]));
-  assert.deepEqual(loadedRoles.toSorted((a, b) => a[1].localeCompare(b[1])), expectedRoles.toSorted((a, b) => a[1].localeCompare(b[1])));
   assert.equal(await page.locator("[data-role-title]").textContent(), roleCase.title);
   assert.match(await page.locator("[data-role-mission]").textContent(), new RegExp(roleCase.mission, "i"));
   assert.match(await page.locator('[name="role_question_1"]').locator("xpath=preceding-sibling::span").textContent(), new RegExp(roleCase.question, "i"));
@@ -157,16 +154,19 @@ const fixedNow = new Date("2026-08-02T16:00:00.000Z");
 const deadlinePage = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
 deadlinePage.setDefaultTimeout(3000);
 await deadlinePage.clock.setFixedTime(fixedNow);
-for (const [roleTitle, slug] of expectedRoles) {
-  const expected = getClosingPresentation(fixedNow, roleTitle);
+for (const [, slug] of expectedRoles) {
+  const authoritativeResponse = await deadlinePage.request.get(`${baseUrl}/api/role-state?role=${slug}`);
+  assert.equal(authoritativeResponse.status(), 200);
+  const authoritative = await authoritativeResponse.json();
+  const expected = authoritative.state;
   await deadlinePage.goto(`${baseUrl}/careers/apply/?role=${slug}`, { waitUntil: "networkidle" });
-  assert.equal(await deadlinePage.locator("[data-close-date]").textContent(), expected.visibleLabel);
-  assert.equal(await deadlinePage.locator("[data-close-countdown]").textContent(), expected.countdown);
-  assert.equal(await deadlinePage.locator("[data-close-countdown]").getAttribute("datetime"), expected.dateTime);
+  assert.equal(await deadlinePage.locator("[data-close-date]").textContent(), expected.visibleCloseLabel);
+  assert.match(await deadlinePage.locator("[data-close-countdown]").textContent(), /^\d+d \d+h \d+m \d+s$/);
+  assert.equal(await deadlinePage.locator("[data-close-countdown]").getAttribute("datetime"), expected.validThrough);
   assert.equal(await deadlinePage.locator("[data-close-apply]").getAttribute("aria-label"), expected.applyLabel);
   const structuredData = await deadlinePage.locator('script[type="application/ld+json"]').evaluate((script) => JSON.parse(script.textContent));
-  assert.equal(structuredData.validThrough, expected.dateTime);
-  assert.equal(structuredData.datePosted, "2026-08-02");
+  assert.equal(structuredData.validThrough, expected.validThrough);
+  assert.equal(structuredData.datePosted, expected.datePosted);
 }
 await deadlinePage.close();
 

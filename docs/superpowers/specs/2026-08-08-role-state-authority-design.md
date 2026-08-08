@@ -38,7 +38,7 @@ The close boundary is exclusive: the role is closed when `serverNow >= effective
 
 `GET /api/role-state` resolves all canonical roles with one captured server instant and returns only open roles plus authoritative aggregate counts for the homepage.
 `GET /api/role-state?role=<slug>` returns the canonical role content, its resolved lifecycle state, the total open-role count, and the captured server instant.
-Unknown slugs return HTTP 404 with an explicit `unknown` status and no substitute role.
+Unknown slugs return a non-error response with an explicit `unknown` status and no substitute role, avoiding a handled request being reported as a browser resource error.
 All responses set non-cacheable headers.
 The local dry-run server routes the same handler used by the packaged Vercel function.
 
@@ -81,4 +81,3 @@ Endpoint tests cover open, closed, unknown, collection, cache headers, and ident
 Browser tests cover clock manipulation, matching visible and structured fields, closed and unknown states, homepage aggregate synchronization, no-JavaScript output, and endpoint failure.
 Application API tests prove acceptance just before close and HTTP 410 with no Notion activity at and after close.
 Packaging tests prove that all runtime owners ship and that browser wall-clock changes cannot change packaged role dates or availability.
-

@@ -25,12 +25,14 @@ const runtimeAllowlist = [
   "images",
   "careers/apply/index.html",
   "scripts/careers-apply.js",
-  "scripts/careers-deadline.js",
+  "scripts/careers-home.js",
   "scripts/careers-roles.js",
   "scripts/header-scroll.js",
   "api/applications.js",
+  "api/role-state.js",
   "api/_lib/application-payload.js",
   "api/_lib/notion-client.js",
+  "api/_lib/role-state.js",
 ];
 
 if (!target.startsWith(`${root}${path.sep}`) || path.basename(target) !== ".vercel-deploy") {
