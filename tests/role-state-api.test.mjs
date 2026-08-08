@@ -7,6 +7,8 @@ const roles = [
     slug: "open-role",
     title: "Open Role",
     careerGroup: "launch",
+    careerOrder: 1,
+    locationType: "Remote",
     level: "Contributor",
     summary: "Open role summary.",
     mission: "Open role mission.",
@@ -66,6 +68,12 @@ async function request(url, method = "GET") {
   assert.deepEqual(json.roles.map(({ slug }) => slug), ["open-role"]);
   assert.equal(json.roles[0].state.datePosted, "2026-08-10");
   assert.equal(json.roles[0].state.validThrough, "2026-08-23T16:00:00.000Z");
+  // The collection is deliberately no-store, so it is refetched on every homepage visit: it must
+  // carry only what the homepage renders, never the full role prose.
+  assert.deepEqual(
+    Object.keys(json.roles[0]).sort(),
+    ["careerGroup", "careerOrder", "locationType", "slug", "state", "title"],
+  );
 }
 
 {

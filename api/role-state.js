@@ -17,6 +17,17 @@ function resolveAll(serverNow, roles) {
   return roles.map((role) => ({ role, state: resolveRoleState(serverNow, role) }));
 }
 
+function projectListedRole({ role, state }) {
+  return {
+    slug: role.slug,
+    title: role.title,
+    locationType: role.locationType,
+    careerGroup: role.careerGroup,
+    careerOrder: role.careerOrder,
+    state,
+  };
+}
+
 function summarizeOpenRoles(resolvedRoles) {
   const openRoles = resolvedRoles.filter(({ state }) => state.isOpen);
   const groupCounts = {};
@@ -49,7 +60,7 @@ export function createRoleStateHandler({ now = () => new Date(), roles = careerR
         serverNow: serverNowIso,
         openRoleCount: openRoles.length,
         groupCounts,
-        roles: openRoles.map(({ role, state }) => ({ ...role, state })),
+        roles: openRoles.map(projectListedRole),
       });
       return;
     }

@@ -43,6 +43,15 @@ async function installRoleResponse(context, response = openRoleResponse, status 
   await context.route("**/api/role-state?role=*", (route) => fulfillJson(route, status, response));
 }
 
+async function installRoleSequence(context, responses) {
+  let index = 0;
+  await context.route("**/api/role-state?role=*", (route) => {
+    const body = responses[Math.min(index, responses.length - 1)];
+    index += 1;
+    return fulfillJson(route, 200, body);
+  });
+}
+
 async function newTestPage(context) {
   const page = await context.newPage();
   page.setDefaultTimeout(3000);
@@ -147,6 +156,52 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
   await context.close();
 }
 
+// A weekly HKT window boundary re-derives the posting dates from the server; it must never
+// discard an applicant's in-progress answers or file selections the way a page reload would.
+{
+  const nextWindowNow = "2026-08-17T09:00:00.000Z";
+  const nextWindowState = resolveRoleState(nextWindowNow, chiefOfStaff);
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  await installRoleSequence(context, [
+    { ...openRoleResponse, state: { ...openState, nextRefreshAt: "2026-08-12T09:00:00.800Z" } },
+    { ...openRoleResponse, serverNow: nextWindowNow, state: nextWindowState },
+  ]);
+  const page = await newTestPage(context);
+  await page.goto(`${baseUrl}/careers/apply/?role=chief-of-staff`, { waitUntil: "domcontentloaded" });
+  await waitForOpenRole(page);
+  const answer = page.locator('#application-form textarea[name="role_question_1"]');
+  await answer.fill("A long answer that must survive the weekly window boundary.");
+  await page.locator("[data-close-date]").filter({ hasText: nextWindowState.visibleCloseDate }).waitFor();
+  const refreshed = await roleSnapshot(page);
+  assert.equal(refreshed.closeLabel, nextWindowState.visibleCloseLabel, "the extended window should re-render the authoritative close label");
+  assert.equal(refreshed.dateTime, nextWindowState.validThrough);
+  assert.equal(refreshed.applyLabel, nextWindowState.applyLabel);
+  assert.equal(refreshed.datePosted, nextWindowState.datePosted, "the JobPosting must carry the new authoritative datePosted");
+  assert.equal(refreshed.validThrough, nextWindowState.validThrough);
+  assert.equal(refreshed.formVisible, true, "the application form must stay up across a weekly window boundary");
+  assert.equal(await answer.inputValue(), "A long answer that must survive the weekly window boundary.", "in-progress answers must survive the boundary refresh");
+  await context.close();
+}
+
+// Reaching effectiveClosesAt is the opposite case: the form comes down at once, with no active
+// JobPosting left behind and nothing about the draft preserved.
+{
+  const closesSoon = "2026-08-12T09:00:00.800Z";
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  await installRoleSequence(context, [
+    { ...openRoleResponse, state: { ...openState, effectiveClosesAt: closesSoon, validThrough: closesSoon } },
+    { ...openRoleResponse, status: "closed", state: { ...openState, isOpen: false } },
+  ]);
+  const page = await newTestPage(context);
+  await page.goto(`${baseUrl}/careers/apply/?role=chief-of-staff`, { waitUntil: "domcontentloaded" });
+  await waitForOpenRole(page);
+  await page.locator('#application-form textarea[name="role_question_1"]').fill("Answer written just before the close instant.");
+  await page.getByRole("heading", { name: "This role is closed" }).waitFor();
+  assert.equal(await page.locator("#application-form").isVisible(), false, "the form must come down at the close instant");
+  assert.equal(await page.locator('script[type="application/ld+json"]').count(), 0, "no active JobPosting may survive closure");
+  await context.close();
+}
+
 {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await newTestPage(context);
@@ -196,6 +251,20 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
   await page.locator('[data-careers-state="unavailable"]').waitFor();
   assert.equal(await page.locator("a.job-row").count(), 0);
   assert.equal(await page.locator("body").getByText(/Open roles \(\d+\)/).count(), 0);
+  assert.deepEqual(
+    [...new Set(await page.locator("[data-open-role-count]").allTextContents())],
+    ["Open roles unavailable"],
+    "an endpoint failure must not leave the count chips on their pre-authority placeholder",
+  );
+  assert.deepEqual(
+    [...new Set(await page.locator("[data-recruiting-status]").allTextContents())],
+    ["Openings unavailable"],
+  );
+  assert.equal(
+    await page.locator("[data-role-marks]").getAttribute("aria-label"),
+    "Open-role count unavailable",
+    "the marks graphic must not announce loading forever",
+  );
   await context.close();
 }
 

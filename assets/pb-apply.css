@@ -153,6 +153,23 @@ main {
   padding: clamp(64px, 9vw, 128px) 0;
 }
 
+[data-role-page-state="checking"] .role-unavailable {
+  align-content: start;
+  min-height: clamp(320px, 42vh, 460px);
+  padding: clamp(64px, 9vw, 128px) 0 clamp(56px, 7vw, 96px);
+}
+
+[data-role-page-state="checking"] .role-unavailable .page-title {
+  max-width: 34ch;
+  color: var(--apply-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-s);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
 .role-unavailable > p:not(.role-location) {
   max-width: 52ch;
   margin: var(--space-xs) 0 var(--space-md);

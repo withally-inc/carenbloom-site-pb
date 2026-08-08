@@ -39,6 +39,15 @@ function roleGroup(group, roles, count) {
   return container;
 }
 
+function applyCountSurfaces(root, { countLabel, statusLabel }) {
+  root.querySelectorAll("[data-open-role-count]").forEach((element) => {
+    element.textContent = countLabel;
+  });
+  root.querySelectorAll("[data-recruiting-status]").forEach((element) => {
+    element.textContent = statusLabel;
+  });
+}
+
 function renderRoleMarks(root, count) {
   const marks = root.querySelector("[data-role-marks]");
   if (!marks) return;
@@ -74,11 +83,9 @@ export async function initCareersHome(root = document, fetchImpl = fetch) {
     }
 
     const count = authoritative.openRoleCount;
-    root.querySelectorAll("[data-open-role-count]").forEach((element) => {
-      element.textContent = `Open roles (${count})`;
-    });
-    root.querySelectorAll("[data-recruiting-status]").forEach((element) => {
-      element.textContent = count > 0 ? "Actively recruiting" : "No current openings";
+    applyCountSurfaces(root, {
+      countLabel: `Open roles (${count})`,
+      statusLabel: count > 0 ? "Actively recruiting" : "No current openings",
     });
     renderRoleMarks(root, count);
     summary.textContent = `(07) Careers · ${count} ${count === 1 ? "role" : "roles"} open`;
@@ -96,6 +103,15 @@ export async function initCareersHome(root = document, fetchImpl = fetch) {
     ])) - Date.parse(authoritative.serverNow);
     if (Number.isFinite(boundaryMs)) setTimeout(() => window.location.reload(), Math.max(0, boundaryMs));
   } catch {
+    applyCountSurfaces(root, {
+      countLabel: "Open roles unavailable",
+      statusLabel: "Openings unavailable",
+    });
+    const marks = root.querySelector("[data-role-marks]");
+    if (marks) {
+      marks.replaceChildren();
+      marks.setAttribute("aria-label", "Open-role count unavailable");
+    }
     list.replaceChildren();
     const message = document.createElement("p");
     message.className = "section-label careers-status";

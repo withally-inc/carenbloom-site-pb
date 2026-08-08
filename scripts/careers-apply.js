@@ -134,8 +134,11 @@
   jsonLd.textContent = JSON.stringify(jobPosting);
   document.head.appendChild(jsonLd);
 
-  const responseAnchor = performance.now();
-  const remainingAtResponse = Date.parse(state.validThrough) - Date.parse(serverNow);
+  let currentState = state;
+  let currentServerNow = serverNow;
+  let responseAnchor = performance.now();
+  let remainingAtResponse = Date.parse(currentState.validThrough) - Date.parse(currentServerNow);
+  let boundaryTimer = null;
   const formatCountdown = (remainingMs) => {
     const totalSeconds = Math.floor(Math.max(0, remainingMs) / 1000);
     const days = Math.floor(totalSeconds / 86400);
@@ -146,17 +149,85 @@
   };
   const syncClosingWindow = () => {
     const remainingMs = remainingAtResponse - (performance.now() - responseAnchor);
-    if (closeDate) closeDate.textContent = state.visibleCloseLabel;
+    if (closeDate) closeDate.textContent = currentState.visibleCloseLabel;
     if (countdown) {
-      countdown.dateTime = state.validThrough;
+      countdown.dateTime = currentState.validThrough;
       countdown.textContent = formatCountdown(remainingMs);
     }
-    if (closeApply) closeApply.setAttribute("aria-label", state.applyLabel);
+    if (closeApply) closeApply.setAttribute("aria-label", currentState.applyLabel);
   };
+  const syncJobPostingDates = () => {
+    jobPosting.datePosted = currentState.datePosted;
+    jobPosting.validThrough = currentState.validThrough;
+    jsonLd.textContent = JSON.stringify(jobPosting);
+  };
+  const tick = setInterval(syncClosingWindow, 1000);
+  const takeDown = (pageState, heading, message, title) => {
+    clearInterval(tick);
+    clearTimeout(boundaryTimer);
+    jsonLd.remove();
+    if (title) document.title = title;
+    showUnavailable(pageState, heading, message);
+  };
+
+  const refreshAuthority = async (atClose) => {
+    let next;
+    try {
+      const response = await fetch(`/api/role-state?role=${encodeURIComponent(slug)}`, {
+        cache: "no-store",
+        headers: { Accept: "application/json" },
+      });
+      next = await response.json().catch(() => null);
+      if (!response.ok && response.status !== 404) throw new Error("Role authority refresh failed.");
+    } catch {
+      if (atClose) {
+        takeDown("closed", "This role is closed", `${role.title} is no longer accepting applications.`, `${role.title} — Closed | Care & Bloom`);
+        return;
+      }
+      boundaryTimer = setTimeout(() => refreshAuthority(false), 30000);
+      return;
+    }
+
+    if (next?.status === "unknown") {
+      takeDown("unknown", "Role not found", "This role is not one of our current openings.");
+      return;
+    }
+    if (!next?.role || next.role.slug !== slug || !next.state || !next.serverNow) {
+      if (atClose) {
+        takeDown("closed", "This role is closed", `${role.title} is no longer accepting applications.`, `${role.title} — Closed | Care & Bloom`);
+        return;
+      }
+      boundaryTimer = setTimeout(() => refreshAuthority(false), 30000);
+      return;
+    }
+    if (next.status !== "open" || next.state.isOpen !== true) {
+      takeDown("closed", "This role is closed", `${role.title} is no longer accepting applications.`, `${role.title} — Closed | Care & Bloom`);
+      return;
+    }
+
+    currentState = next.state;
+    currentServerNow = next.serverNow;
+    responseAnchor = performance.now();
+    remainingAtResponse = Date.parse(currentState.validThrough) - Date.parse(currentServerNow);
+    document.querySelectorAll("[data-open-role-count]").forEach((element) => {
+      element.textContent = `Open roles (${next.openRoleCount})`;
+    });
+    syncJobPostingDates();
+    syncClosingWindow();
+    scheduleBoundary();
+  };
+
+  function scheduleBoundary() {
+    const closesAtMs = Date.parse(currentState.effectiveClosesAt);
+    const nextRefreshMs = Date.parse(currentState.nextRefreshAt);
+    const atClose = closesAtMs <= nextRefreshMs;
+    const boundaryMs = Math.min(nextRefreshMs, closesAtMs) - Date.parse(currentServerNow);
+    clearTimeout(boundaryTimer);
+    boundaryTimer = setTimeout(() => refreshAuthority(atClose), Math.max(0, boundaryMs));
+  }
+
   syncClosingWindow();
-  setInterval(syncClosingWindow, 1000);
-  const refreshAtMs = Math.min(Date.parse(state.nextRefreshAt), Date.parse(state.effectiveClosesAt)) - Date.parse(serverNow);
-  setTimeout(() => window.location.reload(), Math.max(0, refreshAtMs));
+  scheduleBoundary();
 
   document.querySelectorAll(".application-tooltip").forEach((tooltip) => {
     const row = tooltip.closest(".application-label-row");

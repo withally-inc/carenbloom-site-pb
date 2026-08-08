@@ -5,6 +5,7 @@ import { test } from "node:test";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { careerRoles } from "../scripts/careers-roles.js";
+import { resolveRoleState } from "../api/_lib/role-state.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const decodeEntities = (value) => value.replace(/&amp;/g, "&");
@@ -130,6 +131,22 @@ test("canonical roles own the stable homepage group used by authoritative render
   );
   assert.doesNotMatch(home, /<a class="job-row"/, "static HTML must not advertise a role before server authority loads");
   assert.match(home, /data-careers-list/);
+});
+
+/* A malformed lifecycle field in scripts/careers-roles.js makes resolveRoleState throw for every
+   request, which fails the homepage list and all apply pages closed at once with no build-time
+   signal. Prove the whole canonical set resolves instead of discovering it in production. */
+test("every canonical role resolves against the shared lifecycle resolver", () => {
+  const serverNow = new Date("2026-08-08T04:00:00.000Z");
+  assert.equal(careerRoles.length > 0, true, "the canonical role set should not be empty");
+  for (const role of careerRoles) {
+    assert.doesNotThrow(() => resolveRoleState(serverNow, role), `canonical role ${role.slug} must resolve without throwing`);
+    const state = resolveRoleState(serverNow, role);
+    assert.match(state.datePosted, /^\d{4}-\d{2}-\d{2}$/, `${role.slug} should carry an HKT calendar datePosted`);
+    assert.equal(Number.isNaN(Date.parse(state.effectiveClosesAt)), false, `${role.slug} should carry a resolvable close instant`);
+    assert.equal(Number.isNaN(Date.parse(state.validThrough)), false, `${role.slug} should carry a resolvable validThrough`);
+    assert.equal(typeof state.isOpen, "boolean", `${role.slug} should resolve a definite open state`);
+  }
 });
 
 test("static entry points make no numeric open-role claim", () => {
