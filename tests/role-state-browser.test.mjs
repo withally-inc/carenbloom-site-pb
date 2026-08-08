@@ -230,6 +230,74 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
   await page.getByRole("heading", { name: "This role is closed" }).waitFor();
   assert.equal(await page.locator("#application-form").isVisible(), false, "an outage must not keep the form up past the close instant");
   assert.equal(await page.locator('script[type="application/ld+json"]').count(), 0, "an outage must not keep an active JobPosting past the close instant");
+  const servedAtTakedown = served;
+  await page.waitForTimeout(2500);
+  assert.equal(served, servedAtTakedown, "a taken-down page must stop polling the role-state endpoint");
+  await context.close();
+}
+
+// A closed page is terminal: a role-state response still in flight when closure lands must not
+// resurrect the countdown, the role content, the JobPosting, or the polling loop.
+{
+  const closesSoon = "2026-08-12T09:00:01.200Z";
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  let served = 0;
+  await context.route("**/api/role-state?role=*", async (route) => {
+    served += 1;
+    if (served === 1) {
+      return fulfillJson(route, 200, {
+        ...openRoleResponse,
+        state: { ...openState, nextRefreshAt: "2026-08-12T09:00:00.400Z", effectiveClosesAt: closesSoon, validThrough: closesSoon },
+      });
+    }
+    await new Promise((resolve) => setTimeout(resolve, 2500));
+    return fulfillJson(route, 200, {
+      ...openRoleResponse,
+      serverNow: "2026-08-12T09:00:00.900Z",
+      state: { ...openState, nextRefreshAt: "2026-08-12T09:00:30.000Z" },
+    });
+  });
+  const page = await newTestPage(context);
+  await page.goto(`${baseUrl}/careers/apply/?role=chief-of-staff`, { waitUntil: "domcontentloaded" });
+  await waitForOpenRole(page);
+  await page.getByRole("heading", { name: "This role is closed" }).waitFor({ timeout: 6000 });
+  await page.waitForTimeout(3000);
+  assert.equal(await page.locator('[data-role-page-state="closed"]').count(), 1, "a late open response must not reopen the role");
+  assert.equal(await page.locator("#application-form").isVisible(), false, "a late open response must not restore the form");
+  assert.equal(await page.locator('script[type="application/ld+json"]').count(), 0, "a late open response must not restore active JobPosting data");
+  assert.equal(served, 2, "a late open response must not re-arm the polling loop");
+  await context.close();
+}
+
+// An application accepted just before closure still has to hand the applicant their reference,
+// outside the form that closure removed.
+{
+  const closesSoon = "2026-08-12T09:00:01.200Z";
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  await installRoleSequence(context, [
+    { ...openRoleResponse, state: { ...openState, nextRefreshAt: closesSoon, effectiveClosesAt: closesSoon, validThrough: closesSoon } },
+    { ...openRoleResponse, status: "closed", state: { ...openState, isOpen: false } },
+  ]);
+  await context.route("**/api/applications", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 2500));
+    return fulfillJson(route, 200, { success: true, ref: "CB-TEST-4821" });
+  });
+  const page = await newTestPage(context);
+  await page.goto(`${baseUrl}/careers/apply/?role=chief-of-staff`, { waitUntil: "domcontentloaded" });
+  await waitForOpenRole(page);
+  await page.evaluate(() => {
+    document.querySelectorAll("#application-form [required]").forEach((field) => field.removeAttribute("required"));
+  });
+  await page.locator('#application-form button[type="submit"]').click();
+  await page.getByRole("heading", { name: "This role is closed" }).waitFor({ timeout: 6000 });
+  const receipt = page.locator("[data-submission-receipt]");
+  await receipt.waitFor({ timeout: 6000 });
+  assert.match(await receipt.textContent(), /CB-TEST-4821/, "the reference must reach the applicant outside the removed form");
+  assert.equal(await receipt.getAttribute("role"), "status", "the standalone confirmation must be announced");
+  assert.equal(await receipt.isVisible(), true, "the confirmation must be visible outside the hidden form");
+  assert.equal(await page.locator("#application-form").isVisible(), false, "the confirmation must not reopen the application form");
+  assert.equal(await page.locator('script[type="application/ld+json"]').count(), 0, "the confirmation must not restore active JobPosting data");
+  assert.equal(await page.locator('[data-role-page-state="closed"]').count(), 1, "the role must stay closed after a late acceptance");
   await context.close();
 }
 

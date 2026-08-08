@@ -7,6 +7,20 @@
   const stateMessage = document.querySelector("[data-role-state-message]");
   const roleContent = [...document.querySelectorAll("[data-role-content]")];
 
+  // A submission accepted just before closure must still hand the applicant their reference, even
+  // though the form it was typed in is gone by the time the server answers.
+  const showSubmissionReceipt = (reference) => {
+    if (!unavailable) return;
+    let receipt = unavailable.querySelector("[data-submission-receipt]");
+    if (!receipt) {
+      receipt = document.createElement("p");
+      receipt.dataset.submissionReceipt = "";
+      receipt.setAttribute("role", "status");
+      unavailable.insertBefore(receipt, unavailable.querySelector(".role-back"));
+    }
+    receipt.textContent = `Your application was received before this role closed. Reference: ${reference}.`;
+  };
+
   const showUnavailable = (state, heading, message) => {
     if (pageState) pageState.dataset.rolePageState = state;
     roleContent.forEach((element) => { element.hidden = true; });
@@ -137,8 +151,10 @@
   let currentState = state;
   let currentServerNow = serverNow;
   let responseAnchor = performance.now();
-  let remainingAtResponse = Date.parse(currentState.validThrough) - Date.parse(currentServerNow);
+  let remainingAtResponse = Date.parse(currentState.effectiveClosesAt) - Date.parse(currentServerNow);
   let boundaryTimer = null;
+  let takenDown = false;
+  let submissionReference = null;
   const formatCountdown = (remainingMs) => {
     const totalSeconds = Math.floor(Math.max(0, remainingMs) / 1000);
     const days = Math.floor(totalSeconds / 86400);
@@ -163,6 +179,7 @@
   };
   const remainingNow = () => remainingAtResponse - (performance.now() - responseAnchor);
   const takeDown = (pageState, heading, message, title) => {
+    takenDown = true;
     clearInterval(tick);
     clearTimeout(boundaryTimer);
     jsonLd.remove();
@@ -173,6 +190,7 @@
       applicationForm.querySelectorAll('input[type="file"]').forEach((input) => { input.value = ""; });
     }
     showUnavailable(pageState, heading, message);
+    if (submissionReference) showSubmissionReceipt(submissionReference);
   };
   const takeDownAsClosed = () => {
     takeDown("closed", "This role is closed", `${role.title} is no longer accepting applications.`, `${role.title} — Closed | Care & Bloom`);
@@ -180,6 +198,7 @@
   // The authoritative close instant is enforced from the monotonic anchor, so an endpoint outage
   // can never leave the form or an active JobPosting standing past it.
   const enforceClosure = () => {
+    if (takenDown) return true;
     if (remainingNow() > 0) return false;
     takeDownAsClosed();
     return true;
@@ -194,6 +213,7 @@
   };
 
   const refreshAuthority = async () => {
+    if (takenDown) return;
     let next;
     try {
       const response = await fetch(`/api/role-state?role=${encodeURIComponent(slug)}`, {
@@ -203,9 +223,10 @@
       next = await response.json().catch(() => null);
       if (!response.ok && response.status !== 404) throw new Error("Role authority refresh failed.");
     } catch {
-      retryRefresh();
+      if (!takenDown) retryRefresh();
       return;
     }
+    if (takenDown) return;
 
     if (next?.status === "unknown") {
       takeDown("unknown", "Role not found", "This role is not one of our current openings.");
@@ -223,7 +244,7 @@
     currentState = next.state;
     currentServerNow = next.serverNow;
     responseAnchor = performance.now();
-    remainingAtResponse = Date.parse(currentState.validThrough) - Date.parse(currentServerNow);
+    remainingAtResponse = Date.parse(currentState.effectiveClosesAt) - Date.parse(currentServerNow);
     document.querySelectorAll("[data-open-role-count]").forEach((element) => {
       element.textContent = `Open roles (${next.openRoleCount})`;
     });
@@ -233,6 +254,7 @@
   };
 
   function scheduleBoundary() {
+    if (takenDown) return;
     const closesAtMs = Date.parse(currentState.effectiveClosesAt);
     const nextRefreshMs = Date.parse(currentState.nextRefreshAt);
     const boundaryMs = Math.min(nextRefreshMs, closesAtMs) - Date.parse(currentServerNow);
@@ -422,8 +444,10 @@
         });
         const result = await response.json().catch(() => ({}));
         if (!response.ok || !result.success) throw new Error(result.error || "Submission failed.");
-        setStatus(`Application received. Reference: ${result.ref || "submitted"}.`, "success");
+        submissionReference = result.ref || "submitted";
+        setStatus(`Application received. Reference: ${submissionReference}.`, "success");
         form.reset();
+        if (takenDown) showSubmissionReceipt(submissionReference);
       } catch (error) {
         setStatus(error.message || "Could not submit application right now.", "error");
       } finally {

@@ -98,6 +98,24 @@ BASE_URL=http://127.0.0.1:49279 node tests/pb-integration.test.mjs
 
 The full `npm test` suite and packaging verification are owned by the pipeline's own test step and are not re-claimed here.
 
+A second review round closed three further residuals in the same state machine.
+
+Takedown is now terminal: a `takenDown` flag short-circuits `refreshAuthority`'s continuation, `retryRefresh`, `scheduleBoundary`, and `enforceClosure`, so a role-state response still in flight when closure lands cannot reopen the role, restore the form or structured data, or re-arm polling.
+
+`effectiveClosesAt` is now the single field behind both the monotonic closure guard and the boundary scheduler; `validThrough` is used only for display and `JobPosting` output, so relaxing the resolver's current alias between the two cannot silently move the enforced cutoff.
+
+An application accepted before closure now surfaces its reference in a standalone `role="status"` confirmation inside the closed panel, outside the removed form. The role stays closed, the form stays unavailable, active `JobPosting` data stays removed, and the draft and file selections are still cleared rather than restored.
+
+These focused commands were run against a freshly started dry-run server on port 49279 and passed, with `tests/role-state-browser.test.mjs` repeated three times to check the new timing-sensitive cases for flakiness:
+
+```sh
+BASE_URL=http://127.0.0.1:49279 node tests/role-state-browser.test.mjs
+BASE_URL=http://127.0.0.1:49279 node tests/pb-role-apply.test.mjs
+BASE_URL=http://127.0.0.1:49279 node tests/careers-apply-submit.test.mjs
+BASE_URL=http://127.0.0.1:49279 node tests/careers-upload-limits.test.mjs
+BASE_URL=http://127.0.0.1:49279 node tests/pb-integration.test.mjs
+```
+
 ## Fresh Chrome verification
 
 Fresh `chrome-devtools-axi` checks against a newly started dry-run server showed eleven homepage rows, synchronized counts `11 / 1 / 5 / 3 / 2`, eleven generated role marks, and zero horizontal overflow.
