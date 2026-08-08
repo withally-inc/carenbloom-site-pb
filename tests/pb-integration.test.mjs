@@ -28,6 +28,9 @@ async function waitForCareersAuthority(page) {
   if (await page.locator("[data-careers-list]").count()) {
     await page.locator('[data-careers-list][data-careers-state="ready"]').waitFor();
   }
+  if (await page.locator("[data-role-page-state]").count()) {
+    await page.locator('[data-role-page-state="open"]').waitFor();
+  }
 }
 
 async function openPage(page, url = `${baseUrl}/`) {

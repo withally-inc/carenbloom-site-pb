@@ -66,6 +66,38 @@ Executing the packaged resolver for Monday `2026-08-10 HKT` returned `datePosted
 
 A generated-package search found no browser-owned `getClosingPresentation(new Date())`, `datePosted: new Date`, or first-role fallback.
 
+## Review-round hardening
+
+Six accepted review findings were fixed after the implementation cycle above, adding these behavioral contracts.
+
+The application page no longer reloads at a window boundary: when the weekly HKT window extends and the role is still open it re-fetches `/api/role-state` and re-renders the visible close label, `time` `datetime`, accessible Apply label, countdown anchor, and `JobPosting` `datePosted`/`validThrough` in place, leaving the applicant's typed answers and file selections untouched.
+
+At `effectiveClosesAt`, and on any server `closed` or `unknown` response, the page takes the form down at once, removes the `JobPosting` script, and resets the form so no draft or `File` selection survives in the hidden DOM. Closure is enforced from the monotonic `performance.now()` anchor, so an endpoint outage across the close instant still closes the page with no successful response at all.
+
+The homepage endpoint-failure path now owns every surface the success path owns: `[data-open-role-count]` reads `Unavailable` with an `Open roles unavailable` accessible name, `[data-recruiting-status]` reads `Openings unavailable`, and the marks graphic gets a terminal `Open-role count unavailable` name instead of announcing loading forever.
+
+The chip label is deliberately concise because the 320px floating bar holds the chip whole and lets the wordmark flex: the first attempt, `Open roles unavailable`, was measured in Chromium at a 215.6px chip that scaled the Care & Bloom lockup from 103.3px to 42.4px wide and 18px to 7.4px tall. The shipped label restores the full 114px lockup, and `tests/role-state-browser.test.mjs` now pins the failure lockup against the success lockup at 320px.
+
+The `/api/role-state` collection response is projected to `slug`, `title`, `locationType`, `careerGroup`, `careerOrder`, and `state` rather than spreading every canonical role, and `tests/role-state-api.test.mjs` pins that shape.
+
+`tests/repository-contract.test.mjs` now resolves every entry in `careerRoles` through the shared resolver, so a malformed lifecycle field fails at test time instead of failing every request at runtime.
+
+The homepage browser assertions in `tests/pb-integration.test.mjs` and `tests/nav-float-browser.test.mjs` now wait on `[data-careers-state="ready"]`, and the apply-page assertions additionally wait on `[data-role-page-state="open"]`, because those surfaces are fetch-dependent rather than static.
+
+These focused commands were run against a freshly started dry-run server on port 49279 and passed:
+
+```sh
+node --test tests/repository-contract.test.mjs
+node tests/role-state-api.test.mjs
+node --test tests/careers-deadline.test.mjs tests/applications-api.test.mjs
+BASE_URL=http://127.0.0.1:49279 node tests/role-state-browser.test.mjs
+BASE_URL=http://127.0.0.1:49279 node tests/nav-float-browser.test.mjs
+BASE_URL=http://127.0.0.1:49279 node tests/pb-role-apply.test.mjs
+BASE_URL=http://127.0.0.1:49279 node tests/pb-integration.test.mjs
+```
+
+The full `npm test` suite and packaging verification are owned by the pipeline's own test step and are not re-claimed here.
+
 ## Fresh Chrome verification
 
 Fresh `chrome-devtools-axi` checks against a newly started dry-run server showed eleven homepage rows, synchronized counts `11 / 1 / 5 / 3 / 2`, eleven generated role marks, and zero horizontal overflow.

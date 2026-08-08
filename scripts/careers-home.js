@@ -39,9 +39,13 @@ function roleGroup(group, roles, count) {
   return container;
 }
 
-function applyCountSurfaces(root, { countLabel, statusLabel }) {
+// The topbar chip is `flex: none` while the brand lockup is the flexible item, so any count label
+// wider than the success one shrinks the Care & Bloom mark instead of the chip at 320px.
+function applyCountSurfaces(root, { countLabel, countAccessibleLabel, statusLabel }) {
   root.querySelectorAll("[data-open-role-count]").forEach((element) => {
     element.textContent = countLabel;
+    if (countAccessibleLabel) element.setAttribute("aria-label", countAccessibleLabel);
+    else element.removeAttribute("aria-label");
   });
   root.querySelectorAll("[data-recruiting-status]").forEach((element) => {
     element.textContent = statusLabel;
@@ -104,7 +108,8 @@ export async function initCareersHome(root = document, fetchImpl = fetch) {
     if (Number.isFinite(boundaryMs)) setTimeout(() => window.location.reload(), Math.max(0, boundaryMs));
   } catch {
     applyCountSurfaces(root, {
-      countLabel: "Open roles unavailable",
+      countLabel: "Unavailable",
+      countAccessibleLabel: "Open roles unavailable",
       statusLabel: "Openings unavailable",
     });
     const marks = root.querySelector("[data-role-marks]");

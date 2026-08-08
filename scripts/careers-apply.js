@@ -161,16 +161,39 @@
     jobPosting.validThrough = currentState.validThrough;
     jsonLd.textContent = JSON.stringify(jobPosting);
   };
-  const tick = setInterval(syncClosingWindow, 1000);
+  const remainingNow = () => remainingAtResponse - (performance.now() - responseAnchor);
   const takeDown = (pageState, heading, message, title) => {
     clearInterval(tick);
     clearTimeout(boundaryTimer);
     jsonLd.remove();
     if (title) document.title = title;
+    const applicationForm = document.querySelector("#application-form");
+    if (applicationForm) {
+      applicationForm.reset();
+      applicationForm.querySelectorAll('input[type="file"]').forEach((input) => { input.value = ""; });
+    }
     showUnavailable(pageState, heading, message);
   };
+  const takeDownAsClosed = () => {
+    takeDown("closed", "This role is closed", `${role.title} is no longer accepting applications.`, `${role.title} — Closed | Care & Bloom`);
+  };
+  // The authoritative close instant is enforced from the monotonic anchor, so an endpoint outage
+  // can never leave the form or an active JobPosting standing past it.
+  const enforceClosure = () => {
+    if (remainingNow() > 0) return false;
+    takeDownAsClosed();
+    return true;
+  };
+  const tick = setInterval(() => {
+    if (!enforceClosure()) syncClosingWindow();
+  }, 1000);
 
-  const refreshAuthority = async (atClose) => {
+  const retryRefresh = () => {
+    if (enforceClosure()) return;
+    boundaryTimer = setTimeout(refreshAuthority, 30000);
+  };
+
+  const refreshAuthority = async () => {
     let next;
     try {
       const response = await fetch(`/api/role-state?role=${encodeURIComponent(slug)}`, {
@@ -180,11 +203,7 @@
       next = await response.json().catch(() => null);
       if (!response.ok && response.status !== 404) throw new Error("Role authority refresh failed.");
     } catch {
-      if (atClose) {
-        takeDown("closed", "This role is closed", `${role.title} is no longer accepting applications.`, `${role.title} — Closed | Care & Bloom`);
-        return;
-      }
-      boundaryTimer = setTimeout(() => refreshAuthority(false), 30000);
+      retryRefresh();
       return;
     }
 
@@ -193,15 +212,11 @@
       return;
     }
     if (!next?.role || next.role.slug !== slug || !next.state || !next.serverNow) {
-      if (atClose) {
-        takeDown("closed", "This role is closed", `${role.title} is no longer accepting applications.`, `${role.title} — Closed | Care & Bloom`);
-        return;
-      }
-      boundaryTimer = setTimeout(() => refreshAuthority(false), 30000);
+      retryRefresh();
       return;
     }
     if (next.status !== "open" || next.state.isOpen !== true) {
-      takeDown("closed", "This role is closed", `${role.title} is no longer accepting applications.`, `${role.title} — Closed | Care & Bloom`);
+      takeDownAsClosed();
       return;
     }
 
@@ -220,10 +235,9 @@
   function scheduleBoundary() {
     const closesAtMs = Date.parse(currentState.effectiveClosesAt);
     const nextRefreshMs = Date.parse(currentState.nextRefreshAt);
-    const atClose = closesAtMs <= nextRefreshMs;
     const boundaryMs = Math.min(nextRefreshMs, closesAtMs) - Date.parse(currentServerNow);
     clearTimeout(boundaryTimer);
-    boundaryTimer = setTimeout(() => refreshAuthority(atClose), Math.max(0, boundaryMs));
+    boundaryTimer = setTimeout(refreshAuthority, Math.max(0, boundaryMs));
   }
 
   syncClosingWindow();

@@ -199,6 +199,37 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
   await page.getByRole("heading", { name: "This role is closed" }).waitFor();
   assert.equal(await page.locator("#application-form").isVisible(), false, "the form must come down at the close instant");
   assert.equal(await page.locator('script[type="application/ld+json"]').count(), 0, "no active JobPosting may survive closure");
+  assert.equal(
+    await page.locator('#application-form textarea[name="role_question_1"]').inputValue(),
+    "",
+    "the applicant's draft must not survive in the taken-down form",
+  );
+  await context.close();
+}
+
+// An endpoint outage at the weekly boundary must not outlive the role's own close instant: the
+// monotonic anchor closes the page with no successful response at all.
+{
+  const closesSoon = "2026-08-12T09:00:01.500Z";
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  let served = 0;
+  await context.route("**/api/role-state?role=*", (route) => {
+    served += 1;
+    if (served === 1) {
+      return fulfillJson(route, 200, {
+        ...openRoleResponse,
+        state: { ...openState, nextRefreshAt: "2026-08-12T09:00:00.500Z", effectiveClosesAt: closesSoon, validThrough: closesSoon },
+      });
+    }
+    return route.abort("failed");
+  });
+  const page = await newTestPage(context);
+  await page.goto(`${baseUrl}/careers/apply/?role=chief-of-staff`, { waitUntil: "domcontentloaded" });
+  await waitForOpenRole(page);
+  await page.locator('#application-form textarea[name="role_question_1"]').fill("Draft typed during the outage.");
+  await page.getByRole("heading", { name: "This role is closed" }).waitFor();
+  assert.equal(await page.locator("#application-form").isVisible(), false, "an outage must not keep the form up past the close instant");
+  assert.equal(await page.locator('script[type="application/ld+json"]').count(), 0, "an outage must not keep an active JobPosting past the close instant");
   await context.close();
 }
 
@@ -253,8 +284,13 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
   assert.equal(await page.locator("body").getByText(/Open roles \(\d+\)/).count(), 0);
   assert.deepEqual(
     [...new Set(await page.locator("[data-open-role-count]").allTextContents())],
-    ["Open roles unavailable"],
+    ["Unavailable"],
     "an endpoint failure must not leave the count chips on their pre-authority placeholder",
+  );
+  assert.deepEqual(
+    [...new Set(await page.locator("[data-open-role-count]").evaluateAll((nodes) => nodes.map((node) => node.getAttribute("aria-label"))))],
+    ["Open roles unavailable"],
+    "the concise failure chip must still carry the full accessible unavailable status",
   );
   assert.deepEqual(
     [...new Set(await page.locator("[data-recruiting-status]").allTextContents())],
@@ -266,6 +302,37 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
     "the marks graphic must not announce loading forever",
   );
   await context.close();
+}
+
+// The 320px floating bar holds the chip whole and lets the wordmark flex, so an over-long failure
+// label silently scales the approved lockup down instead of clipping.
+{
+  const lockupWidth = async (install) => {
+    const context = await browser.newContext({ viewport: { width: 320, height: 720 } });
+    await install(context);
+    const page = await newTestPage(context);
+    await page.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+    await page.locator("[data-careers-list]:not([data-careers-state='loading'])").waitFor();
+    await page.evaluate(() => window.scrollTo({ top: 700, behavior: "instant" }));
+    await page.waitForTimeout(500);
+    const width = await page.locator(".topbar .brand-logo").evaluate((logo) => logo.getBoundingClientRect().width);
+    await context.close();
+    return width;
+  };
+
+  const readyLockup = await lockupWidth((context) => context.route("**/api/role-state", (route) => fulfillJson(route, 200, {
+    status: "ok",
+    serverNow,
+    openRoleCount: careerRoles.length,
+    groupCounts: { "source-build": 1, launch: 5, scale: 3, platform: 2 },
+    roles: careerRoles.map((role) => ({ ...role, careerGroup: groupBySlug[role.slug], state: resolveRoleState(serverNow, role) })),
+  })));
+  const failedLockup = await lockupWidth((context) => context.route("**/api/role-state", (route) => route.abort("failed")));
+  assert.ok(readyLockup >= 100, `the 320px lockup should print at its optical width when authority lands (${readyLockup}px)`);
+  assert.ok(
+    failedLockup >= readyLockup,
+    `the endpoint-failure chip must not shrink the 320px Care & Bloom lockup (${failedLockup}px vs ${readyLockup}px)`,
+  );
 }
 
 {
