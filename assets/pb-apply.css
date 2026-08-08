@@ -153,18 +153,20 @@ main {
   padding: clamp(64px, 9vw, 128px) 0;
 }
 
+/* The receipt is a live region that must stay in the accessibility tree before its content
+   arrives, so the empty state collapses to a zero box rather than being removed with display. */
 .role-unavailable > p[data-submission-receipt] {
   max-width: 52ch;
-  margin: 0 0 var(--space-md);
-  padding: 12px 14px;
-  border: 1px solid var(--color-accent);
+  margin: 0;
   color: var(--color-ink);
   font-size: 16px;
   line-height: 1.5;
 }
 
-.role-unavailable > p[data-submission-receipt]:empty {
-  display: none;
+.role-unavailable > p[data-submission-receipt]:not(:empty) {
+  margin: 0 0 var(--space-md);
+  padding: 12px 14px;
+  border: 1px solid var(--color-accent);
 }
 
 [data-role-page-state="checking"] .role-unavailable {

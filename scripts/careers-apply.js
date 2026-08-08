@@ -14,9 +14,12 @@
   const submissionReceipt = document.querySelector("[data-submission-receipt]");
   const showSubmissionReceipt = (reference) => {
     if (!submissionReceipt) return;
-    setTimeout(() => {
+    const write = () => {
       submissionReceipt.textContent = `Your application was received before this role closed. Reference: ${reference}.`;
-    }, 0);
+    };
+    const defer = () => setTimeout(write, 0);
+    if (typeof requestAnimationFrame === "function") requestAnimationFrame(defer);
+    else defer();
   };
 
   const showUnavailable = (state, heading, message) => {

@@ -204,11 +204,23 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
     "",
     "the applicant's draft must not survive in the taken-down form",
   );
-  assert.equal(
-    await page.locator("[data-submission-receipt]").isVisible(),
-    false,
-    "the mounted live region must stay invisible on a closed page with nothing submitted",
-  );
+  // isVisible() cannot tell a removed element from a rendered zero box, and only the latter stays
+  // in the accessibility tree as a live region.
+  const emptyReceipt = await page.locator("[data-submission-receipt]").evaluate((node) => {
+    const style = getComputedStyle(node);
+    return {
+      display: style.display,
+      visibility: style.visibility,
+      height: node.getBoundingClientRect().height,
+      borderWidth: style.borderTopWidth,
+      text: node.textContent,
+    };
+  });
+  assert.notEqual(emptyReceipt.display, "none", "the empty live region must stay in the accessibility tree");
+  assert.notEqual(emptyReceipt.visibility, "hidden", "the empty live region must not be visibility-hidden either");
+  assert.equal(emptyReceipt.height, 0, "the empty live region must occupy no layout on a closed page");
+  assert.equal(emptyReceipt.borderWidth, "0px", "the empty live region must not paint a callout rule");
+  assert.equal(emptyReceipt.text, "", "the empty live region must make no claim before a submission is accepted");
   await context.close();
 }
 
@@ -296,6 +308,11 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
   assert.equal(await receipt.count(), 1, "the live region must be mounted before the reference lands");
   assert.equal(await receipt.getAttribute("role"), "status", "the standalone confirmation must be announced");
   assert.equal(await receipt.isVisible(), false, "the empty live region must not paint an empty callout");
+  assert.notEqual(
+    await receipt.evaluate((node) => getComputedStyle(node).display),
+    "none",
+    "the live region must not be removed from the accessibility tree while it waits for a reference",
+  );
   await page.evaluate(() => {
     document.querySelectorAll("#application-form [required]").forEach((field) => field.removeAttribute("required"));
   });
@@ -315,7 +332,7 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
       mutedFontSize: message.fontSize,
     };
   });
-  assert.equal(receiptStyle.borderWidth, "1px", "the confirmation should keep its callout rule");
+  assert.equal(receiptStyle.borderWidth, "1px", "the populated confirmation should gain its callout rule");
   assert.notEqual(receiptStyle.color, receiptStyle.mutedColor, "the confirmation must not read as de-emphasised secondary copy");
   assert.equal(receiptStyle.fontSize, "16px", "the confirmation should keep its intended type size");
   assert.notEqual(receiptStyle.fontSize, receiptStyle.mutedFontSize);
