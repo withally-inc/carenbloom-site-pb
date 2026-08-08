@@ -106,6 +106,8 @@ Takedown is now terminal: a `takenDown` flag short-circuits `refreshAuthority`'s
 
 An application accepted before closure now surfaces its reference in a standalone `role="status"` confirmation inside the closed panel, outside the removed form. The role stays closed, the form stays unavailable, active `JobPosting` data stays removed, and the draft and file selections are still cleared rather than restored.
 
+A third round corrected that confirmation's presentation and announcement. The live region is declared empty in `careers/apply/index.html` so it is already in the accessibility tree, hidden by an `:empty` rule until a reference arrives, and its text is written in a later task so the change is announced rather than bundled with the takedown. The generic `.role-unavailable > p` rule now excludes the receipt, so the confirmation keeps its intended ink colour and 16px size instead of losing the cascade to the muted secondary copy declared after it. `tests/role-state-browser.test.mjs` now asserts the region is mounted and invisible before submission and compares the confirmation's computed colour and size against the muted state message.
+
 These focused commands were run against a freshly started dry-run server on port 49279 and passed, with `tests/role-state-browser.test.mjs` repeated three times to check the new timing-sensitive cases for flakiness:
 
 ```sh

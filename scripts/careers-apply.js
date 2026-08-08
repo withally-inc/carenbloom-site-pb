@@ -9,16 +9,14 @@
 
   // A submission accepted just before closure must still hand the applicant their reference, even
   // though the form it was typed in is gone by the time the server answers.
+  // The region is declared empty in the markup so it is already live when the reference lands, and
+  // the text is written in a later task so the change is announced rather than bundled.
+  const submissionReceipt = document.querySelector("[data-submission-receipt]");
   const showSubmissionReceipt = (reference) => {
-    if (!unavailable) return;
-    let receipt = unavailable.querySelector("[data-submission-receipt]");
-    if (!receipt) {
-      receipt = document.createElement("p");
-      receipt.dataset.submissionReceipt = "";
-      receipt.setAttribute("role", "status");
-      unavailable.insertBefore(receipt, unavailable.querySelector(".role-back"));
-    }
-    receipt.textContent = `Your application was received before this role closed. Reference: ${reference}.`;
+    if (!submissionReceipt) return;
+    setTimeout(() => {
+      submissionReceipt.textContent = `Your application was received before this role closed. Reference: ${reference}.`;
+    }, 0);
   };
 
   const showUnavailable = (state, heading, message) => {

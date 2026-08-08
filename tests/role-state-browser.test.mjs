@@ -204,6 +204,11 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
     "",
     "the applicant's draft must not survive in the taken-down form",
   );
+  assert.equal(
+    await page.locator("[data-submission-receipt]").isVisible(),
+    false,
+    "the mounted live region must stay invisible on a closed page with nothing submitted",
+  );
   await context.close();
 }
 
@@ -285,16 +290,35 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
   const page = await newTestPage(context);
   await page.goto(`${baseUrl}/careers/apply/?role=chief-of-staff`, { waitUntil: "domcontentloaded" });
   await waitForOpenRole(page);
+  const receipt = page.locator("[data-submission-receipt]");
+  // The empty region must already be mounted and live before the reference arrives, or the change
+  // is never announced.
+  assert.equal(await receipt.count(), 1, "the live region must be mounted before the reference lands");
+  assert.equal(await receipt.getAttribute("role"), "status", "the standalone confirmation must be announced");
+  assert.equal(await receipt.isVisible(), false, "the empty live region must not paint an empty callout");
   await page.evaluate(() => {
     document.querySelectorAll("#application-form [required]").forEach((field) => field.removeAttribute("required"));
   });
   await page.locator('#application-form button[type="submit"]').click();
   await page.getByRole("heading", { name: "This role is closed" }).waitFor({ timeout: 6000 });
-  const receipt = page.locator("[data-submission-receipt]");
   await receipt.waitFor({ timeout: 6000 });
   assert.match(await receipt.textContent(), /CB-TEST-4821/, "the reference must reach the applicant outside the removed form");
-  assert.equal(await receipt.getAttribute("role"), "status", "the standalone confirmation must be announced");
   assert.equal(await receipt.isVisible(), true, "the confirmation must be visible outside the hidden form");
+  const receiptStyle = await receipt.evaluate((node) => {
+    const style = getComputedStyle(node);
+    const message = getComputedStyle(document.querySelector("[data-role-state-message]"));
+    return {
+      color: style.color,
+      fontSize: style.fontSize,
+      borderWidth: style.borderTopWidth,
+      mutedColor: message.color,
+      mutedFontSize: message.fontSize,
+    };
+  });
+  assert.equal(receiptStyle.borderWidth, "1px", "the confirmation should keep its callout rule");
+  assert.notEqual(receiptStyle.color, receiptStyle.mutedColor, "the confirmation must not read as de-emphasised secondary copy");
+  assert.equal(receiptStyle.fontSize, "16px", "the confirmation should keep its intended type size");
+  assert.notEqual(receiptStyle.fontSize, receiptStyle.mutedFontSize);
   assert.equal(await page.locator("#application-form").isVisible(), false, "the confirmation must not reopen the application form");
   assert.equal(await page.locator('script[type="application/ld+json"]').count(), 0, "the confirmation must not restore active JobPosting data");
   assert.equal(await page.locator('[data-role-page-state="closed"]').count(), 1, "the role must stay closed after a late acceptance");

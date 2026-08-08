@@ -163,6 +163,10 @@ main {
   line-height: 1.5;
 }
 
+.role-unavailable > p[data-submission-receipt]:empty {
+  display: none;
+}
+
 [data-role-page-state="checking"] .role-unavailable {
   align-content: start;
   min-height: clamp(320px, 42vh, 460px);
@@ -180,7 +184,7 @@ main {
   text-transform: uppercase;
 }
 
-.role-unavailable > p:not(.role-location) {
+.role-unavailable > p:not(.role-location):not([data-submission-receipt]) {
   max-width: 52ch;
   margin: var(--space-xs) 0 var(--space-md);
   color: var(--apply-muted);
