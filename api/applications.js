@@ -211,6 +211,7 @@ export function createApplicationsHandler({ now = () => new Date(), roles = care
   const canonicalRoles = new Map(roles.map((role) => [role.slug, role]));
 
   return async function handler(req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "https://carenbloom.com");
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
