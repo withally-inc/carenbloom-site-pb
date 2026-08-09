@@ -1,3 +1,8 @@
+import { fetchRoleState } from "./role-state-endpoint.js";
+
+const FALLBACK_REFRESH_MS = 15 * 60 * 1000;
+const MIN_REFRESH_MS = 1000;
+
 const careerGroups = [
   { id: "source-build", index: "01", label: "Source & Build" },
   { id: "launch", index: "02", label: "Launch" },
@@ -52,13 +57,22 @@ function applyCountSurfaces(root, { countLabel, countAccessibleLabel, statusLabe
   });
 }
 
+function statusMessage(text) {
+  const message = document.createElement("p");
+  message.className = "section-label careers-status";
+  message.textContent = text;
+  return message;
+}
+
 function renderRoleMarks(root, count) {
   const marks = root.querySelector("[data-role-marks]");
   if (!marks) return;
   const positions = Array.from({ length: count }, (_, index) => ({
     x: 5.5 + (index % 4) * 11,
-    y: [5.5, 16, 26.5][Math.floor(index / 4)] || 26.5,
+    y: 5.5 + Math.floor(index / 4) * 10.5,
   }));
+  const rows = Math.max(3, Math.ceil(count / 4));
+  marks.setAttribute("viewBox", `0 0 44 ${(rows - 1) * 10.5 + 11}`);
   marks.replaceChildren(...positions.map(({ x, y }, index) => {
     const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     circle.classList.add("cb-mark");
@@ -71,16 +85,26 @@ function renderRoleMarks(root, count) {
   marks.setAttribute("aria-label", `${count} open roles, one mark each`);
 }
 
+function nextRefreshDelayMs(authoritative) {
+  const serverNowMs = Date.parse(authoritative.serverNow);
+  const boundaries = [
+    Date.parse(authoritative.nextBoundaryAt),
+    ...authoritative.roles.flatMap((role) => [
+      Date.parse(role.state?.nextRefreshAt),
+      Date.parse(role.state?.effectiveClosesAt),
+    ]),
+  ].filter((instant) => Number.isFinite(instant) && instant > serverNowMs);
+  if (!boundaries.length) return FALLBACK_REFRESH_MS;
+  return Math.max(MIN_REFRESH_MS, Math.min(...boundaries) - serverNowMs);
+}
+
 export async function initCareersHome(root = document, fetchImpl = fetch) {
   const list = root.querySelector("[data-careers-list]");
   const summary = root.querySelector("[data-careers-summary]");
   if (!list || !summary) return;
 
   try {
-    const response = await fetchImpl("/api/role-state", {
-      cache: "no-store",
-      headers: { Accept: "application/json" },
-    });
+    const response = await fetchRoleState(undefined, fetchImpl);
     const authoritative = await response.json();
     if (!response.ok || authoritative.status !== "ok" || !Array.isArray(authoritative.roles)) {
       throw new Error("Role authority request failed.");
@@ -93,19 +117,21 @@ export async function initCareersHome(root = document, fetchImpl = fetch) {
     });
     renderRoleMarks(root, count);
     summary.textContent = `(07) Careers · ${count} ${count === 1 ? "role" : "roles"} open`;
-    list.replaceChildren(...careerGroups.map((group) => {
-      const roles = authoritative.roles
-        .filter((role) => role.careerGroup === group.id)
-        .sort((left, right) => left.careerOrder - right.careerOrder);
-      return roleGroup(group, roles, authoritative.groupCounts?.[group.id] || 0);
-    }));
+    const populatedGroups = careerGroups
+      .map((group) => ({
+        group,
+        roles: authoritative.roles
+          .filter((role) => role.careerGroup === group.id)
+          .sort((left, right) => left.careerOrder - right.careerOrder),
+        count: authoritative.groupCounts?.[group.id] || 0,
+      }))
+      .filter(({ roles, count }) => roles.length > 0 || count > 0);
+    list.replaceChildren(...(populatedGroups.length
+      ? populatedGroups.map(({ group, roles, count }) => roleGroup(group, roles, count))
+      : [statusMessage("No current openings.")]));
     list.dataset.careersState = "ready";
 
-    const boundaryMs = Math.min(...authoritative.roles.flatMap((role) => [
-      Date.parse(role.state.nextRefreshAt),
-      Date.parse(role.state.effectiveClosesAt),
-    ])) - Date.parse(authoritative.serverNow);
-    if (Number.isFinite(boundaryMs)) setTimeout(() => window.location.reload(), Math.max(0, boundaryMs));
+    setTimeout(() => window.location.reload(), nextRefreshDelayMs(authoritative));
   } catch {
     applyCountSurfaces(root, {
       countLabel: "Unavailable",
@@ -117,11 +143,7 @@ export async function initCareersHome(root = document, fetchImpl = fetch) {
       marks.replaceChildren();
       marks.setAttribute("aria-label", "Open-role count unavailable");
     }
-    list.replaceChildren();
-    const message = document.createElement("p");
-    message.className = "section-label careers-status";
-    message.textContent = "Current openings are temporarily unavailable.";
-    list.append(message);
+    list.replaceChildren(statusMessage("Current openings are temporarily unavailable."));
     list.dataset.careersState = "unavailable";
     summary.textContent = "(07) Careers · Availability unavailable";
   }

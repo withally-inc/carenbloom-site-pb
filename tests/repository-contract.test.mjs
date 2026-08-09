@@ -37,6 +37,7 @@ const runtimeFiles = [
   "scripts/careers-apply.js",
   "scripts/careers-home.js",
   "scripts/careers-roles.js",
+  "scripts/role-state-endpoint.js",
   "scripts/header-scroll.js",
   "scripts/dev-server.mjs",
   "api/applications.js",

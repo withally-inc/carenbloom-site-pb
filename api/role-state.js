@@ -11,6 +11,9 @@ function setAuthoritativeHeaders(res) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
+  res.setHeader("Access-Control-Allow-Origin", "https://carenbloom.com");
+  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 }
 
 function resolveAll(serverNow, roles) {
@@ -28,6 +31,14 @@ function projectListedRole({ role, state }) {
   };
 }
 
+function nextCollectionBoundary(serverNow, resolvedRoles, openRoles) {
+  const boundaries = [
+    ...resolvedRoles.map(({ state }) => Date.parse(state.nextRefreshAt)),
+    ...openRoles.map(({ state }) => Date.parse(state.effectiveClosesAt)),
+  ].filter((instant) => Number.isFinite(instant) && instant > serverNow.getTime());
+  return boundaries.length > 0 ? new Date(Math.min(...boundaries)).toISOString() : null;
+}
+
 function summarizeOpenRoles(resolvedRoles) {
   const openRoles = resolvedRoles.filter(({ state }) => state.isOpen);
   const groupCounts = {};
@@ -41,8 +52,13 @@ function summarizeOpenRoles(resolvedRoles) {
 export function createRoleStateHandler({ now = () => new Date(), roles = careerRoles } = {}) {
   return async function roleStateHandler(req, res) {
     setAuthoritativeHeaders(res);
+    if (req.method === "OPTIONS") {
+      res.statusCode = 204;
+      res.end();
+      return;
+    }
     if (req.method !== "GET") {
-      res.setHeader("Allow", "GET");
+      res.setHeader("Allow", "GET, OPTIONS");
       sendJson(res, 405, { status: "error", error: "Method not allowed." });
       return;
     }
@@ -60,6 +76,7 @@ export function createRoleStateHandler({ now = () => new Date(), roles = careerR
         serverNow: serverNowIso,
         openRoleCount: openRoles.length,
         groupCounts,
+        nextBoundaryAt: nextCollectionBoundary(serverNow, resolvedRoles, openRoles),
         roles: openRoles.map(projectListedRole),
       });
       return;

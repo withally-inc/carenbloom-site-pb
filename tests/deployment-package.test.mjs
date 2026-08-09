@@ -49,6 +49,7 @@ test("the emitted deployment tree contains runtime files and no private developm
     "api/role-state.js",
     "api/_lib/role-state.js",
     "scripts/careers-home.js",
+    "scripts/role-state-endpoint.js",
     "assets/hero-grow.mp4",
     "assets/hero-grow-start.avif",
     "assets/hero-grow-start-448.avif",

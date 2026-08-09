@@ -27,6 +27,7 @@ const runtimeAllowlist = [
   "scripts/careers-apply.js",
   "scripts/careers-home.js",
   "scripts/careers-roles.js",
+  "scripts/role-state-endpoint.js",
   "scripts/header-scroll.js",
   "api/applications.js",
   "api/role-state.js",

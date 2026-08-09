@@ -384,6 +384,35 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
 }
 
 {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  await context.route("**/api/role-state", (route) => fulfillJson(route, 200, {
+    status: "ok",
+    serverNow,
+    openRoleCount: 0,
+    groupCounts: {},
+    nextBoundaryAt: "2026-08-16T16:00:00.000Z",
+    roles: [],
+  }));
+  const page = await newTestPage(context);
+  await page.goto(`${baseUrl}/`, { waitUntil: "networkidle" });
+  await page.locator('[data-careers-state="ready"]').waitFor();
+  assert.equal(await page.locator("a.job-row").count(), 0);
+  assert.equal(
+    await page.locator("[data-career-group-count]").count(),
+    0,
+    "a group with no open role must not print an empty heading and a zero chip",
+  );
+  assert.equal(await page.locator("[data-careers-list]").textContent(), "No current openings.");
+  assert.equal(await page.locator("[data-careers-summary]").textContent(), "(07) Careers · 0 roles open");
+  assert.deepEqual(
+    [...new Set(await page.locator("[data-recruiting-status]").allTextContents())],
+    ["No current openings"],
+  );
+  assert.equal(await page.locator("[data-role-marks] circle").count(), 0);
+  await context.close();
+}
+
+{
   const context = await browser.newContext();
   await context.route("**/api/role-state", (route) => route.abort("failed"));
   const page = await newTestPage(context);

@@ -1,3 +1,5 @@
+import { fetchRoleState } from "./role-state-endpoint.js";
+
 (async function () {
   const params = new URLSearchParams(window.location.search);
   const slug = params.get("role");
@@ -37,10 +39,7 @@
 
   let authoritative;
   try {
-    const response = await fetch(`/api/role-state?role=${encodeURIComponent(slug)}`, {
-      cache: "no-store",
-      headers: { Accept: "application/json" },
-    });
+    const response = await fetchRoleState(slug);
     authoritative = await response.json().catch(() => null);
     if (response.status === 404 || authoritative?.status === "unknown") {
       showUnavailable("unknown", "Role not found", "This role is not one of our current openings.");
@@ -217,10 +216,7 @@
     if (takenDown) return;
     let next;
     try {
-      const response = await fetch(`/api/role-state?role=${encodeURIComponent(slug)}`, {
-        cache: "no-store",
-        headers: { Accept: "application/json" },
-      });
+      const response = await fetchRoleState(slug);
       next = await response.json().catch(() => null);
       if (!response.ok && response.status !== 404) throw new Error("Role authority refresh failed.");
     } catch {

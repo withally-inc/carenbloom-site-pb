@@ -30,7 +30,7 @@ const listening = new Promise((resolve, reject) => {
 });
 
 const commands = [
-  ["--test", "tests/repository-contract.test.mjs", "tests/deployment-package.test.mjs", "tests/hero-scroll.test.mjs", "tests/nav-float.test.mjs"],
+  ["--test", "tests/repository-contract.test.mjs", "tests/deployment-package.test.mjs", "tests/hero-scroll.test.mjs", "tests/nav-float.test.mjs", "tests/role-state-endpoint.test.mjs"],
   ["tests/careers-deadline.test.mjs"],
   ["tests/role-state-api.test.mjs"],
   ["tests/application-payload.test.mjs"],

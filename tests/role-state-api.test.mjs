@@ -48,11 +48,11 @@ function makeRes() {
   };
 }
 
-async function request(url, method = "GET") {
+async function request(url, method = "GET", handlerRoles = roles) {
   const response = makeRes();
-  const handler = createRoleStateHandler({ now: () => new Date(serverNow), roles });
+  const handler = createRoleStateHandler({ now: () => new Date(serverNow), roles: handlerRoles });
   await handler(makeReq(url, method), response);
-  return { response, json: JSON.parse(response.body) };
+  return { response, json: response.body ? JSON.parse(response.body) : null };
 }
 
 {
@@ -68,6 +68,7 @@ async function request(url, method = "GET") {
   assert.deepEqual(json.roles.map(({ slug }) => slug), ["open-role"]);
   assert.equal(json.roles[0].state.datePosted, "2026-08-10");
   assert.equal(json.roles[0].state.validThrough, "2026-08-23T16:00:00.000Z");
+  assert.equal(json.nextBoundaryAt, "2026-08-16T16:00:00.000Z");
   // The collection is deliberately no-store, so it is refetched on every homepage visit: it must
   // carry only what the homepage renders, never the full role prose.
   assert.deepEqual(
@@ -106,10 +107,37 @@ for (const slug of ["closed-role", "filled-role"]) {
 }
 
 {
+  const closedRoles = roles.filter((role) => role.slug !== "open-role");
+  const { json } = await request("/api/role-state", "GET", closedRoles);
+  assert.equal(json.openRoleCount, 0);
+  assert.deepEqual(json.roles, []);
+  assert.equal(json.nextBoundaryAt, "2026-08-16T16:00:00.000Z");
+  assert.ok(Date.parse(json.nextBoundaryAt) > Date.parse(serverNow));
+}
+
+{
+  const { json } = await request("/api/role-state", "GET", []);
+  assert.equal(json.openRoleCount, 0);
+  assert.equal(json.nextBoundaryAt, null);
+}
+
+{
   const { response, json } = await request("/api/role-state", "POST");
   assert.equal(response.statusCode, 405);
-  assert.equal(response.headers.allow, "GET");
+  assert.equal(response.headers.allow, "GET, OPTIONS");
   assert.equal(json.status, "error");
+}
+
+{
+  const { response } = await request("/api/role-state", "OPTIONS");
+  assert.equal(response.statusCode, 204);
+  assert.equal(response.headers["access-control-allow-origin"], "https://carenbloom.com");
+  assert.equal(response.headers["access-control-allow-methods"], "GET, OPTIONS");
+}
+
+{
+  const { response } = await request("/api/role-state?role=open-role");
+  assert.equal(response.headers["access-control-allow-origin"], "https://carenbloom.com");
 }
 
 console.log("role-state API test passed");

@@ -135,6 +135,10 @@ It accepts an injected server instant and resolves the HKT Monday window start, 
 
 `/api/role-state` supplies the browser with non-cacheable authoritative role state and a captured server instant.
 
+The production pages at `carenbloom.com` are statically hosted and serve no functions, so `scripts/role-state-endpoint.js` addresses the Vercel API host directly from those hostnames and stays same-origin everywhere else, and both server functions answer `https://carenbloom.com` with CORS headers.
+
+The homepage reloads on the collection's `nextBoundaryAt`, which the API resolves from the canonical roles even when nothing is currently open.
+
 The application countdown anchors that server instant to monotonic elapsed time, and the homepage renders every role row and advertised count from the same open-role response.
 
 Static, unknown, closed, and endpoint-failure states contain no form, active `JobPosting`, role row, numeric open-role claim, or fallback role.
