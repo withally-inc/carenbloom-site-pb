@@ -30,8 +30,10 @@ const roles = [
   },
 ];
 
-function makeReq(url, method = "GET") {
-  return { method, url, headers: { host: "careers.example" } };
+function makeReq(url, method = "GET", origin) {
+  const headers = { host: "careers.example" };
+  if (origin) headers.origin = origin;
+  return { method, url, headers };
 }
 
 function makeRes() {
@@ -48,10 +50,10 @@ function makeRes() {
   };
 }
 
-async function request(url, method = "GET", handlerRoles = roles) {
+async function request(url, method = "GET", handlerRoles = roles, origin) {
   const response = makeRes();
   const handler = createRoleStateHandler({ now: () => new Date(serverNow), roles: handlerRoles });
-  await handler(makeReq(url, method), response);
+  await handler(makeReq(url, method, origin), response);
   return { response, json: response.body ? JSON.parse(response.body) : null };
 }
 
@@ -128,16 +130,30 @@ for (const slug of ["closed-role", "filled-role"]) {
   assert.equal(json.status, "error");
 }
 
-{
-  const { response } = await request("/api/role-state", "OPTIONS");
-  assert.equal(response.statusCode, 204);
-  assert.equal(response.headers["access-control-allow-origin"], "https://carenbloom.com");
-  assert.equal(response.headers["access-control-allow-methods"], "GET, OPTIONS");
+for (const origin of ["https://carenbloom.com", "https://www.carenbloom.com"]) {
+  const preflight = await request("/api/role-state", "OPTIONS", roles, origin);
+  assert.equal(preflight.response.statusCode, 204);
+  assert.equal(preflight.response.headers["access-control-allow-origin"], origin);
+  assert.equal(preflight.response.headers["access-control-allow-methods"], "GET, OPTIONS");
+  assert.equal(preflight.response.headers.vary, "Origin");
+
+  for (const url of ["/api/role-state", "/api/role-state?role=open-role"]) {
+    const { response } = await request(url, "GET", roles, origin);
+    assert.equal(response.headers["access-control-allow-origin"], origin);
+    assert.equal(response.headers.vary, "Origin");
+  }
+}
+
+for (const origin of ["https://carenbloom.com.attacker.test", "http://carenbloom.com", "null"]) {
+  const { response } = await request("/api/role-state", "GET", roles, origin);
+  assert.equal(response.headers["access-control-allow-origin"], undefined, `${origin} must not be granted the authoritative response`);
+  assert.equal(response.headers.vary, "Origin");
 }
 
 {
-  const { response } = await request("/api/role-state?role=open-role");
-  assert.equal(response.headers["access-control-allow-origin"], "https://carenbloom.com");
+  const { response } = await request("/api/role-state");
+  assert.equal(response.headers["access-control-allow-origin"], undefined);
+  assert.equal(response.headers.vary, "Origin");
 }
 
 console.log("role-state API test passed");

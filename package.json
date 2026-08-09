@@ -7,7 +7,7 @@
     "serve": "NOTION_INTAKE_DRY_RUN=1 node scripts/dev-server.mjs",
     "package:deployment": "node scripts/package-deployment.mjs",
     "deploy:review": "NOTION_INTAKE_DRY_RUN=1 npm run package:deployment && vercel deploy --cwd .vercel-deploy",
-    "test:contracts": "node --test tests/repository-contract.test.mjs tests/deployment-package.test.mjs tests/hero-scroll.test.mjs tests/nav-float.test.mjs tests/role-state-endpoint.test.mjs",
+    "test:contracts": "node --test tests/repository-contract.test.mjs tests/deployment-package.test.mjs tests/hero-scroll.test.mjs tests/nav-float.test.mjs tests/api-endpoints.test.mjs",
     "test:api": "node tests/application-payload.test.mjs && node tests/applications-api.test.mjs",
     "test:deadline": "node tests/careers-deadline.test.mjs",
     "test:role-state": "node tests/role-state-api.test.mjs",

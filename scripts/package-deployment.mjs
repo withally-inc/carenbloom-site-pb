@@ -27,11 +27,12 @@ const runtimeAllowlist = [
   "scripts/careers-apply.js",
   "scripts/careers-home.js",
   "scripts/careers-roles.js",
-  "scripts/role-state-endpoint.js",
+  "scripts/api-endpoints.js",
   "scripts/header-scroll.js",
   "api/applications.js",
   "api/role-state.js",
   "api/_lib/application-payload.js",
+  "api/_lib/cors.js",
   "api/_lib/notion-client.js",
   "api/_lib/role-state.js",
 ];

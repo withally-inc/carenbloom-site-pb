@@ -135,7 +135,11 @@ It accepts an injected server instant and resolves the HKT Monday window start, 
 
 `/api/role-state` supplies the browser with non-cacheable authoritative role state and a captured server instant.
 
-The production pages at `carenbloom.com` are statically hosted and serve no functions, so `scripts/role-state-endpoint.js` addresses the Vercel API host directly from those hostnames and stays same-origin everywhere else, and both server functions answer `https://carenbloom.com` with CORS headers.
+The production pages at `carenbloom.com` and `www.carenbloom.com` are statically hosted and serve no functions, so `scripts/api-endpoints.js` is the one resolver that addresses `https://carenbloom-site-pb.vercel.app` for both `/api/role-state` and `/api/applications` from exactly those two hostnames, honouring an explicit `window.CB_ROLE_STATE_ENDPOINT` or `window.CB_TALENTS_ENDPOINT` override when one is set.
+
+Every other host — the `carenbloom-redesign-a` review deployment and any local server — stays same-origin, so review application traffic reaches the dry-run function it is served by instead of the production project.
+
+`api/_lib/cors.js` owns the matching browser-origin allowlist: both functions echo an `Origin` of `https://carenbloom.com` or `https://www.carenbloom.com` back as `Access-Control-Allow-Origin`, always send `Vary: Origin`, and grant no other origin.
 
 The homepage reloads on the collection's `nextBoundaryAt`, which the API resolves from the canonical roles even when nothing is currently open.
 

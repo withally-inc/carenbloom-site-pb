@@ -353,6 +353,55 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
 }
 
 {
+  const context = await browser.newContext();
+  const requestedRoleStateUrls = [];
+  await context.route("**/api/role-state?role=*", (route) => {
+    requestedRoleStateUrls.push(route.request().url());
+    return fulfillJson(route, 200, openRoleResponse);
+  });
+  const page = await newTestPage(context);
+  await page.goto(`${baseUrl}/careers/apply/?role=chief-of-staff`, { waitUntil: "domcontentloaded" });
+  await waitForOpenRole(page);
+  assert.deepEqual(
+    [...new Set(requestedRoleStateUrls)],
+    [`${baseUrl}/api/role-state?role=chief-of-staff`],
+    "a locally served page must read the authority from the function it is served by",
+  );
+
+  const resolved = await page.evaluate(async () => {
+    const endpoints = await import("/scripts/api-endpoints.js");
+    return ["carenbloom.com", "www.carenbloom.com", "carenbloom-redesign-a.vercel.app", "127.0.0.1"].map((hostname) => ({
+      hostname,
+      roleState: endpoints.resolveRoleStateEndpoint({ hostname }, {}),
+      applications: endpoints.resolveApplicationsEndpoint({ hostname }, {}),
+    }));
+  });
+  assert.deepEqual(resolved, [
+    {
+      hostname: "carenbloom.com",
+      roleState: "https://carenbloom-site-pb.vercel.app/api/role-state",
+      applications: "https://carenbloom-site-pb.vercel.app/api/applications",
+    },
+    {
+      hostname: "www.carenbloom.com",
+      roleState: "https://carenbloom-site-pb.vercel.app/api/role-state",
+      applications: "https://carenbloom-site-pb.vercel.app/api/applications",
+    },
+    {
+      hostname: "carenbloom-redesign-a.vercel.app",
+      roleState: "/api/role-state",
+      applications: "/api/applications",
+    },
+    {
+      hostname: "127.0.0.1",
+      roleState: "/api/role-state",
+      applications: "/api/applications",
+    },
+  ]);
+  await context.close();
+}
+
+{
   const homepageRoles = careerRoles
     .filter((role) => role.slug !== "graphic-designer")
     .map((role) => ({

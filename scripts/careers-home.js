@@ -1,4 +1,4 @@
-import { fetchRoleState } from "./role-state-endpoint.js";
+import { fetchRoleState } from "./api-endpoints.js";
 
 const FALLBACK_REFRESH_MS = 15 * 60 * 1000;
 const MIN_REFRESH_MS = 1000;
@@ -125,7 +125,7 @@ export async function initCareersHome(root = document, fetchImpl = fetch) {
           .sort((left, right) => left.careerOrder - right.careerOrder),
         count: authoritative.groupCounts?.[group.id] || 0,
       }))
-      .filter(({ roles, count }) => roles.length > 0 || count > 0);
+      .filter(({ roles }) => roles.length > 0);
     list.replaceChildren(...(populatedGroups.length
       ? populatedGroups.map(({ group, roles, count }) => roleGroup(group, roles, count))
       : [statusMessage("No current openings.")]));

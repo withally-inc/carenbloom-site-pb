@@ -1,6 +1,7 @@
 // Shared helpers live under api/_lib/ because Vercel publishes every other file
 // under api/ as its own serverless function.
 import { buildApplicationPayload, clean, safeUrl } from "./_lib/application-payload.js";
+import { applyBrowserCors } from "./_lib/cors.js";
 import { createPage, uploadFile } from "./_lib/notion-client.js";
 import { resolveRoleState } from "./_lib/role-state.js";
 import { careerRoles } from "../scripts/careers-roles.js";
@@ -211,9 +212,7 @@ export function createApplicationsHandler({ now = () => new Date(), roles = care
   const canonicalRoles = new Map(roles.map((role) => [role.slug, role]));
 
   return async function handler(req, res) {
-    res.setHeader("Access-Control-Allow-Origin", "https://carenbloom.com");
-    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    applyBrowserCors(req, res, "POST, OPTIONS");
 
     if (req.method === "OPTIONS") {
       res.statusCode = 204;

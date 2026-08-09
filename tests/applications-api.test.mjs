@@ -287,4 +287,26 @@ for (const serverNow of ["2026-08-12T10:00:00.000Z", "2026-08-12T10:00:00.001Z"]
   assert.equal(notionCalls.length, 0);
 }
 
+async function preflight(origin) {
+  const req = makeReq(undefined, "OPTIONS");
+  req.headers = origin ? { origin } : {};
+  const res = makeRes();
+  await handler(req, res);
+  return res;
+}
+
+for (const origin of ["https://carenbloom.com", "https://www.carenbloom.com"]) {
+  const res = await preflight(origin);
+  assert.equal(res.statusCode, 204);
+  assert.equal(res.headers["Access-Control-Allow-Origin"], origin);
+  assert.equal(res.headers["Access-Control-Allow-Methods"], "POST, OPTIONS");
+  assert.equal(res.headers.Vary, "Origin");
+}
+
+for (const origin of ["https://carenbloom.com.attacker.test", "http://carenbloom.com", undefined]) {
+  const res = await preflight(origin);
+  assert.equal(res.headers["Access-Control-Allow-Origin"], undefined, `${origin} must not be allowed to submit applications`);
+  assert.equal(res.headers.Vary, "Origin");
+}
+
 console.log("applications api test passed");

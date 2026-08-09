@@ -1,3 +1,4 @@
+import { applyBrowserCors } from "./_lib/cors.js";
 import { resolveRoleState } from "./_lib/role-state.js";
 import { careerRoles } from "../scripts/careers-roles.js";
 
@@ -7,13 +8,11 @@ function sendJson(res, statusCode, payload) {
   res.end(JSON.stringify(payload));
 }
 
-function setAuthoritativeHeaders(res) {
+function setAuthoritativeHeaders(req, res) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
-  res.setHeader("Access-Control-Allow-Origin", "https://carenbloom.com");
-  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  applyBrowserCors(req, res, "GET, OPTIONS");
 }
 
 function resolveAll(serverNow, roles) {
@@ -51,7 +50,7 @@ function summarizeOpenRoles(resolvedRoles) {
 
 export function createRoleStateHandler({ now = () => new Date(), roles = careerRoles } = {}) {
   return async function roleStateHandler(req, res) {
-    setAuthoritativeHeaders(res);
+    setAuthoritativeHeaders(req, res);
     if (req.method === "OPTIONS") {
       res.statusCode = 204;
       res.end();
