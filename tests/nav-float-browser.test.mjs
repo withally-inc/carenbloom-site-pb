@@ -4,6 +4,13 @@ import { chromium } from "playwright";
 const baseUrl = process.env.BASE_URL || "http://127.0.0.1:49279";
 const browser = await chromium.launch({ headless: true });
 
+// The nav chip's role count is painted only after /api/role-state answers, and the careers section
+// height that the float threshold measures depends on the same response.
+async function openHome(page, url = `${baseUrl}/`) {
+  await page.goto(url, { waitUntil: "domcontentloaded" });
+  await page.locator('[data-careers-list][data-careers-state="ready"]').waitFor();
+}
+
 async function scrollInstant(page, y) {
   await page.evaluate((target) => window.scrollTo({ top: target, behavior: "instant" }), y);
   await page.waitForTimeout(450); // outlast the 300ms material transition
@@ -33,7 +40,7 @@ const navProbe = (page) =>
 try {
   // ---------- desktop top state: the bar begins naturally with the page ----------
   const desktop = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  await desktop.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openHome(desktop, `${baseUrl}/`);
   await desktop.waitForTimeout(300);
   const topState = await navProbe(desktop);
   assert.equal(topState.floating, false, "the bar should begin inline, not floating");
@@ -147,7 +154,7 @@ try {
 
   // ---------- mobile: compact stable bar, same material ----------
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 } });
-  await mobile.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openHome(mobile, `${baseUrl}/`);
   await mobile.waitForTimeout(300);
   const mobileRest = await navProbe(mobile);
   assert.equal(mobileRest.floating, false);
@@ -174,7 +181,7 @@ try {
     { width: 320, height: 720 },
   ]) {
     const anchored = await browser.newPage({ viewport });
-    await anchored.goto(`${baseUrl}/#careers`, { waitUntil: "domcontentloaded" });
+    await openHome(anchored, `${baseUrl}/#careers`);
     await anchored.evaluate(() => document.fonts.ready);
     await anchored.waitForTimeout(500);
     const anchoredBar = await navProbe(anchored);
@@ -190,7 +197,7 @@ try {
   // ---------- narrow phones: the bar's own contents stay on the paper ----------
   for (const width of [360, 320]) {
     const narrow = await browser.newPage({ viewport: { width, height: 800 } });
-    await narrow.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+    await openHome(narrow, `${baseUrl}/`);
     await narrow.evaluate(() => document.fonts.ready);
     const restBrand = await narrow.locator('.topbar > a[aria-label="Care and Bloom home"]').evaluate((brand) => ({
       clientWidth: brand.clientWidth,
@@ -238,7 +245,7 @@ try {
 
   // ---------- reduced motion: instant state change, same geometry ----------
   const reduced = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
-  await reduced.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
+  await openHome(reduced, `${baseUrl}/`);
   await reduced.waitForTimeout(300);
   assert.equal(await reduced.locator(".nav-shell").evaluate((shell) => getComputedStyle(shell).transitionDuration), "0.001s");
   assert.equal(await reduced.locator(".topbar").evaluate((bar) => getComputedStyle(bar).transitionDuration), "0.001s");

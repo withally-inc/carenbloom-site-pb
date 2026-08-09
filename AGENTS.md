@@ -2,8 +2,9 @@
 
 This file is the project's committed home for project-intrinsic agent knowledge: build, test, release, architecture, and sharp-edge notes that should travel with the code.
 
-- `README.md` is the authority for routes, local commands, review deployment boundaries, rollback, and the unresolved `datePosted` production blocker.
-- `scripts/careers-roles.js` owns all eleven canonical role records and their optional physical locations, and is imported by both the application page and `/api/applications` as the single server-side role authority.
+- `README.md` is the authority for routes, local commands, review deployment boundaries, rollback, the implemented HKT role-date contract, and the one separately deferred application-field blocker.
+- `scripts/careers-roles.js` owns all canonical role content, locations, homepage groups, and optional factual lifecycle fields; `api/_lib/role-state.js` is the single HKT lifecycle resolver used by `api/role-state.js`, `api/applications.js`, and `tests/careers-deadline.test.mjs`.
+- `scripts/careers-apply.js` and `scripts/careers-home.js` render only non-cacheable role-state responses; `scripts/api-endpoints.js` is the single resolver for both browser APIs (absolute Vercel origin on the two Cloudflare production hosts, same-origin for review and local), and `api/_lib/cors.js` owns the matching origin allowlist for both functions. Static, unknown, closed, and endpoint-failure surfaces stay fail-closed, and `tests/{api-endpoints,role-state-api,role-state-browser}.test.mjs` pin that contract.
 - Review application traffic must remain dry-run-only, and `npm test` proves the application boundary without a real Notion write.
 - `scripts/package-deployment.mjs` owns the strict Vercel runtime allowlist for the existing `carenbloom-redesign-a` review project.
 - The (01) Operating record band is the captain-approved Candidate 03 stepped lemon march: `assets/lemon-march/` (one 3600×360 sprite + the static print-master fallback) driven by `#lemonBand` in `index.html` and the driver in `app.js`. Phases change via `object-position` only — never `img.src` swaps (they refetch). `tests/lemon-band.test.mjs` owns the behavioral contract.

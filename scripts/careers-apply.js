@@ -1,13 +1,73 @@
-import { getClosingPresentation } from "./careers-deadline.js";
-import { careerRoles } from "./careers-roles.js";
+import { fetchRoleState, resolveApplicationsEndpoint } from "./api-endpoints.js";
 
-(function () {
-  const roles = careerRoles;
+(async function () {
   const params = new URLSearchParams(window.location.search);
-  const slug = params.get("role") || roles[0]?.slug;
-  const role = roles.find((item) => item.slug === slug) || roles[0];
+  const slug = params.get("role");
+  const pageState = document.querySelector("[data-role-page-state]");
+  const unavailable = document.querySelector("[data-role-unavailable]");
+  const stateTitle = document.querySelector("[data-role-state-title]");
+  const stateMessage = document.querySelector("[data-role-state-message]");
+  const roleContent = [...document.querySelectorAll("[data-role-content]")];
 
-  if (!role) return;
+  // A submission accepted just before closure must still hand the applicant their reference, even
+  // though the form it was typed in is gone by the time the server answers.
+  // The region is declared empty in the markup so it is already live when the reference lands, and
+  // the text is written in a later task so the change is announced rather than bundled.
+  const submissionReceipt = document.querySelector("[data-submission-receipt]");
+  const showSubmissionReceipt = (reference) => {
+    if (!submissionReceipt) return;
+    const write = () => {
+      submissionReceipt.textContent = `Your application was received before this role closed. Reference: ${reference}.`;
+    };
+    const defer = () => setTimeout(write, 0);
+    if (typeof requestAnimationFrame === "function") requestAnimationFrame(defer);
+    else defer();
+  };
+
+  const showUnavailable = (state, heading, message) => {
+    if (pageState) pageState.dataset.rolePageState = state;
+    roleContent.forEach((element) => { element.hidden = true; });
+    if (unavailable) unavailable.hidden = false;
+    if (stateTitle) stateTitle.textContent = heading;
+    if (stateMessage) stateMessage.textContent = message;
+  };
+
+  if (!slug) {
+    showUnavailable("unknown", "Role not found", "Choose a current opening from the Care & Bloom careers page.");
+    return;
+  }
+
+  let authoritative;
+  try {
+    const response = await fetchRoleState(slug);
+    authoritative = await response.json().catch(() => null);
+    if (response.status === 404 || authoritative?.status === "unknown") {
+      showUnavailable("unknown", "Role not found", "This role is not one of our current openings.");
+      return;
+    }
+    if (!response.ok) throw new Error("Role authority request failed.");
+  } catch {
+    showUnavailable("unavailable", "Role unavailable", "We could not confirm this role right now. Please return to careers and try again.");
+    return;
+  }
+
+  const { role, state, serverNow, openRoleCount } = authoritative || {};
+  if (!role || role.slug !== slug || !state || !serverNow) {
+    showUnavailable("unavailable", "Role unavailable", "We could not confirm this role right now. Please return to careers and try again.");
+    return;
+  }
+  document.querySelectorAll("[data-open-role-count]").forEach((element) => {
+    element.textContent = `Open roles (${openRoleCount})`;
+  });
+  if (authoritative.status === "closed" || state.isOpen !== true) {
+    document.title = `${role.title} — Closed | Care & Bloom`;
+    showUnavailable("closed", "This role is closed", `${role.title} is no longer accepting applications.`);
+    return;
+  }
+
+  if (pageState) pageState.dataset.rolePageState = "open";
+  if (unavailable) unavailable.hidden = true;
+  roleContent.forEach((element) => { element.hidden = false; });
 
   const location = role.locationType || "Remote";
   const isRemote = location === "Remote";
@@ -58,15 +118,14 @@ import { careerRoles } from "./careers-roles.js";
   const locationDd = document.querySelector(".role-meta dd");
   if (locationDd) locationDd.textContent = location;
 
-  // Google Jobs structured data (JSON-LD)
-  const initialClosing = getClosingPresentation(new Date(), role.title);
+  // Google Jobs structured data is inserted only after the server confirms the role is open.
   const jobPosting = {
     "@context": "https://schema.org/",
     "@type": "JobPosting",
     title: role.title,
     description: `${role.mission} Responsibilities: ${role.responsibilities.join(". ")}. Requirements: ${role.requirements.join(". ")}.`,
-    datePosted: new Date().toISOString().split("T")[0],
-    validThrough: initialClosing.dateTime,
+    datePosted: state.datePosted,
+    validThrough: state.validThrough,
     employmentType: "FULL_TIME",
     hiringOrganization: {
       "@type": "Organization",
@@ -89,19 +148,119 @@ import { careerRoles } from "./careers-roles.js";
   jsonLd.textContent = JSON.stringify(jobPosting);
   document.head.appendChild(jsonLd);
 
+  let currentState = state;
+  let currentServerNow = serverNow;
+  let responseAnchor = performance.now();
+  let remainingAtResponse = Date.parse(currentState.effectiveClosesAt) - Date.parse(currentServerNow);
+  let boundaryTimer = null;
+  let takenDown = false;
+  let submissionReference = null;
+  const formatCountdown = (remainingMs) => {
+    const totalSeconds = Math.floor(Math.max(0, remainingMs) / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  };
   const syncClosingWindow = () => {
-    const closing = getClosingPresentation(new Date(), role.title);
-    if (closeDate) closeDate.textContent = closing.visibleLabel;
+    const remainingMs = remainingAtResponse - (performance.now() - responseAnchor);
+    if (closeDate) closeDate.textContent = currentState.visibleCloseLabel;
     if (countdown) {
-      countdown.dateTime = closing.dateTime;
-      countdown.textContent = closing.countdown;
+      countdown.dateTime = currentState.validThrough;
+      countdown.textContent = formatCountdown(remainingMs);
     }
-    if (closeApply) closeApply.setAttribute("aria-label", closing.applyLabel);
-    jobPosting.validThrough = closing.dateTime;
+    if (closeApply) closeApply.setAttribute("aria-label", currentState.applyLabel);
+  };
+  const syncJobPostingDates = () => {
+    jobPosting.datePosted = currentState.datePosted;
+    jobPosting.validThrough = currentState.validThrough;
     jsonLd.textContent = JSON.stringify(jobPosting);
   };
+  const remainingNow = () => remainingAtResponse - (performance.now() - responseAnchor);
+  const takeDown = (pageState, heading, message, title) => {
+    takenDown = true;
+    clearInterval(tick);
+    clearTimeout(boundaryTimer);
+    jsonLd.remove();
+    if (title) document.title = title;
+    const applicationForm = document.querySelector("#application-form");
+    if (applicationForm) {
+      applicationForm.reset();
+      applicationForm.querySelectorAll('input[type="file"]').forEach((input) => { input.value = ""; });
+    }
+    showUnavailable(pageState, heading, message);
+    if (submissionReference) showSubmissionReceipt(submissionReference);
+  };
+  const takeDownAsClosed = () => {
+    takeDown("closed", "This role is closed", `${role.title} is no longer accepting applications.`, `${role.title} — Closed | Care & Bloom`);
+  };
+  // The authoritative close instant is enforced from the monotonic anchor, so an endpoint outage
+  // can never leave the form or an active JobPosting standing past it.
+  const enforceClosure = () => {
+    if (takenDown) return true;
+    if (remainingNow() > 0) return false;
+    takeDownAsClosed();
+    return true;
+  };
+  const tick = setInterval(() => {
+    if (!enforceClosure()) syncClosingWindow();
+  }, 1000);
+
+  const retryRefresh = () => {
+    if (enforceClosure()) return;
+    boundaryTimer = setTimeout(refreshAuthority, 30000);
+  };
+
+  const refreshAuthority = async () => {
+    if (takenDown) return;
+    let next;
+    try {
+      const response = await fetchRoleState(slug);
+      next = await response.json().catch(() => null);
+      if (!response.ok && response.status !== 404) throw new Error("Role authority refresh failed.");
+    } catch {
+      if (!takenDown) retryRefresh();
+      return;
+    }
+    if (takenDown) return;
+
+    if (next?.status === "unknown") {
+      takeDown("unknown", "Role not found", "This role is not one of our current openings.");
+      return;
+    }
+    if (!next?.role || next.role.slug !== slug || !next.state || !next.serverNow) {
+      retryRefresh();
+      return;
+    }
+    if (next.status !== "open" || next.state.isOpen !== true) {
+      takeDownAsClosed();
+      return;
+    }
+
+    currentState = next.state;
+    currentServerNow = next.serverNow;
+    responseAnchor = performance.now();
+    remainingAtResponse = Date.parse(currentState.effectiveClosesAt) - Date.parse(currentServerNow);
+    document.querySelectorAll("[data-open-role-count]").forEach((element) => {
+      element.textContent = `Open roles (${next.openRoleCount})`;
+    });
+    syncJobPostingDates();
+    syncClosingWindow();
+    scheduleBoundary();
+  };
+
+  function scheduleBoundary() {
+    if (takenDown) return;
+    const closesAtMs = Date.parse(currentState.effectiveClosesAt);
+    const nextRefreshMs = Date.parse(currentState.nextRefreshAt);
+    const boundaryMs = Math.min(nextRefreshMs, closesAtMs) - Date.parse(currentServerNow);
+    clearTimeout(boundaryTimer);
+    boundaryTimer = setTimeout(refreshAuthority, Math.max(0, boundaryMs));
+  }
+
   syncClosingWindow();
-  setInterval(syncClosingWindow, 1000);
+  scheduleBoundary();
 
   document.querySelectorAll(".application-tooltip").forEach((tooltip) => {
     const row = tooltip.closest(".application-label-row");
@@ -205,7 +364,7 @@ import { careerRoles } from "./careers-roles.js";
   const form = document.querySelector("#application-form");
   const status = document.querySelector(".application-form-status");
   const submitButton = form ? form.querySelector('button[type="submit"]') : null;
-  const endpoint = window.CB_TALENTS_ENDPOINT || "/api/applications";
+  const endpoint = resolveApplicationsEndpoint();
   // Mirrors the authoritative upload limits in api/applications.js; keep in sync.
   const maxUploadBytes = 4 * 1024 * 1024;
   const maxTotalUploadBytes = 4 * 1024 * 1024;
@@ -261,7 +420,6 @@ import { careerRoles } from "./careers-roles.js";
         timeZones: data.getAll("open_time_zone"),
         location: data.get("location"),
         questions: collectQuestions(),
-        submittedAt: new Date().toISOString(),
         url: window.location.href,
         referrer: document.referrer,
       };
@@ -283,8 +441,10 @@ import { careerRoles } from "./careers-roles.js";
         });
         const result = await response.json().catch(() => ({}));
         if (!response.ok || !result.success) throw new Error(result.error || "Submission failed.");
-        setStatus(`Application received. Reference: ${result.ref || "submitted"}.`, "success");
+        submissionReference = result.ref || "submitted";
+        setStatus(`Application received. Reference: ${submissionReference}.`, "success");
         form.reset();
+        if (takenDown) showSubmissionReceipt(submissionReference);
       } catch (error) {
         setStatus(error.message || "Could not submit application right now.", "error");
       } finally {

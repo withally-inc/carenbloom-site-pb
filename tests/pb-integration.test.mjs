@@ -22,8 +22,20 @@ const counterText = (page) => page.locator("#deckCounter").textContent();
 // Every geometry assertion here measures laid-out glyphs, and the display face loads with
 // font-display: swap over a Helvetica Neue fallback: measuring before it settles measures the
 // wrong typeface, which is a silent false pass on the tight split-band boundary cases.
+// The careers rows, counts, and chip labels are painted only after /api/role-state answers, so
+// every assertion about them must wait on the authority landing rather than on DOMContentLoaded.
+async function waitForCareersAuthority(page) {
+  if (await page.locator("[data-careers-list]").count()) {
+    await page.locator('[data-careers-list][data-careers-state="ready"]').waitFor();
+  }
+  if (await page.locator("[data-role-page-state]").count()) {
+    await page.locator('[data-role-page-state="open"]').waitFor();
+  }
+}
+
 async function openPage(page, url = `${baseUrl}/`) {
   const response = await page.goto(url, { waitUntil: "domcontentloaded" });
+  await waitForCareersAuthority(page);
   await page.evaluate(() => Promise.race([
     document.fonts.ready,
     new Promise((resolve) => setTimeout(resolve, 5000)),

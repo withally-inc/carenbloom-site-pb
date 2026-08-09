@@ -142,6 +142,58 @@ main {
   min-width: 0;
 }
 
+[hidden] {
+  display: none !important;
+}
+
+.role-unavailable {
+  display: grid;
+  align-content: center;
+  min-height: min(720px, calc(100vh - 180px));
+  padding: clamp(64px, 9vw, 128px) 0;
+}
+
+/* The receipt is a live region that must stay in the accessibility tree before its content
+   arrives, so the empty state collapses to a zero box rather than being removed with display. */
+.role-unavailable > p[data-submission-receipt] {
+  max-width: 52ch;
+  margin: 0;
+  color: var(--color-ink);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.role-unavailable > p[data-submission-receipt]:not(:empty) {
+  margin: 0 0 var(--space-md);
+  padding: 12px 14px;
+  border: 1px solid var(--color-accent);
+}
+
+[data-role-page-state="checking"] .role-unavailable {
+  align-content: start;
+  min-height: clamp(320px, 42vh, 460px);
+  padding: clamp(64px, 9vw, 128px) 0 clamp(56px, 7vw, 96px);
+}
+
+[data-role-page-state="checking"] .role-unavailable .page-title {
+  max-width: 34ch;
+  color: var(--apply-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-s);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.role-unavailable > p:not(.role-location):not([data-submission-receipt]) {
+  max-width: 52ch;
+  margin: var(--space-xs) 0 var(--space-md);
+  color: var(--apply-muted);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
 .role-hero {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);

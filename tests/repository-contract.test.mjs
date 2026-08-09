@@ -5,6 +5,7 @@ import { test } from "node:test";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { careerRoles } from "../scripts/careers-roles.js";
+import { resolveRoleState } from "../api/_lib/role-state.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const decodeEntities = (value) => value.replace(/&amp;/g, "&");
@@ -34,13 +35,17 @@ const runtimeFiles = [
   "careers/apply/index.html",
   "assets/pb-apply.css",
   "scripts/careers-apply.js",
-  "scripts/careers-deadline.js",
+  "scripts/careers-home.js",
   "scripts/careers-roles.js",
+  "scripts/api-endpoints.js",
   "scripts/header-scroll.js",
   "scripts/dev-server.mjs",
   "api/applications.js",
+  "api/role-state.js",
   "api/_lib/application-payload.js",
+  "api/_lib/cors.js",
   "api/_lib/notion-client.js",
+  "api/_lib/role-state.js",
   "vercel.json",
 ];
 
@@ -106,46 +111,53 @@ test("the old PB bookmark has only a root redirect", () => {
   ]);
 });
 
-test("the home careers list agrees with the canonical role authority", () => {
+test("canonical roles own the stable homepage group used by authoritative rendering", () => {
   const home = readFileSync(path.join(root, "index.html"), "utf8");
-  const rows = [...home.matchAll(
-    /<a class="job-row" href="\/careers\/apply\/\?role=([^"]+)"><span class="j-name">([^<]+)<\/span><span class="j-loc">([^<]+)<\/span><\/a>/g
-  )].map(([, slug, title, location]) => ({ slug, title: decodeEntities(title), location: decodeEntities(location) }));
-
-  const bySlug = (a, b) => a.slug.localeCompare(b.slug);
-  const expected = careerRoles.map((role) => ({
-    slug: role.slug,
-    title: role.title,
-    location: role.locationType || "Remote",
-  }));
+  const expectedGroups = {
+    "product-project-manager": "source-build",
+    "product-marketing-lead": "launch",
+    "graphic-designer": "launch",
+    "video-editor": "launch",
+    "creative-strategist-performance-marketing": "launch",
+    "social-media-strategist": "launch",
+    "head-of-performance-marketing": "scale",
+    "growth-lead-mobile-apps": "scale",
+    "ai-native-product-manager-apps": "scale",
+    "chief-of-staff": "platform",
+    "entrepreneur-in-residence": "platform",
+  };
 
   assert.deepEqual(
-    [...rows].sort(bySlug),
-    [...expected].sort(bySlug),
-    "every home job row must use the slug, title, and canonical location from scripts/careers-roles.js"
+    Object.fromEntries(careerRoles.map((role) => [role.slug, role.careerGroup])),
+    expectedGroups,
   );
-  assert.equal(rows.length, careerRoles.length, "the home page must list every canonical role exactly once");
+  assert.doesNotMatch(home, /<a class="job-row"/, "static HTML must not advertise a role before server authority loads");
+  assert.match(home, /data-careers-list/);
 });
 
-test("every advertised open-role count matches the canonical role authority", () => {
-  const total = careerRoles.length;
+/* A malformed lifecycle field in scripts/careers-roles.js makes resolveRoleState throw for every
+   request, which fails the homepage list and all apply pages closed at once with no build-time
+   signal. Prove the whole canonical set resolves instead of discovering it in production. */
+test("every canonical role resolves against the shared lifecycle resolver", () => {
+  const serverNow = new Date("2026-08-08T04:00:00.000Z");
+  assert.equal(careerRoles.length > 0, true, "the canonical role set should not be empty");
+  for (const role of careerRoles) {
+    assert.doesNotThrow(() => resolveRoleState(serverNow, role), `canonical role ${role.slug} must resolve without throwing`);
+    const state = resolveRoleState(serverNow, role);
+    assert.match(state.datePosted, /^\d{4}-\d{2}-\d{2}$/, `${role.slug} should carry an HKT calendar datePosted`);
+    assert.equal(Number.isNaN(Date.parse(state.effectiveClosesAt)), false, `${role.slug} should carry a resolvable close instant`);
+    assert.equal(Number.isNaN(Date.parse(state.validThrough)), false, `${role.slug} should carry a resolvable validThrough`);
+    assert.equal(typeof state.isOpen, "boolean", `${role.slug} should resolve a definite open state`);
+  }
+});
+
+test("static entry points make no numeric open-role claim", () => {
   const home = readFileSync(path.join(root, "index.html"), "utf8");
   const apply = readFileSync(path.join(root, "careers/apply/index.html"), "utf8");
-
-  const advertised = [...home.matchAll(/Open roles \((\d+)\)/g), ...apply.matchAll(/Open roles \((\d+)\)/g)]
-    .map(([, count]) => Number(count));
-  assert.notEqual(advertised.length, 0, "the open-role chips should exist");
-  assert.deepEqual(advertised, advertised.map(() => total), `every "Open roles (n)" chip should read ${total}`);
-
-  const sectionLabel = home.match(/\(07\) Careers · (\d+) roles open/);
-  assert.equal(Number(sectionLabel?.[1]), total, "the careers section label should count every canonical role");
-
-  const groupCounts = [...home.matchAll(/<span class="count-chip">(\d+)<\/span>/g)].map(([, count]) => Number(count));
-  assert.equal(
-    groupCounts.reduce((sum, count) => sum + count, 0),
-    total,
-    "the careers group counts should sum to every canonical role"
-  );
+  assert.doesNotMatch(`${home}\n${apply}`, /Open roles \(\d+\)/);
+  assert.doesNotMatch(home, /Careers · \d+ roles open/);
+  assert.equal((home.match(/data-open-role-count/g) || []).length >= 2, true);
+  assert.match(apply, /data-open-role-count/);
 });
 
 test("all local HTML and CSS dependencies resolve inside the repository", () => {

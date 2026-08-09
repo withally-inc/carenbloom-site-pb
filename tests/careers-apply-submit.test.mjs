@@ -7,10 +7,12 @@ const page = await browser.newPage({ viewport: { width: 1282, height: 964 } });
 let capturedPayload = null;
 let capturedContentType = null;
 let capturedPostBody = null;
+let capturedSubmissionUrl = null;
 let submissionCount = 0;
 
 await page.route("**/api/applications", async (route) => {
   submissionCount += 1;
+  capturedSubmissionUrl = route.request().url();
   capturedContentType = route.request().headers()["content-type"];
   capturedPostBody = route.request().postData() || "";
   const payloadMatch = capturedPostBody.match(/name="payload"\r\n\r\n([\s\S]*?)\r\n------/);
@@ -53,6 +55,11 @@ await page.locator('.application-form button[type="submit"]').evaluate((button) 
 });
 
 assert.equal(submissionCount, 1);
+assert.equal(
+  capturedSubmissionUrl,
+  `${baseUrl}/api/applications`,
+  "a locally served page must submit to the function it is served by, not to the production project",
+);
 assert.equal(capturedPayload.role, "Chief of Staff");
 assert.match(capturedContentType, /^multipart\/form-data; boundary=/);
 assert.match(capturedPostBody, /name="resume"; filename="cb-resume\.pdf"/);

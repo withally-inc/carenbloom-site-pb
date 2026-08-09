@@ -5,6 +5,9 @@
   "functions": {
     "api/applications.js": {
       "maxDuration": 30
+    },
+    "api/role-state.js": {
+      "maxDuration": 10
     }
   },
   "redirects": [

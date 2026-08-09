@@ -2,6 +2,8 @@ const careerRoles = [
   {
     slug: "chief-of-staff",
     title: "Chief of Staff",
+    careerGroup: "platform",
+    careerOrder: 1,
     team: "Operations",
     level: "Manager/Supervisor",
     locationType: "On-site, Hong Kong",
@@ -30,6 +32,8 @@ const careerRoles = [
   {
     slug: "graphic-designer",
     title: "Graphic Designer",
+    careerGroup: "launch",
+    careerOrder: 2,
     team: "Creative",
     level: "Individual Contributor",
     introVideoRequired: true,
@@ -59,6 +63,8 @@ const careerRoles = [
   {
     slug: "video-editor",
     title: "Video Editor",
+    careerGroup: "launch",
+    careerOrder: 3,
     team: "Creative",
     level: "Individual Contributor",
     introVideoRequired: true,
@@ -88,6 +94,8 @@ const careerRoles = [
   {
     slug: "product-marketing-lead",
     title: "Product Marketing Lead",
+    careerGroup: "launch",
+    careerOrder: 1,
     team: "Marketing",
     level: "Individual Contributor",
     introVideoRequired: true,
@@ -116,6 +124,8 @@ const careerRoles = [
   {
     slug: "social-media-strategist",
     title: "Social Media Strategist",
+    careerGroup: "launch",
+    careerOrder: 5,
     team: "Marketing",
     level: "Individual Contributor",
     introVideoRequired: true,
@@ -145,6 +155,8 @@ const careerRoles = [
   {
     slug: "head-of-performance-marketing",
     title: "Head of Performance Marketing",
+    careerGroup: "scale",
+    careerOrder: 1,
     team: "Growth",
     level: "Director",
     locationType: "On-site, Hong Kong",
@@ -174,6 +186,8 @@ const careerRoles = [
   {
     slug: "creative-strategist-performance-marketing",
     title: "Creative Strategist, Performance Marketing",
+    careerGroup: "launch",
+    careerOrder: 4,
     team: "Growth",
     level: "Individual Contributor",
     introVideoRequired: true,
@@ -203,6 +217,8 @@ const careerRoles = [
   {
     slug: "product-project-manager",
     title: "Product & Project Manager",
+    careerGroup: "source-build",
+    careerOrder: 1,
     team: "Product",
     level: "Manager",
     locationType: "On-site, Shenzhen, China",
@@ -236,6 +252,8 @@ const careerRoles = [
   {
     slug: "growth-lead-mobile-apps",
     title: "Growth Lead, Mobile Apps",
+    careerGroup: "scale",
+    careerOrder: 2,
     team: "Growth",
     level: "Director",
     introVideoRequired: true,
@@ -262,6 +280,8 @@ const careerRoles = [
   {
     slug: "entrepreneur-in-residence",
     title: "Entrepreneur-in-Residence",
+    careerGroup: "platform",
+    careerOrder: 2,
     team: "Venture",
     level: "Founder Track",
     introVideoRequired: true,
@@ -289,6 +309,8 @@ const careerRoles = [
   {
     slug: "ai-native-product-manager-apps",
     title: "AI-Native Product Manager, Apps",
+    careerGroup: "scale",
+    careerOrder: 3,
     team: "Product",
     level: "Manager",
     introVideoRequired: true,

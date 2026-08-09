@@ -8,10 +8,12 @@ import {
   timeFromProgress
 } from './hero-scroll.js';
 import { initNavFloat } from './nav-float.js';
+import { initCareersHome } from './scripts/careers-home.js';
 
 // Floating navigation: the topbar begins inline at the page head, then arrives
 // as one floating paper bar past the hysteresis threshold (nav-float.js).
 initNavFloat(document.querySelector('[data-nav-shell]'));
+initCareersHome();
 
 // Direction D6 — one pinned inversion, one reversible heading reveal (inherited, unchanged),
 // plus the captain-approved Candidate 03 stepped lemon march on the evidence band (lemon-stopmotion-a1).
