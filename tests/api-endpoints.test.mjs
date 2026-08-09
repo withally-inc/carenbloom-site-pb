@@ -1,10 +1,14 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { resolveApplicationsEndpoint, resolveRoleStateEndpoint } from "../scripts/api-endpoints.js";
+import { CLOUDFLARE_PRODUCTION_HOSTS, resolveApplicationsEndpoint, resolveRoleStateEndpoint } from "../scripts/api-endpoints.js";
 import { ALLOWED_BROWSER_ORIGINS } from "../api/_lib/cors.js";
 
-const productionHosts = ["carenbloom.com", "www.carenbloom.com"];
+const productionHosts = [...CLOUDFLARE_PRODUCTION_HOSTS];
 const sameOriginHosts = ["carenbloom-redesign-a.vercel.app", "127.0.0.1", "localhost"];
+
+test("the shared resolver owns the canonical Cloudflare production host set", () => {
+  assert.deepEqual(productionHosts, ["carenbloom.com", "www.carenbloom.com"]);
+});
 
 test("the statically hosted production pages address the API host directly", () => {
   for (const hostname of productionHosts) {
@@ -24,11 +28,12 @@ test("review and local hosts serve their own functions and stay same-origin", ()
   }
 });
 
-test("every production host the resolver routes cross-origin is CORS-allowed by the API", () => {
-  for (const hostname of productionHosts) {
-    assert.equal(ALLOWED_BROWSER_ORIGINS.has(`https://${hostname}`), true, `https://${hostname} must be an allowed browser origin`);
-  }
-  assert.equal(ALLOWED_BROWSER_ORIGINS.size, productionHosts.length, "no origin may be allowed that the resolver never routes cross-origin");
+test("the API allows exactly the origins the resolver routes cross-origin", () => {
+  assert.deepEqual(
+    [...ALLOWED_BROWSER_ORIGINS].sort(),
+    productionHosts.map((hostname) => `https://${hostname}`).sort(),
+    "a host routed to the Vercel API without a matching allowed browser origin is blocked by the browser",
+  );
 });
 
 test("an explicit endpoint override wins on every host", () => {

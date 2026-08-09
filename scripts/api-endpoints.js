@@ -1,5 +1,5 @@
 const PRODUCTION_API_ORIGIN = "https://carenbloom-site-pb.vercel.app";
-const CLOUDFLARE_PRODUCTION_HOSTS = new Set(["carenbloom.com", "www.carenbloom.com"]);
+export const CLOUDFLARE_PRODUCTION_HOSTS = new Set(["carenbloom.com", "www.carenbloom.com"]);
 
 function resolveEndpoint(apiPath, override, location) {
   if (typeof override === "string" && override) return override;
