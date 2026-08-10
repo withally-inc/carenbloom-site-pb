@@ -172,7 +172,7 @@ try {
     "Expanding into 3 verticals",
     "the revenue chip should retain its original expansion flip face",
   );
-  assert.equal(await page.locator(".cb-mark").count(), 11);
+  assert.equal(await page.locator(".cb-mark").count(), 12);
   assert.equal(await page.locator(".chip .casetify").count(), 1);
 
   await page.waitForFunction(() => document.querySelector("#heroStage")?.classList.contains("arrived"));
