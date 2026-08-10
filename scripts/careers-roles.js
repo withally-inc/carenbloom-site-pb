@@ -307,6 +307,37 @@ const careerRoles = [
     ]
   },
   {
+    slug: "community-manager",
+    title: "Community Manager",
+    careerGroup: "launch",
+    careerOrder: 6,
+    team: "Brand",
+    level: "Individual Contributor",
+    locationType: "On-site, Hong Kong",
+    introVideoRequired: true,
+    loomPrompt: "Record a short Loom (2-3 min) telling us about a creator or community relationship you built from scratch — what made it work and what you learned.",
+    portfolioRequired: false,
+    summary: "Be the connective tissue between our brand, our creators, our affiliates, and our customers.",
+    mission: "You'll be the foundational architect of community at Hello Nancy. That means owning our creator community end-to-end — sourcing, filtering, briefing, and nurturing — and turning it into a real engine that ships content and drives meaningful brand reach. You'll bring order to our affiliate program, mobilize brand advocates across IG, TikTok, and beyond, and partner with creative, brand, and CX to make sure our community shows up consistently across every touchpoint.",
+    responsibilities: [
+      "Own the creator community end-to-end — sourcing, filtering, briefing, and nurturing creators across IG, TikTok, and beyond.",
+      "Recruit, onboard, and grow the right affiliate ambassadors into a structured program.",
+      "Partner with creative, brand, and CX to make sure our community shows up consistently across every touchpoint."
+    ],
+    requirements: [
+      "3+ years in community management, influencer, or talent management at a DTC brand (women's wellness, beauty, lifestyle preferred).",
+      "Genuine people person — warm energy, naturally helpful, builds trust quickly.",
+      "You can spot a good creator vs. a mediocre one and explain exactly why.",
+      "Strong writer with emotional intelligence — you set the tone for the community.",
+      "AI-native — you naturally use modern tools like Claude Code and Codex to move faster."
+    ],
+    questions: [
+      "Tell us about a creator relationship you built from nothing. How did you find them, what did you offer, and what came of it?",
+      "How do you tell the difference between a creator who will actually move the needle for a brand vs. one who just looks good on paper?",
+      "Describe a community or affiliate program you helped build or grow. What worked, what didn't, and what would you do differently?"
+    ]
+  },
+  {
     slug: "ai-native-product-manager-apps",
     title: "AI-Native Product Manager, Apps",
     careerGroup: "scale",
