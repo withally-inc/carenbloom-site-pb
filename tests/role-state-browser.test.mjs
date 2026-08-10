@@ -24,8 +24,8 @@ const groupBySlug = {
 const openRoleResponse = {
   status: "open",
   serverNow,
-  openRoleCount: 11,
-  groupCounts: { "source-build": 1, launch: 5, scale: 3, platform: 2 },
+  openRoleCount: 12,
+  groupCounts: { "source-build": 1, launch: 6, scale: 3, platform: 2 },
   role: chiefOfStaff,
   state: openState,
 };
@@ -118,7 +118,7 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
   await installRoleResponse(context, {
     status: "unknown",
     serverNow,
-    openRoleCount: 11,
+    openRoleCount: 12,
     groupCounts: openRoleResponse.groupCounts,
   }, 200);
   const page = await newTestPage(context);
@@ -511,7 +511,7 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
     status: "ok",
     serverNow,
     openRoleCount: careerRoles.length,
-    groupCounts: { "source-build": 1, launch: 5, scale: 3, platform: 2 },
+    groupCounts: { "source-build": 1, launch: 6, scale: 3, platform: 2 },
     roles: careerRoles.map((role) => ({ ...role, careerGroup: groupBySlug[role.slug], state: resolveRoleState(serverNow, role) })),
   })));
   const failedLockup = await lockupWidth((context) => context.route("**/api/role-state", (route) => route.abort("failed")));

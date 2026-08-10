@@ -9,6 +9,7 @@ const expectedRoles = [
   ["Video Editor", "video-editor"],
   ["Creative Strategist, Performance Marketing", "creative-strategist-performance-marketing"],
   ["Social Media Strategist", "social-media-strategist"],
+  ["Community Manager", "community-manager"],
   ["Head of Performance Marketing", "head-of-performance-marketing"],
   ["Growth Lead, Mobile Apps", "growth-lead-mobile-apps"],
   ["AI-Native Product Manager, Apps", "ai-native-product-manager-apps"],
@@ -283,7 +284,7 @@ try {
   );
   assert.deepEqual(
     await page.locator("#values .section-label, #teams .section-label, #careers .section-label").allTextContents(),
-    ["(05) How we raise the ceiling", "(06) How we work together", "(07) Careers · 11 roles open"],
+    ["(05) How we raise the ceiling", "(06) How we work together", "(07) Careers · 12 roles open"],
   );
 
   const brandCarousels = page.locator("[data-brand-carousel]");
@@ -420,7 +421,7 @@ try {
   await anchorPage.close();
 
   const roleRows = page.locator("a.job-row");
-  assert.equal(await roleRows.count(), 11, "all eleven roles should be direct application links");
+  assert.equal(await roleRows.count(), 12, "all twelve roles should be direct application links");
   assert.deepEqual(
     await roleRows.evaluateAll((rows) => rows.map((row) => [
       row.querySelector(".j-name")?.textContent?.trim(),

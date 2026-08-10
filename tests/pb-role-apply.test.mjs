@@ -9,6 +9,7 @@ const expectedRoles = [
   ["Video Editor", "video-editor"],
   ["Creative Strategist, Performance Marketing", "creative-strategist-performance-marketing"],
   ["Social Media Strategist", "social-media-strategist"],
+  ["Community Manager", "community-manager"],
   ["Head of Performance Marketing", "head-of-performance-marketing"],
   ["Growth Lead, Mobile Apps", "growth-lead-mobile-apps"],
   ["AI-Native Product Manager, Apps", "ai-native-product-manager-apps"],
@@ -21,7 +22,7 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, red
 
 await page.goto(`${baseUrl}/`, { waitUntil: "networkidle" });
 const roleRows = page.locator("a.job-row");
-assert.equal(await roleRows.count(), 11);
+assert.equal(await roleRows.count(), 12);
 assert.equal(await page.locator('a[href="#"]').count(), 0);
 assert.equal(await page.locator('.topbar a[href="#careers"]').count(), 2);
 
