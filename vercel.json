@@ -10,6 +10,9 @@
       "maxDuration": 10
     }
   },
+  "crons": [
+    { "path": "/api/health", "schedule": "0 0,6,12 * * *" }
+  ],
   "redirects": [
     { "source": "/pb-live", "destination": "/", "permanent": true },
     { "source": "/pb-live/", "destination": "/", "permanent": true }
