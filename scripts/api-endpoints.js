@@ -19,9 +19,21 @@ export function roleStateUrl(slug) {
   return slug ? `${endpoint}?role=${encodeURIComponent(slug)}` : endpoint;
 }
 
+async function fetchWithRetry(url, options, fetchImpl, retries = 2, delayMs = 1500) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const response = await fetchImpl(url, options);
+      if (response.ok || attempt === retries) return response;
+    } catch (error) {
+      if (attempt === retries) throw error;
+    }
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  }
+}
+
 export function fetchRoleState(slug, fetchImpl = fetch) {
-  return fetchImpl(roleStateUrl(slug), {
+  return fetchWithRetry(roleStateUrl(slug), {
     cache: "no-store",
     headers: { Accept: "application/json" },
-  });
+  }, fetchImpl);
 }
