@@ -13,13 +13,15 @@
 
 @font-face {
   font-family: "PP Mori";
-  src: url("fonts/PPMori-Regular.otf") format("opentype");
+  src: url("fonts/PPMori-Regular.woff2") format("woff2"),
+       url("fonts/PPMori-Regular.otf") format("opentype");
   font-weight: 400;
   font-display: swap;
 }
 @font-face {
   font-family: "PP Mori";
-  src: url("fonts/PPMori-Semibold.otf") format("opentype");
+  src: url("fonts/PPMori-Semibold.woff2") format("woff2"),
+       url("fonts/PPMori-Semibold.otf") format("opentype");
   font-weight: 600;
   font-display: swap;
 }
