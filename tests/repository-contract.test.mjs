@@ -48,6 +48,7 @@ const runtimeFiles = [
   "api/_lib/notion-client.js",
   "api/_lib/role-state.js",
   "api/_lib/role-state-response.js",
+  "_redirects",
   "vercel.json",
 ];
 
@@ -110,7 +111,14 @@ test("the old PB bookmark has only a root redirect", () => {
   assert.deepEqual(config.redirects, [
     { source: "/pb-live", destination: "/", permanent: true },
     { source: "/pb-live/", destination: "/", permanent: true },
+    { source: "/talents/:path*", destination: "/careers/:path*", statusCode: 301 },
   ]);
+});
+
+test("Cloudflare Pages permanently redirects legacy talent paths to matching career paths", () => {
+  const redirectsPath = path.join(root, "_redirects");
+  assert.equal(existsSync(redirectsPath), true, "the Cloudflare Pages deploy root must contain _redirects");
+  assert.equal(readFileSync(redirectsPath, "utf8"), "/talents/* /careers/:splat 301\n");
 });
 
 test("canonical roles own the stable homepage group used by authoritative rendering", () => {
