@@ -15,12 +15,6 @@ The provenance integration remains available at https://github.com/withally-inc/
 | `/api/role-state` | Non-cacheable canonical role lifecycle and open-role collection API |
 | `/api/applications` | Application intake API |
 | `/pb-live/` | Compatibility redirect to `/`; no duplicate implementation exists |
-| `/talents` and `/talents/` | Permanent 301 redirect to the homepage careers section `/#careers`, since no bare `/careers/` page exists |
-| `/talents/*` | Permanent 301 redirect to the matching `/careers/*` path, including `/talents/apply` with or without a trailing slash, with the original query string preserved |
-
-The root `_redirects` file owns the legacy `/talents` rules for the production Cloudflare Pages deployment, and `vercel.json` carries the equivalent explicit rules so the review deployment behaves the same.
-`tests/repository-contract.test.mjs` pins both copies and the existence of `_redirects`, so the rules cannot be silently dropped.
-
 Application-page navigation returns to `/#themes`, `/#brands`, `/#people`, and `/#careers`.
 
 ## Local development
