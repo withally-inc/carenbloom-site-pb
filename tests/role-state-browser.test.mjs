@@ -380,12 +380,12 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
     {
       hostname: "carenbloom.com",
       roleState: "/api/role-state",
-      applications: "https://carenbloom-site-pb.vercel.app/api/applications",
+      applications: "/api/applications",
     },
     {
       hostname: "www.carenbloom.com",
       roleState: "/api/role-state",
-      applications: "https://carenbloom-site-pb.vercel.app/api/applications",
+      applications: "/api/applications",
     },
     {
       hostname: "carenbloom-redesign-a.vercel.app",

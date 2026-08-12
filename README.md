@@ -13,7 +13,7 @@ The provenance integration remains available at https://github.com/withally-inc/
 | `/` | Pattern Breaking home |
 | `/careers/apply/?role=<slug>` | Authoritative open, closed, unknown, or unavailable state for one canonical role |
 | `/api/role-state` | Non-cacheable canonical role lifecycle and open-role collection API |
-| `/api/applications` | Application intake API |
+| `/api/applications` | Same-origin Cloudflare relay to the Vercel application intake API |
 | `/pb-live/` | Compatibility redirect to `/`; no duplicate implementation exists |
 
 Application-page navigation returns to `/#themes`, `/#brands`, `/#people`, and `/#careers`.
@@ -37,7 +37,7 @@ Run the complete self-contained suite with:
 npm test
 ```
 
-The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, the approved favicon assets and their declarations, deployment packaging, hero behavior, slow-mobile homepage performance, the homepage opening reveal sequence, the single-line values heading, the footer sign-off wordmark, floating navigation, server-authoritative Monday HKT role state on both the Cloudflare Pages and Vercel runtimes, application payload and API closure behavior, all eleven role routes, location metadata, form validation and multipart submission, per-file and combined upload size limits, responsive layouts, reduced motion, failed-video behavior, and fail-closed no-JavaScript fallbacks.
+The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, the approved favicon assets and their declarations, deployment packaging, hero behavior, slow-mobile homepage performance, the homepage opening reveal sequence, the single-line values heading, the footer sign-off wordmark, floating navigation, server-authoritative Monday HKT role state on both the Cloudflare Pages and Vercel runtimes, the transparent Cloudflare application relay, application payload and API closure behavior, all eleven role routes, location metadata, form validation and multipart submission, per-file and combined upload size limits, responsive layouts, reduced motion, failed-video behavior, and fail-closed no-JavaScript fallbacks.
 
 Focused commands are also available:
 
@@ -47,6 +47,7 @@ npm run test:api
 npm run test:deadline
 npm run test:role-state
 npm run test:cloudflare-role-state
+npm run test:cloudflare-applications
 BASE_URL=http://127.0.0.1:49279 npm run test:metadata
 BASE_URL=http://127.0.0.1:49279 npm run test:browser
 ```
@@ -140,13 +141,19 @@ It accepts an injected server instant and resolves the HKT Monday window start, 
 
 `api/role-state.js` keeps the equivalent Vercel endpoint available for review deployments and direct consumers.
 
-`scripts/api-endpoints.js` resolves `/api/role-state` same-origin on every host, while honouring an explicit `window.CB_ROLE_STATE_ENDPOINT` override.
+`scripts/api-endpoints.js` resolves `/api/role-state` and `/api/applications` same-origin on every host, while honouring explicit `window.CB_ROLE_STATE_ENDPOINT` and `window.CB_TALENTS_ENDPOINT` overrides.
 
-Production `/api/applications` traffic remains on `https://carenbloom-site-pb.vercel.app`, with an explicit `window.CB_TALENTS_ENDPOINT` override still taking precedence.
+`functions/api/applications.js` accepts the production browser request on Cloudflare Pages and streams its unchanged method, headers, and multipart body to `https://carenbloom-site-pb.vercel.app/api/applications`.
 
-Every other host — the `carenbloom-redesign-a` review deployment and any local server — keeps application traffic same-origin, so review application traffic reaches the dry-run function it is served by instead of the production project.
+It returns the Vercel response unchanged, so `api/applications.js` remains the single owner of method handling, application CORS, Busboy parsing, upload limits, validation, lifecycle rejection, dry-run behavior, and Notion access.
 
-`api/_lib/cors.js` owns the Vercel functions' browser-origin allowlist: both functions echo an `Origin` of `https://carenbloom.com` or `https://www.carenbloom.com` back as `Access-Control-Allow-Origin`, always send `Vary: Origin`, and grant no other origin.
+The direct Vercel endpoint remains available to the `carenbloom-redesign-a` review deployment and existing consumers.
+
+The `/api/health` cron probes the applicant-facing `${SITE_URL}/api/applications` route with a deliberately incomplete payload, so a broken relay alerts instead of reporting healthy and no Notion record is ever created.
+
+`api/_lib/cors.js` keeps owning the direct Vercel functions' browser-origin allowlist: both functions echo an `Origin` of `https://carenbloom.com` or `https://www.carenbloom.com` back as `Access-Control-Allow-Origin`, always send `Vary: Origin`, and grant no other origin.
+
+The Cloudflare application relay forwards that `Origin` header and does not add or widen CORS policy.
 
 The homepage reloads on the collection's `nextBoundaryAt`, which the API resolves from the canonical roles even when nothing is currently open.
 
