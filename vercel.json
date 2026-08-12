@@ -15,6 +15,9 @@
   ],
   "redirects": [
     { "source": "/pb-live", "destination": "/", "permanent": true },
-    { "source": "/pb-live/", "destination": "/", "permanent": true }
+    { "source": "/pb-live/", "destination": "/", "permanent": true },
+    { "source": "/talents", "destination": "/#careers", "statusCode": 301 },
+    { "source": "/talents/", "destination": "/#careers", "statusCode": 301 },
+    { "source": "/talents/:path*", "destination": "/careers/:path*", "statusCode": 301 }
   ]
 }

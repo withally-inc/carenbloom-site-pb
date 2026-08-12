@@ -48,6 +48,7 @@ const runtimeFiles = [
   "api/_lib/notion-client.js",
   "api/_lib/role-state.js",
   "api/_lib/role-state-response.js",
+  "_redirects",
   "vercel.json",
 ];
 
@@ -110,7 +111,29 @@ test("the old PB bookmark has only a root redirect", () => {
   assert.deepEqual(config.redirects, [
     { source: "/pb-live", destination: "/", permanent: true },
     { source: "/pb-live/", destination: "/", permanent: true },
+    { source: "/talents", destination: "/#careers", statusCode: 301 },
+    { source: "/talents/", destination: "/#careers", statusCode: 301 },
+    { source: "/talents/:path*", destination: "/careers/:path*", statusCode: 301 },
   ]);
+});
+
+test("Cloudflare Pages permanently redirects legacy talent paths to live destinations", () => {
+  const redirectsPath = path.join(root, "_redirects");
+  assert.equal(existsSync(redirectsPath), true, "the Cloudflare Pages deploy root must contain _redirects");
+  assert.equal(
+    readFileSync(redirectsPath, "utf8"),
+    "/talents /#careers 301\n/talents/ /#careers 301\n/talents/* /careers/:splat 301\n",
+  );
+});
+
+test("every legacy talent redirect destination resolves to a real surface", () => {
+  const home = readFileSync(path.join(root, "index.html"), "utf8");
+  assert.match(home, /id="careers"/, "the bare /talents redirects must land on the homepage roles section");
+  assert.equal(
+    existsSync(path.join(root, "careers/apply/index.html")),
+    true,
+    "the /talents/apply splat redirect must land on the shipped application page",
+  );
 });
 
 test("canonical roles own the stable homepage group used by authoritative rendering", () => {
