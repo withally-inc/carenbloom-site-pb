@@ -140,17 +140,18 @@ test("every legacy talent redirect destination resolves to a real surface", () =
 test("canonical roles own the stable homepage group used by authoritative rendering", () => {
   const home = readFileSync(path.join(root, "index.html"), "utf8");
   const expectedGroups = {
-    "product-project-manager": "source-build",
-    "product-marketing-lead": "launch",
+    "chief-of-staff": "platform",
+    "creative-director": "launch",
     "graphic-designer": "launch",
     "video-editor": "launch",
-    "creative-strategist-performance-marketing": "launch",
+    "product-marketing-lead": "launch",
     "social-media-strategist": "launch",
+    "creative-strategist-performance-marketing": "launch",
     "community-manager": "launch",
     "head-of-performance-marketing": "scale",
     "growth-lead-mobile-apps": "scale",
     "ai-native-product-manager-apps": "scale",
-    "chief-of-staff": "platform",
+    "product-project-manager": "source-build",
     "entrepreneur-in-residence": "platform",
   };
 

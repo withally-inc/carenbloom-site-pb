@@ -4,10 +4,10 @@ const FALLBACK_REFRESH_MS = 15 * 60 * 1000;
 const MIN_REFRESH_MS = 1000;
 
 const careerGroups = [
-  { id: "source-build", index: "01", label: "Source & Build" },
+  { id: "platform", index: "01", label: "Platform" },
   { id: "launch", index: "02", label: "Launch" },
   { id: "scale", index: "03", label: "Scale" },
-  { id: "platform", index: "—", label: "Platform" },
+  { id: "source-build", index: "04", label: "Source & Build" },
 ];
 
 function roleRow(role) {
