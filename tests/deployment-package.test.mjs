@@ -48,6 +48,7 @@ test("the emitted deployment tree contains runtime files and no private developm
     "api/applications.js",
     "api/role-state.js",
     "api/_lib/role-state.js",
+    "api/_lib/role-state-response.js",
     "api/_lib/cors.js",
     "scripts/careers-home.js",
     "scripts/api-endpoints.js",

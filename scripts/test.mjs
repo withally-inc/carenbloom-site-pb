@@ -33,6 +33,7 @@ const commands = [
   ["--test", "tests/repository-contract.test.mjs", "tests/deployment-package.test.mjs", "tests/hero-scroll.test.mjs", "tests/nav-float.test.mjs", "tests/api-endpoints.test.mjs"],
   ["tests/careers-deadline.test.mjs"],
   ["tests/role-state-api.test.mjs"],
+  ["tests/cloudflare-role-state.test.mjs"],
   ["tests/application-payload.test.mjs"],
   ["tests/applications-api.test.mjs"],
   ["tests/server-runtime.test.mjs"],

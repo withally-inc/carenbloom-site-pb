@@ -379,12 +379,12 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
   assert.deepEqual(resolved, [
     {
       hostname: "carenbloom.com",
-      roleState: "https://carenbloom-site-pb.vercel.app/api/role-state",
+      roleState: "/api/role-state",
       applications: "https://carenbloom-site-pb.vercel.app/api/applications",
     },
     {
       hostname: "www.carenbloom.com",
-      roleState: "https://carenbloom-site-pb.vercel.app/api/role-state",
+      roleState: "/api/role-state",
       applications: "https://carenbloom-site-pb.vercel.app/api/applications",
     },
     {
@@ -499,7 +499,7 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
     await install(context);
     const page = await newTestPage(context);
     await page.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded" });
-    await page.locator("[data-careers-list]:not([data-careers-state='loading'])").waitFor();
+    await page.locator("[data-careers-list]:not([data-careers-state='loading'])").waitFor({ timeout: 6000 });
     await page.evaluate(() => window.scrollTo({ top: 700, behavior: "instant" }));
     await page.waitForTimeout(500);
     const width = await page.locator(".topbar .brand-logo").evaluate((logo) => logo.getBoundingClientRect().width);

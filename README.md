@@ -37,7 +37,7 @@ Run the complete self-contained suite with:
 npm test
 ```
 
-The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, the approved favicon assets and their declarations, deployment packaging, hero behavior, slow-mobile homepage performance, the homepage opening reveal sequence, the single-line values heading, the footer sign-off wordmark, floating navigation, server-authoritative Monday HKT role state, application payload and API closure behavior, all eleven role routes, location metadata, form validation and multipart submission, per-file and combined upload size limits, responsive layouts, reduced motion, failed-video behavior, and fail-closed no-JavaScript fallbacks.
+The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, the approved favicon assets and their declarations, deployment packaging, hero behavior, slow-mobile homepage performance, the homepage opening reveal sequence, the single-line values heading, the footer sign-off wordmark, floating navigation, server-authoritative Monday HKT role state on both the Cloudflare Pages and Vercel runtimes, application payload and API closure behavior, all eleven role routes, location metadata, form validation and multipart submission, per-file and combined upload size limits, responsive layouts, reduced motion, failed-video behavior, and fail-closed no-JavaScript fallbacks.
 
 Focused commands are also available:
 
@@ -46,6 +46,7 @@ npm run test:contracts
 npm run test:api
 npm run test:deadline
 npm run test:role-state
+npm run test:cloudflare-role-state
 BASE_URL=http://127.0.0.1:49279 npm run test:metadata
 BASE_URL=http://127.0.0.1:49279 npm run test:browser
 ```
@@ -133,13 +134,19 @@ Its oversized scale, subtle bottom crop, cobalt fill, and viewport-filling fit a
 
 It accepts an injected server instant and resolves the HKT Monday window start, HKT `datePosted`, the default close exactly fourteen days later, the earlier effective factual close, the next refresh boundary, and `isOpen`.
 
-`/api/role-state` supplies the browser with non-cacheable authoritative role state and a captured server instant.
+`api/_lib/role-state-response.js` projects that canonical lifecycle into the non-cacheable collection and single-role JSON contract shared by the Cloudflare and Vercel handlers.
 
-The production pages at `carenbloom.com` and `www.carenbloom.com` are statically hosted and serve no functions, so `scripts/api-endpoints.js` is the one resolver that addresses `https://carenbloom-site-pb.vercel.app` for both `/api/role-state` and `/api/applications` from exactly those two hostnames, honouring an explicit `window.CB_ROLE_STATE_ENDPOINT` or `window.CB_TALENTS_ENDPOINT` override when one is set.
+`functions/api/role-state.js` supplies the production browser with that response from the same-origin Cloudflare Pages route and a captured server instant.
 
-Every other host — the `carenbloom-redesign-a` review deployment and any local server — stays same-origin, so review application traffic reaches the dry-run function it is served by instead of the production project.
+`api/role-state.js` keeps the equivalent Vercel endpoint available for review deployments and direct consumers.
 
-`api/_lib/cors.js` owns the matching browser-origin allowlist: both functions echo an `Origin` of `https://carenbloom.com` or `https://www.carenbloom.com` back as `Access-Control-Allow-Origin`, always send `Vary: Origin`, and grant no other origin.
+`scripts/api-endpoints.js` resolves `/api/role-state` same-origin on every host, while honouring an explicit `window.CB_ROLE_STATE_ENDPOINT` override.
+
+Production `/api/applications` traffic remains on `https://carenbloom-site-pb.vercel.app`, with an explicit `window.CB_TALENTS_ENDPOINT` override still taking precedence.
+
+Every other host — the `carenbloom-redesign-a` review deployment and any local server — keeps application traffic same-origin, so review application traffic reaches the dry-run function it is served by instead of the production project.
+
+`api/_lib/cors.js` owns the Vercel functions' browser-origin allowlist: both functions echo an `Origin` of `https://carenbloom.com` or `https://www.carenbloom.com` back as `Access-Control-Allow-Origin`, always send `Vary: Origin`, and grant no other origin.
 
 The homepage reloads on the collection's `nextBoundaryAt`, which the API resolves from the canonical roles even when nothing is currently open.
 
