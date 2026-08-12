@@ -34,6 +34,7 @@ const commands = [
   ["tests/careers-deadline.test.mjs"],
   ["tests/role-state-api.test.mjs"],
   ["tests/cloudflare-role-state.test.mjs"],
+  ["tests/cloudflare-applications.test.mjs"],
   ["tests/application-payload.test.mjs"],
   ["tests/applications-api.test.mjs"],
   ["tests/server-runtime.test.mjs"],

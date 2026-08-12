@@ -1,18 +1,13 @@
-const PRODUCTION_API_ORIGIN = "https://carenbloom-site-pb.vercel.app";
 export const CLOUDFLARE_PRODUCTION_HOSTS = new Set(["carenbloom.com", "www.carenbloom.com"]);
-
-function resolveApplicationEndpoint(apiPath, override, location) {
-  if (typeof override === "string" && override) return override;
-  return CLOUDFLARE_PRODUCTION_HOSTS.has(location?.hostname) ? `${PRODUCTION_API_ORIGIN}${apiPath}` : apiPath;
-}
 
 export function resolveRoleStateEndpoint(location, globals = globalThis) {
   const override = globals?.CB_ROLE_STATE_ENDPOINT;
   return typeof override === "string" && override ? override : "/api/role-state";
 }
 
-export function resolveApplicationsEndpoint(location = window.location, globals = window) {
-  return resolveApplicationEndpoint("/api/applications", globals?.CB_TALENTS_ENDPOINT, location);
+export function resolveApplicationsEndpoint(location, globals = globalThis) {
+  const override = globals?.CB_TALENTS_ENDPOINT;
+  return typeof override === "string" && override ? override : "/api/applications";
 }
 
 export function roleStateUrl(slug) {

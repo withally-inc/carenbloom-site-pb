@@ -10,10 +10,10 @@ test("the shared resolver owns the canonical Cloudflare production host set", ()
   assert.deepEqual(productionHosts, ["carenbloom.com", "www.carenbloom.com"]);
 });
 
-test("production role-state stays same-origin while applications keep their Vercel route", () => {
+test("production browser API traffic stays same-origin", () => {
   for (const hostname of productionHosts) {
     assert.equal(resolveRoleStateEndpoint({ hostname }, {}), "/api/role-state");
-    assert.equal(resolveApplicationsEndpoint({ hostname }, {}), "https://carenbloom-site-pb.vercel.app/api/applications");
+    assert.equal(resolveApplicationsEndpoint({ hostname }, {}), "/api/applications");
   }
 });
 
@@ -28,7 +28,7 @@ test("review and local hosts serve their own functions and stay same-origin", ()
   }
 });
 
-test("the Vercel API keeps allowing exactly the production origins used by applications", () => {
+test("the direct Vercel API keeps its strict production-origin allowlist", () => {
   assert.deepEqual(
     [...ALLOWED_BROWSER_ORIGINS].sort(),
     productionHosts.map((hostname) => `https://${hostname}`).sort(),

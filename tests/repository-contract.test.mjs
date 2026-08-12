@@ -42,6 +42,7 @@ const runtimeFiles = [
   "scripts/dev-server.mjs",
   "api/applications.js",
   "api/role-state.js",
+  "functions/api/applications.js",
   "functions/api/role-state.js",
   "api/_lib/application-payload.js",
   "api/_lib/cors.js",
