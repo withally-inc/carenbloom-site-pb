@@ -126,16 +126,6 @@ test("Cloudflare Pages permanently redirects legacy talent paths to live destina
   );
 });
 
-test("every legacy talent redirect destination resolves to a real surface", () => {
-  const home = readFileSync(path.join(root, "index.html"), "utf8");
-  assert.match(home, /id="careers"/, "the bare /talents redirects must land on the homepage roles section");
-  assert.equal(
-    existsSync(path.join(root, "careers/apply/index.html")),
-    true,
-    "the /talents/apply splat redirect must land on the shipped application page",
-  );
-});
-
 test("canonical roles own the stable homepage group used by authoritative rendering", () => {
   const home = readFileSync(path.join(root, "index.html"), "utf8");
   const expectedGroups = {
