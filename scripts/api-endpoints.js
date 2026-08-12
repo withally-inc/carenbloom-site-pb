@@ -6,7 +6,7 @@ function resolveApplicationEndpoint(apiPath, override, location) {
   return CLOUDFLARE_PRODUCTION_HOSTS.has(location?.hostname) ? `${PRODUCTION_API_ORIGIN}${apiPath}` : apiPath;
 }
 
-export function resolveRoleStateEndpoint(location = window.location, globals = window) {
+export function resolveRoleStateEndpoint(location, globals = globalThis) {
   const override = globals?.CB_ROLE_STATE_ENDPOINT;
   return typeof override === "string" && override ? override : "/api/role-state";
 }
