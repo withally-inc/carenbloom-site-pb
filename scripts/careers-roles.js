@@ -31,7 +31,7 @@ const careerRoles = [
   },
   {
     slug: "creative-director",
-    title: "Creative Director, Hello Nancy",
+    title: "Creative Director",
     careerGroup: "launch",
     careerOrder: 1,
     team: "Creative",
