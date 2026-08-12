@@ -42,7 +42,7 @@ const careerRoles = [
     portfolioRequired: true,
     portfolioLabel: "Portfolio / Work Samples (brand work, packaging, campaign art direction)*",
     summary: "Own the Hello Nancy brand end-to-end \u2014 packaging, collections, collaborations, and campaign art direction. Player, coach, and vision.",
-    mission: "You would be our first creative director on the brand side, owning Hello Nancy end-to-end. The brand crossed 8-figure revenue and 1M+ customers in under 18 months \u2014 now it needs creative leadership to match. The next chapter is a universe: new collections, unexpected collaborations, and a brand that everyone wants to work with. Think what Gentle Monster did for eyewear, or Liquid Death for water. Nobody has done it in sexual wellness. We will.",
+    mission: "You would be our first creative director on the brand side, owning Hello Nancy end-to-end. The brand crossed 8-figure revenue and 1M+ customers in under 36 months \u2014 now it needs creative leadership to match. The next chapter is a universe: new collections, unexpected collaborations, and a brand that everyone wants to work with. Think what Gentle Monster did for eyewear, or Liquid Death for water. Nobody has done it in sexual wellness. We will.",
     responsibilities: [
       "Own the Nancy brand system as it evolves \u2014 type, color, packaging, and campaign frameworks.",
       "Art-direct drops, campaigns, and collection identities \u2014 hands on, from first sketch to shelf.",
