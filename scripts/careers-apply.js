@@ -153,6 +153,7 @@ import { fetchRoleState, resolveApplicationsEndpoint } from "./api-endpoints.js"
   let responseAnchor = performance.now();
   let remainingAtResponse = Date.parse(currentState.effectiveClosesAt) - Date.parse(currentServerNow);
   let boundaryTimer = null;
+  let refreshController = null;
   let takenDown = false;
   let submissionReference = null;
   const formatCountdown = (remainingMs) => {
@@ -180,6 +181,8 @@ import { fetchRoleState, resolveApplicationsEndpoint } from "./api-endpoints.js"
   const remainingNow = () => remainingAtResponse - (performance.now() - responseAnchor);
   const takeDown = (pageState, heading, message, title) => {
     takenDown = true;
+    refreshController?.abort();
+    refreshController = null;
     clearInterval(tick);
     clearTimeout(boundaryTimer);
     jsonLd.remove();
@@ -214,14 +217,18 @@ import { fetchRoleState, resolveApplicationsEndpoint } from "./api-endpoints.js"
 
   const refreshAuthority = async () => {
     if (takenDown) return;
+    const controller = new AbortController();
+    refreshController = controller;
     let next;
     try {
-      const response = await fetchRoleState(slug);
+      const response = await fetchRoleState(slug, fetch, { signal: controller.signal });
       next = await response.json().catch(() => null);
       if (!response.ok && response.status !== 404) throw new Error("Role authority refresh failed.");
     } catch {
       if (!takenDown) retryRefresh();
       return;
+    } finally {
+      if (refreshController === controller) refreshController = null;
     }
     if (takenDown) return;
 

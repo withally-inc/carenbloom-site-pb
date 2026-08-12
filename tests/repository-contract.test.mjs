@@ -42,10 +42,12 @@ const runtimeFiles = [
   "scripts/dev-server.mjs",
   "api/applications.js",
   "api/role-state.js",
+  "functions/api/role-state.js",
   "api/_lib/application-payload.js",
   "api/_lib/cors.js",
   "api/_lib/notion-client.js",
   "api/_lib/role-state.js",
+  "api/_lib/role-state-response.js",
   "vercel.json",
 ];
 

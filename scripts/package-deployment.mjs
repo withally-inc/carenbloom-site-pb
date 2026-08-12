@@ -35,6 +35,7 @@ const runtimeAllowlist = [
   "api/_lib/cors.js",
   "api/_lib/notion-client.js",
   "api/_lib/role-state.js",
+  "api/_lib/role-state-response.js",
 ];
 
 if (!target.startsWith(`${root}${path.sep}`) || path.basename(target) !== ".vercel-deploy") {
