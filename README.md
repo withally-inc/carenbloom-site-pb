@@ -37,7 +37,7 @@ Run the complete self-contained suite with:
 npm test
 ```
 
-The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, the approved favicon assets and their declarations, deployment packaging, hero behavior, slow-mobile homepage performance, the homepage opening reveal sequence, the single-line values heading, the footer sign-off wordmark, floating navigation, server-authoritative Monday HKT role state, application payload and API closure behavior, all eleven role routes, location metadata, form validation and multipart submission, per-file and combined upload size limits, responsive layouts, reduced motion, failed-video behavior, and fail-closed no-JavaScript fallbacks.
+The test command starts its own isolated dry-run server and covers repository paths, dependency completeness, the approved favicon assets and their declarations, deployment packaging, hero behavior, slow-mobile homepage performance, the homepage opening reveal sequence, the single-line values heading, the footer sign-off wordmark, floating navigation, server-authoritative Monday HKT role state on both the Cloudflare Pages and Vercel runtimes, application payload and API closure behavior, all eleven role routes, location metadata, form validation and multipart submission, per-file and combined upload size limits, responsive layouts, reduced motion, failed-video behavior, and fail-closed no-JavaScript fallbacks.
 
 Focused commands are also available:
 
@@ -46,6 +46,7 @@ npm run test:contracts
 npm run test:api
 npm run test:deadline
 npm run test:role-state
+npm run test:cloudflare-role-state
 BASE_URL=http://127.0.0.1:49279 npm run test:metadata
 BASE_URL=http://127.0.0.1:49279 npm run test:browser
 ```

@@ -181,6 +181,8 @@ import { fetchRoleState, resolveApplicationsEndpoint } from "./api-endpoints.js"
   const remainingNow = () => remainingAtResponse - (performance.now() - responseAnchor);
   const takeDown = (pageState, heading, message, title) => {
     takenDown = true;
+    // Takedown is terminal: the in-flight refresh is aborted because fetchRoleState sleeps between
+    // retries, and a surviving retry chain would keep requesting a role that is already gone.
     refreshController?.abort();
     refreshController = null;
     clearInterval(tick);
