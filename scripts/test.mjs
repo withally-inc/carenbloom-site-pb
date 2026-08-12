@@ -37,6 +37,7 @@ const commands = [
   ["tests/cloudflare-applications.test.mjs"],
   ["tests/application-payload.test.mjs"],
   ["tests/applications-api.test.mjs"],
+  ["tests/health-check.test.mjs"],
   ["tests/server-runtime.test.mjs"],
   ["tests/role-location-metadata.test.mjs"],
   ["tests/careers-apply-submit.test.mjs"],

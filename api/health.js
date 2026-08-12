@@ -32,7 +32,10 @@ async function checkApplyPages() {
   }
 }
 
-async function checkApplicationAPI() {
+export const APPLICATION_HEALTH_URL = `${SITE_URL}/api/applications`;
+
+export async function probeApplicationAPI(fetchImpl = fetch) {
+  const label = "Application API + Notion";
   // Send incomplete payload to verify API is responding without creating Notion entries
   const payload = {
     role: "Chief of Staff",
@@ -42,7 +45,7 @@ async function checkApplicationAPI() {
   };
 
   try {
-    const res = await fetch(`https://carenbloom-site-pb.vercel.app/api/applications`, {
+    const res = await fetchImpl(APPLICATION_HEALTH_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -50,17 +53,23 @@ async function checkApplicationAPI() {
     const data = await res.json().catch(() => ({}));
 
     if (res.status === 400 && data.error?.includes("Missing required field")) {
-      log("\u2705", "Application API + Notion", "API responding and validating");
-    } else if (res.status === 500) {
-      log("\u274c", "Application API + Notion", "Notion token missing or expired");
-    } else if (res.status === 502) {
-      log("\u274c", "Application API + Notion", data.error || "Notion unreachable");
-    } else {
-      log("\u274c", "Application API + Notion", `HTTP ${res.status}: ${data.error || "unexpected"}`);
+      return { icon: "\u2705", label, detail: "API responding and validating" };
     }
+    if (res.status === 500) {
+      return { icon: "\u274c", label, detail: "Notion token missing or expired" };
+    }
+    if (res.status === 502) {
+      return { icon: "\u274c", label, detail: data.error || "Notion unreachable" };
+    }
+    return { icon: "\u274c", label, detail: `HTTP ${res.status}: ${data.error || "unexpected"}` };
   } catch (error) {
-    log("\u274c", "Application API + Notion", error.message);
+    return { icon: "\u274c", label, detail: error.message };
   }
+}
+
+async function checkApplicationAPI() {
+  const entry = await probeApplicationAPI();
+  log(entry.icon, entry.label, entry.detail);
 }
 
 async function sendSlackAlert(failures) {

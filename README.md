@@ -149,6 +149,8 @@ It returns the Vercel response unchanged, so `api/applications.js` remains the s
 
 The direct Vercel endpoint remains available to the `carenbloom-redesign-a` review deployment and existing consumers.
 
+The `/api/health` cron probes the applicant-facing `${SITE_URL}/api/applications` route with a deliberately incomplete payload, so a broken relay alerts instead of reporting healthy and no Notion record is ever created.
+
 `api/_lib/cors.js` keeps owning the direct Vercel functions' browser-origin allowlist: both functions echo an `Origin` of `https://carenbloom.com` or `https://www.carenbloom.com` back as `Access-Control-Allow-Origin`, always send `Vary: Origin`, and grant no other origin.
 
 The Cloudflare application relay forwards that `Origin` header and does not add or widen CORS policy.
