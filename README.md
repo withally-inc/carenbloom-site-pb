@@ -15,6 +15,7 @@ The provenance integration remains available at https://github.com/withally-inc/
 | `/api/role-state` | Non-cacheable canonical role lifecycle and open-role collection API |
 | `/api/applications` | Application intake API |
 | `/pb-live/` | Compatibility redirect to `/`; no duplicate implementation exists |
+
 Application-page navigation returns to `/#themes`, `/#brands`, `/#people`, and `/#careers`.
 
 ## Local development
