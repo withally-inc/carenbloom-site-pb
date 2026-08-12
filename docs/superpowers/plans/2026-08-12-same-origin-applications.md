@@ -52,13 +52,13 @@ Never push except through no-mistakes.
 
 **Interfaces:**
 
-- Produces: `createCloudflareApplicationsHandler({ fetchImpl, upstreamUrl }) -> onRequest({ request }) -> Promise<Response>`.
-- Defaults: upstream URL `https://carenbloom-site-pb.vercel.app/api/applications` and runtime `fetch`.
+- Produces: `createCloudflareApplicationsHandler({ fetchImpl }) -> onRequest({ request }) -> Promise<Response>`.
+- Defaults: the fixed upstream URL `https://carenbloom-site-pb.vercel.app/api/applications` held as a module constant, and runtime `fetch`.
 
 - [ ] Add a failing relay test that sends a multipart `POST` with a production `Origin`, asserts the fixed upstream URL, method, content type, origin, and literal body bytes, and verifies an upstream 400 upload-limit response returns unchanged.
 - [ ] Add a failing relay test that sends an invalid `GET` and verifies the upstream 405 status, `Allow`, CORS, and JSON body return unchanged.
 - [ ] Run `node tests/cloudflare-applications.test.mjs` and confirm the missing function import is the expected red state.
-- [ ] Implement the minimal request-and-response relay with `new Request(upstreamUrl, request)` and injected `fetchImpl`.
+- [ ] Implement the minimal request-and-response relay with `new Request(VERCEL_APPLICATIONS_URL, request)` and injected `fetchImpl`.
 - [ ] Run `node tests/cloudflare-applications.test.mjs` and confirm both contracts pass.
 - [ ] Register the focused test in `package.json` and `scripts/test.mjs`.
 
