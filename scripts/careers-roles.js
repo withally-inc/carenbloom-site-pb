@@ -31,7 +31,7 @@ const careerRoles = [
   },
   {
     slug: "creative-director",
-    title: "Creative Director",
+    title: "Creative Director, Brand & Design",
     careerGroup: "launch",
     careerOrder: 1,
     team: "Creative",
@@ -41,20 +41,21 @@ const careerRoles = [
     loomPrompt: "Record a short Loom (2-3 min) walking us through a brand or collection you shaped end-to-end \u2014 what you aimed for, what you made, and what shipped.",
     portfolioRequired: true,
     portfolioLabel: "Portfolio / Work Samples (brand work, packaging, campaign art direction)*",
-    summary: "Own the Hello Nancy brand end-to-end \u2014 packaging, collections, collaborations, and campaign art direction. Player, coach, and vision.",
-    mission: "You would be our first creative director on the brand side, owning Hello Nancy end-to-end. The brand crossed 8-figure revenue and 1M+ customers in under 36 months \u2014 now it needs creative leadership to match. The next chapter is a universe: new collections, unexpected collaborations, and a brand that everyone wants to work with. Think what Gentle Monster did for eyewear, or Liquid Death for water. Nobody has done it in sexual wellness. We will.",
+    summary: "Own brand and design end-to-end \u2014 the objects, the packaging, the system, the world. Content and social have their own creative lead; you are the brand\u2019s design brain.",
+    mission: "You would be our first creative director, owning brand and design end to end. Content and social have their own creative lead; you are the brand\u2019s design brain: the objects, the packaging, the system, the world. The next chapter is a universe: new collections, unexpected collaborations, and a brand that everyone wants to work with. Think what Gentle Monster did for eyewear, or Liquid Death for water. Nobody has done it in sexual wellness. We will.",
     responsibilities: [
-      "Own the Nancy brand system as it evolves \u2014 type, color, packaging, and campaign frameworks.",
+      "Shape what a Nancy object is \u2014 form, color, and finish alongside the product team.",
+      "Own the brand system as it evolves \u2014 type, color, packaging, and campaign frameworks built to break their own rules on purpose.",
       "Art-direct drops, campaigns, and collection identities \u2014 hands on, from first sketch to shelf.",
       "Set the taste bar. Brief freelancers, studios, and partners; direct the work; decide what ships.",
-      "Build the creative function \u2014 design has lived in the founders\u2019 heads until now, and your first job is to take it off them."
+      "Build the creative function \u2014 design has run on instinct until now, and your first job is to help figure it out while keeping momentum."
     ],
     requirements: [
-      "Senior designer, art director, or design director with big brand or top studio work behind you.",
-      "A portfolio of playful, culture-facing consumer work with real packaging craft in it.",
+      "Senior designer, art director, or design director with big brand or top studio work behind you, and the itch to own a whole brand instead of a client roster.",
+      "A portfolio of playful, culture-facing consumer work, with deep design craft in it: identity systems, typography, and packaging all the way through print production.",
       "Taste and speed together \u2014 you can defend a system and still ship this week.",
       "Comfortable in sexual wellness \u2014 bold but inclusive, everyone invited, no one dared.",
-      "AI curious with taste \u2014 you use the new tools without shipping slop."
+      "AI curious with taste \u2014 you use the new tools without shipping slop, and you build agentic systems that multiply what you and your team can make."
     ],
     questions: [
       "Which brand or collection in your portfolio are you most proud of, and why?",
