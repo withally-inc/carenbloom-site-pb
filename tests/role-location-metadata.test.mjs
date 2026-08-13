@@ -13,6 +13,7 @@ const roles = [
   ["product-project-manager", "Product & Project Manager", "On-site, Shenzhen, China"],
   ["growth-lead-mobile-apps", "Growth Lead, Mobile Apps", "Remote"],
   ["entrepreneur-in-residence", "Entrepreneur-in-Residence", "Remote"],
+  ["community-manager", "Community Manager", "On-site, Hong Kong"],
   ["ai-native-product-manager-apps", "AI-Native Product Manager, Apps", "Remote"],
 ];
 
