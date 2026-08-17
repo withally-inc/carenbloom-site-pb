@@ -62,8 +62,8 @@ The endpoint response carries the stable group identifiers needed to preserve th
 ## Application intake
 
 `/api/applications` resolves the submitted canonical slug against its own server clock before payload validation performs any Notion work.
-Unknown roles remain HTTP 400.
-Closed roles return HTTP 410 at and after the effective close.
+Submissions whose role title matches no canonical slug skip lifecycle resolution and continue normal validation, preserving the submitted title and slug rather than inventing a replacement.
+Closed roles return HTTP 410 at and after the effective close only when a canonical role matches.
 Client-supplied dates, status flags, titles, and open-state claims cannot override canonical role state.
 The separately deferred required-answer, resume, and portfolio enforcement remains unchanged.
 

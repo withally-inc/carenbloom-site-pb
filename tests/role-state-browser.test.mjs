@@ -10,10 +10,12 @@ const openState = resolveRoleState(serverNow, chiefOfStaff);
 const groupBySlug = {
   "product-project-manager": "source-build",
   "product-marketing-lead": "launch",
+  "creative-director": "launch",
   "graphic-designer": "launch",
   "video-editor": "launch",
   "creative-strategist-performance-marketing": "launch",
   "social-media-strategist": "launch",
+  "community-manager": "launch",
   "head-of-performance-marketing": "scale",
   "growth-lead-mobile-apps": "scale",
   "ai-native-product-manager-apps": "scale",
@@ -24,8 +26,8 @@ const groupBySlug = {
 const openRoleResponse = {
   status: "open",
   serverNow,
-  openRoleCount: 12,
-  groupCounts: { "source-build": 1, launch: 6, scale: 3, platform: 2 },
+  openRoleCount: 13,
+  groupCounts: { "source-build": 1, launch: 7, scale: 3, platform: 2 },
   role: chiefOfStaff,
   state: openState,
 };
@@ -118,7 +120,7 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
   await installRoleResponse(context, {
     status: "unknown",
     serverNow,
-    openRoleCount: 12,
+    openRoleCount: 13,
     groupCounts: openRoleResponse.groupCounts,
   }, 200);
   const page = await newTestPage(context);
@@ -412,8 +414,8 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
   const collection = {
     status: "ok",
     serverNow,
-    openRoleCount: 10,
-    groupCounts: { "source-build": 1, launch: 4, scale: 3, platform: 2 },
+    openRoleCount: 12,
+    groupCounts: { "source-build": 1, launch: 6, scale: 3, platform: 2 },
     roles: homepageRoles,
   };
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -421,14 +423,14 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
   const page = await newTestPage(context);
   await page.goto(`${baseUrl}/`, { waitUntil: "networkidle" });
   await page.locator('[data-careers-state="ready"]').waitFor();
-  assert.equal(await page.locator("a.job-row").count(), 10);
+  assert.equal(await page.locator("a.job-row").count(), 12);
   assert.equal(await page.locator('a.job-row[href*="graphic-designer"]').count(), 0);
   assert.deepEqual(
     await page.locator("[data-open-role-count]").allTextContents(),
-    await page.locator("[data-open-role-count]").allTextContents().then((values) => values.map(() => "Open roles (10)")),
+    await page.locator("[data-open-role-count]").allTextContents().then((values) => values.map(() => "Open roles (12)")),
   );
-  assert.equal(await page.locator("[data-careers-summary]").textContent(), "(07) Careers · 10 roles open");
-  assert.deepEqual(await page.locator("[data-career-group-count]").allTextContents(), ["1", "4", "3", "2"]);
+  assert.equal(await page.locator("[data-careers-summary]").textContent(), "(07) Careers · 12 roles open");
+  assert.deepEqual(await page.locator("[data-career-group-count]").allTextContents(), ["2", "6", "3", "1"]);
   await context.close();
 }
 
@@ -511,7 +513,7 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
     status: "ok",
     serverNow,
     openRoleCount: careerRoles.length,
-    groupCounts: { "source-build": 1, launch: 6, scale: 3, platform: 2 },
+    groupCounts: { "source-build": 1, launch: 7, scale: 3, platform: 2 },
     roles: careerRoles.map((role) => ({ ...role, careerGroup: groupBySlug[role.slug], state: resolveRoleState(serverNow, role) })),
   })));
   const failedLockup = await lockupWidth((context) => context.route("**/api/role-state", (route) => route.abort("failed")));

@@ -84,7 +84,7 @@ try {
     [["Themes", "#themes"], ["Brands", "#brands"], ["People", "#people"], ["Careers", "#careers"]],
     "every existing destination and accessible name should be preserved",
   );
-  assert.equal(await desktop.locator(".topbar .roles-chip").textContent(), "Open roles (12)");
+  assert.equal(await desktop.locator(".topbar .roles-chip").textContent(), "Open roles (13)");
 
   // ---------- desktop floating state: one paper bar, elevated, inset ----------
   await scrollInstant(desktop, 700);
@@ -239,7 +239,7 @@ try {
       `the full Care & Bloom mark should render at ${width}px, not ellipsize (${contained.brandScrollWidth}px ink / ${contained.brandClientWidth}px box)`,
     );
     assert.equal(await narrow.locator('.topbar > a[aria-label="Care and Bloom home"]').getAttribute("aria-label"), "Care and Bloom home");
-    assert.equal(await narrow.locator(".topbar .roles-chip").textContent(), "Open roles (12)");
+    assert.equal(await narrow.locator(".topbar .roles-chip").textContent(), "Open roles (13)");
     await narrow.close();
   }
 
