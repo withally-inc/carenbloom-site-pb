@@ -21,6 +21,20 @@ const browser = await chromium.launch({ headless: true });
 
 const counterText = (page) => page.locator("#deckCounter").textContent();
 
+// The deck counter is repainted by an rAF-throttled scroll handler, so immediately after an
+// instant scroll a single read can still hold the pre-scroll value until that frame lands.
+// Poll until two consecutive samples agree so counter reads are settled under CPU load.
+async function settledCounterText(page) {
+  let previous = await counterText(page);
+  for (let attempt = 0; attempt < 40; attempt += 1) {
+    await page.waitForTimeout(25);
+    const current = await counterText(page);
+    if (current === previous) return current;
+    previous = current;
+  }
+  return previous;
+}
+
 // Every geometry assertion here measures laid-out glyphs, and the display face loads with
 // font-display: swap over a Helvetica Neue fallback: measuring before it settles measures the
 // wrong typeface, which is a silent false pass on the tight split-band boundary cases.
@@ -54,7 +68,7 @@ async function verifyHeldValuesStage(page, viewport) {
   await page.waitForFunction(() => document.querySelector("#values")?.classList.contains("is-held"));
   const valuesTop = await page.locator("#values").evaluate((section) => scrollY + section.getBoundingClientRect().top);
   await scrollInstant(page, valuesTop);
-  assert.equal(await counterText(page), "01 / 07", `${viewport.width}px held entry should begin on card 01`);
+  assert.equal(await settledCounterText(page), "01 / 07", `${viewport.width}px held entry should begin on card 01`);
 
   const fit = await page.evaluate(() => {
     const bounds = (selector) => {
@@ -81,7 +95,7 @@ async function verifyHeldValuesStage(page, viewport) {
   for (let index = 0; index < 7; index += 1) {
     const local = index === 0 ? 1 : open + share * index + 1;
     await scrollInstant(page, valuesTop + local);
-    counters.push(await counterText(page));
+    counters.push(await settledCounterText(page));
     stageTops.push(await page.locator("#valuesStage").evaluate((stage) => Math.round(stage.getBoundingClientRect().top)));
   }
   assert.deepEqual(counters, ["01 / 07", "02 / 07", "03 / 07", "04 / 07", "05 / 07", "06 / 07", "07 / 07"]);
@@ -89,7 +103,7 @@ async function verifyHeldValuesStage(page, viewport) {
 
   const dwellLocal = open + 7 * share + viewport.height * 0.2;
   await scrollInstant(page, valuesTop + dwellLocal);
-  assert.equal(await counterText(page), "07 / 07", "card 07 should dwell before release");
+  assert.equal(await settledCounterText(page), "07 / 07", "card 07 should dwell before release");
   assert.equal(await page.locator("#valuesStage").evaluate((stage) => Math.round(stage.getBoundingClientRect().top)), 0);
 
   const sectionHeight = await page.locator("#values").evaluate((section) => section.getBoundingClientRect().height);
@@ -101,23 +115,23 @@ async function verifyHeldValuesStage(page, viewport) {
   for (let index = 6; index >= 0; index -= 1) {
     const local = index === 0 ? 1 : open + share * index + 1;
     await scrollInstant(page, valuesTop + local);
-    reverseCounters.push(await counterText(page));
+    reverseCounters.push(await settledCounterText(page));
   }
   assert.deepEqual(reverseCounters, ["07 / 07", "06 / 07", "05 / 07", "04 / 07", "03 / 07", "02 / 07", "01 / 07"]);
 
   await scrollInstant(page, valuesTop + open + share * 2 + 1);
   await page.locator("#deckNext").click();
-  const manualCounter = await counterText(page);
+  const manualCounter = await settledCounterText(page);
   await scrollInstant(page, valuesTop + open + share * 5 + 1);
-  assert.equal(await counterText(page), manualCounter, "manual ownership should survive a scroll nudge");
+  assert.equal(await settledCounterText(page), manualCounter, "manual ownership should survive a scroll nudge");
   await page.locator("#valueDeck").focus();
   await page.keyboard.press("ArrowRight");
-  assert.notEqual(await counterText(page), manualCounter, "keyboard control should step the deck");
+  assert.notEqual(await settledCounterText(page), manualCounter, "keyboard control should step the deck");
 
   await scrollInstant(page, 0);
   await page.waitForTimeout(250);
   await scrollInstant(page, valuesTop + open + share * 5 + 1);
-  assert.equal(await counterText(page), "06 / 07", "leaving and re-entering should re-arm scroll ownership");
+  assert.equal(await settledCounterText(page), "06 / 07", "leaving and re-entering should re-arm scroll ownership");
 }
 
 try {
@@ -418,7 +432,7 @@ try {
   const anchorPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await openPage(anchorPage, `${baseUrl}/#values`);
   await anchorPage.waitForFunction(() => document.querySelector("#values")?.classList.contains("is-held"));
-  assert.equal(await counterText(anchorPage), "01 / 07", "direct Values anchor arrival should preserve card 01");
+  assert.equal(await settledCounterText(anchorPage), "01 / 07", "direct Values anchor arrival should preserve card 01");
   await anchorPage.close();
 
   const roleRows = page.locator("a.job-row");
@@ -498,11 +512,13 @@ try {
     end: scrollY + document.querySelector("#teams").getBoundingClientRect().top,
   }));
   await scrollInstant(fallbackPage, fallbackBounds.start);
-  assert.equal(await counterText(fallbackPage), "01 / 07");
+  assert.equal(await settledCounterText(fallbackPage), "01 / 07");
   const fallbackSeen = new Set();
-  for (let y = fallbackBounds.start; y <= fallbackBounds.end; y += 100) {
+  // Sample finely (50px) and read a settled counter so no card band depends on a single,
+  // possibly-stale read — the ~120px bands would otherwise leave 04 with one vulnerable sample.
+  for (let y = fallbackBounds.start; y <= fallbackBounds.end; y += 50) {
     await scrollInstant(fallbackPage, y);
-    fallbackSeen.add(await counterText(fallbackPage));
+    fallbackSeen.add(await settledCounterText(fallbackPage));
   }
   assert.deepEqual([...fallbackSeen], ["01 / 07", "02 / 07", "03 / 07", "04 / 07", "05 / 07", "06 / 07", "07 / 07"]);
   await fallbackPage.close();
@@ -596,7 +612,7 @@ try {
   await reducedPage2Values.waitForFunction(() => document.querySelector("#values")?.classList.contains("is-held"));
   const reducedValuesTop = await reducedPage2Values.locator("#values").evaluate((section) => scrollY + section.getBoundingClientRect().top);
   await scrollInstant(reducedPage2Values, reducedValuesTop + 900 * 0.35 + 900 * 0.5 * 6 + 1);
-  assert.equal(await counterText(reducedPage2Values), "07 / 07");
+  assert.equal(await settledCounterText(reducedPage2Values), "07 / 07");
   assert.equal(await reducedPage2Values.locator("#value-01").evaluate((card) => getComputedStyle(card).transitionDuration), "0.001s");
   await reducedPage2Values.close();
 
