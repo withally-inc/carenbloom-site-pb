@@ -3,18 +3,19 @@ import { chromium } from "playwright";
 
 const baseUrl = process.env.BASE_URL || "http://127.0.0.1:49279";
 const expectedRoles = [
-  ["Product & Project Manager", "product-project-manager"],
-  ["Product Marketing Lead", "product-marketing-lead"],
-  ["Graphic Designer", "graphic-designer"],
-  ["Video Editor", "video-editor"],
-  ["Creative Strategist, Performance Marketing", "creative-strategist-performance-marketing"],
-  ["Social Media Strategist", "social-media-strategist"],
+  ["Chief of Staff", "chief-of-staff"],
+  ["Entrepreneur-in-Residence", "entrepreneur-in-residence"],
+  ["Creative Director, Brand & Design", "creative-director"],
   ["Community Manager", "community-manager"],
+  ["Creative Strategist, Performance Marketing", "creative-strategist-performance-marketing"],
+  ["Graphic Designer", "graphic-designer"],
+  ["Social Media Strategist", "social-media-strategist"],
+  ["Video Editor", "video-editor"],
+  ["Product Marketing Lead", "product-marketing-lead"],
   ["Head of Performance Marketing", "head-of-performance-marketing"],
   ["Growth Lead, Mobile Apps", "growth-lead-mobile-apps"],
   ["AI-Native Product Manager, Apps", "ai-native-product-manager-apps"],
-  ["Chief of Staff", "chief-of-staff"],
-  ["Entrepreneur-in-Residence", "entrepreneur-in-residence"],
+  ["Product & Project Manager", "product-project-manager"],
 ];
 const browser = await chromium.launch({ headless: true });
 
@@ -172,7 +173,7 @@ try {
     "Expanding into 3 verticals",
     "the revenue chip should retain its original expansion flip face",
   );
-  assert.equal(await page.locator(".cb-mark").count(), 12);
+  assert.equal(await page.locator(".cb-mark").count(), expectedRoles.length);
   assert.equal(await page.locator(".chip .casetify").count(), 1);
 
   await page.waitForFunction(() => document.querySelector("#heroStage")?.classList.contains("arrived"));
@@ -247,10 +248,10 @@ try {
   assert.deepEqual(await statBands.locator(".stat-support strong").allTextContents(), ["Customers", "Revenue", "Elapsed"]);
   assert.deepEqual(
     await statBands.locator(".stat-value").evaluateAll((values) => values.map((value) => value.textContent.trim())),
-    ["1,000,000+", "9 figures", "18months"],
+    ["1,000,000+", "9 figures", "36months"],
   );
   assert.equal(await statBands.getByText(/source/i).count(), 0, "decorative Source markup should be absent");
-  assert.equal(await page.locator('[aria-label="Elapsed: Under 18 months"]').count(), 1);
+  assert.equal(await page.locator('[aria-label="Elapsed: Under 36 months"]').count(), 1);
   const desktopBandGeometry = await statBands.evaluateAll((bands) => bands.map((band) => ({
     height: band.getBoundingClientRect().height,
     position: getComputedStyle(band).position,
@@ -284,7 +285,7 @@ try {
   );
   assert.deepEqual(
     await page.locator("#values .section-label, #teams .section-label, #careers .section-label").allTextContents(),
-    ["(05) How we raise the ceiling", "(06) How we work together", "(07) Careers · 12 roles open"],
+    ["(05) How we raise the ceiling", "(06) How we work together", `(07) Careers · ${expectedRoles.length} roles open`],
   );
 
   const brandCarousels = page.locator("[data-brand-carousel]");
@@ -421,7 +422,7 @@ try {
   await anchorPage.close();
 
   const roleRows = page.locator("a.job-row");
-  assert.equal(await roleRows.count(), 12, "all twelve roles should be direct application links");
+  assert.equal(await roleRows.count(), expectedRoles.length, "all listed roles should be direct application links");
   assert.deepEqual(
     await roleRows.evaluateAll((rows) => rows.map((row) => [
       row.querySelector(".j-name")?.textContent?.trim(),
@@ -614,7 +615,7 @@ try {
   await mobileReducedPage.close();
 
   // regression (captain report 2026-08-05): the split band's sun fill terminally covers only
-  // the left 70%, and the mobile rule right-aligned the ink “18 months” value onto the
+  // the left 70%, and the mobile rule right-aligned the ink “36 months” value onto the
   // remaining ink ground, where it was invisible. The value must stay inside the sun field
   // and inside the viewport at mobile widths.
   const splitGeometry = async (target) => target.locator(".stat-band-split").evaluate((band) => {
@@ -640,7 +641,7 @@ try {
     assert.ok(geometry.valueLeft >= geometry.bandLeft - 1, `${width}px: the value must not bleed left of the band`);
     assert.ok(
       geometry.valueRight <= sunEdge + 1,
-      `${width}px: “18 months” must sit inside the 70% sun field, not ink-on-ink (right ${geometry.valueRight.toFixed(1)} vs sun edge ${sunEdge.toFixed(1)})`,
+      `${width}px: “36 months” must sit inside the 70% sun field, not ink-on-ink (right ${geometry.valueRight.toFixed(1)} vs sun edge ${sunEdge.toFixed(1)})`,
     );
     assert.ok(geometry.valueRight <= geometry.clientWidth + 1, `${width}px: the value must not be viewport-clipped`);
     assert.ok(geometry.scrollWidth <= geometry.clientWidth + 1, `${width}px: no horizontal overflow`);

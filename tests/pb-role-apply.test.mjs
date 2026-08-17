@@ -3,18 +3,19 @@ import { chromium } from "playwright";
 
 const baseUrl = process.env.BASE_URL || "http://localhost:49279";
 const expectedRoles = [
-  ["Product & Project Manager", "product-project-manager"],
-  ["Product Marketing Lead", "product-marketing-lead"],
-  ["Graphic Designer", "graphic-designer"],
-  ["Video Editor", "video-editor"],
-  ["Creative Strategist, Performance Marketing", "creative-strategist-performance-marketing"],
-  ["Social Media Strategist", "social-media-strategist"],
+  ["Chief of Staff", "chief-of-staff"],
+  ["Entrepreneur-in-Residence", "entrepreneur-in-residence"],
+  ["Creative Director, Brand & Design", "creative-director"],
   ["Community Manager", "community-manager"],
+  ["Creative Strategist, Performance Marketing", "creative-strategist-performance-marketing"],
+  ["Graphic Designer", "graphic-designer"],
+  ["Social Media Strategist", "social-media-strategist"],
+  ["Video Editor", "video-editor"],
+  ["Product Marketing Lead", "product-marketing-lead"],
   ["Head of Performance Marketing", "head-of-performance-marketing"],
   ["Growth Lead, Mobile Apps", "growth-lead-mobile-apps"],
   ["AI-Native Product Manager, Apps", "ai-native-product-manager-apps"],
-  ["Chief of Staff", "chief-of-staff"],
-  ["Entrepreneur-in-Residence", "entrepreneur-in-residence"],
+  ["Product & Project Manager", "product-project-manager"],
 ];
 
 const browser = await chromium.launch({ headless: true });
@@ -22,7 +23,7 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, red
 
 await page.goto(`${baseUrl}/`, { waitUntil: "networkidle" });
 const roleRows = page.locator("a.job-row");
-assert.equal(await roleRows.count(), 12);
+assert.equal(await roleRows.count(), expectedRoles.length);
 assert.equal(await page.locator('a[href="#"]').count(), 0);
 assert.equal(await page.locator('.topbar a[href="#careers"]').count(), 2);
 

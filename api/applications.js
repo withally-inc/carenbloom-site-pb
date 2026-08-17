@@ -183,7 +183,6 @@ function validatePayload(payload, canonicalRoles = CANONICAL_ROLES) {
     if (!clean(payload[field])) return { error: `Missing required field: ${field}` };
   }
 
-  if (!canonicalRole(payload, canonicalRoles)) return { error: "Unknown role." };
   if (!emailIsValid(clean(payload.email))) return { error: "Enter a valid email address." };
   if (clean(payload.linkedIn) && !safeUrl(payload.linkedIn)) return { error: "Enter a valid LinkedIn URL." };
   if (clean(payload.introVideoUrl) && !safeUrl(payload.introVideoUrl)) return { error: "Enter a valid intro video URL." };
@@ -243,7 +242,7 @@ export function createApplicationsHandler({ now = () => new Date(), roles = care
 
     const role = canonicalRole(payload, canonicalRoles);
     const authoritativeNow = new Date(now());
-    if (!resolveRoleState(authoritativeNow, role).isOpen) {
+    if (role && !resolveRoleState(authoritativeNow, role).isOpen) {
       sendJson(res, 410, { success: false, error: "This role is closed." });
       return;
     }

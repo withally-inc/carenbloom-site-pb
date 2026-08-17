@@ -109,7 +109,7 @@ assert.equal(
   "Intro video is required for this role.",
   "a client-supplied flag must not relax the canonical role requirement"
 );
-assert.equal(_private.validatePayload(samplePayload({ roleSlug: "social-media-manager" })).error, "Unknown role.");
+assert.equal(_private.validatePayload(samplePayload({ roleSlug: "imperfect-role-slug" })).error, undefined);
 for (const role of careerRoles) {
   assert.equal(
     _private.validatePayload(samplePayload({ role: role.title, roleSlug: role.slug, introVideoUrl: "" })).error,
@@ -153,6 +153,35 @@ assert.equal(
   assert.equal(json.success, true);
   assert.equal(json.dryRun, true);
   assert.match(json.ref, /^CB-/);
+}
+
+for (const role of careerRoles) {
+  const { res, json } = await runHandler(
+    samplePayload({ role: role.title, roleSlug: role.slug }),
+    { NOTION_INTAKE_DRY_RUN: "1" },
+  );
+  assert.equal(res.statusCode, 200, `${role.slug} must be accepted by the intake handler`);
+  assert.equal(json.success, true);
+  assert.equal(json.dryRun, true);
+}
+
+{
+  const calls = [];
+  const submittedRole = "Creative Director, Brand & Design";
+  const submittedSlug = "creative-director-imperfect";
+  const { res, json } = await runHandler(
+    samplePayload({ role: submittedRole, roleSlug: submittedSlug, applicationRef: "CB-UNKNOWN-SLUG" }),
+    { NOTION_KEY: "secret_test", NOTION_CB_TALENTS_DB_ID: "target-db" },
+    async (url, options) => {
+      calls.push({ url, body: options.body ? JSON.parse(options.body) : null });
+      return { ok: true, text: async () => JSON.stringify({ id: "notion-page-id" }) };
+    },
+  );
+  assert.equal(res.statusCode, 200);
+  assert.equal(json.success, true);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].body.properties.Role.rich_text[0].text.content, submittedRole);
+  assert.equal(calls[0].body.properties["Role Slug"].rich_text[0].text.content, submittedSlug);
 }
 
 {
