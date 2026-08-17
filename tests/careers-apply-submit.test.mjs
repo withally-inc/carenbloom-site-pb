@@ -9,6 +9,12 @@ let capturedContentType = null;
 let capturedPostBody = null;
 let capturedSubmissionUrl = null;
 let submissionCount = 0;
+// Hold the response open on an explicit signal instead of a fixed timer so the "disabled while
+// pending" assertion below cannot race a short delay that has already elapsed under load.
+let releaseSubmission;
+const submissionPending = new Promise((resolve) => {
+  releaseSubmission = resolve;
+});
 
 await page.route("**/api/applications", async (route) => {
   submissionCount += 1;
@@ -17,7 +23,7 @@ await page.route("**/api/applications", async (route) => {
   capturedPostBody = route.request().postData() || "";
   const payloadMatch = capturedPostBody.match(/name="payload"\r\n\r\n([\s\S]*?)\r\n------/);
   capturedPayload = payloadMatch ? JSON.parse(payloadMatch[1]) : JSON.parse(capturedPostBody);
-  await new Promise((resolve) => setTimeout(resolve, 100));
+  await submissionPending;
   await route.fulfill({
     status: 200,
     contentType: "application/json",
@@ -49,6 +55,7 @@ await page.locator('.application-form button[type="submit"]').click();
 await page.locator('.application-form button[type="submit"]').evaluate((button) => {
   if (!button.disabled) throw new Error("Submit button should be disabled while the request is pending.");
 });
+releaseSubmission();
 await page.getByText("Application received. Reference: CB-PLAYWRIGHT.").waitFor();
 await page.locator('.application-form button[type="submit"]').evaluate((button) => {
   if (button.disabled) throw new Error("Submit button should be enabled after submit completes.");
