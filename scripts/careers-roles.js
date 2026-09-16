@@ -400,6 +400,74 @@ const careerRoles = [
       "How do you use AI tools in your product development workflow? Give a specific example.",
       "Describe a time you had to bridge the gap between a big idea and the team's ability to execute it."
     ]
+  },
+  {
+    slug: "creator-manager",
+    title: "Creator Manager",
+    careerGroup: "launch",
+    careerOrder: 8,
+    team: "Creator",
+    level: "Manager",
+    locationType: "Remote",
+    introVideoRequired: true,
+    loomPrompt: "Record a short Loom (2-3 min) walking us through how you've built and managed a creator roster — how you recruited, what you did when creators went quiet, and how you kept output growing.",
+    portfolioRequired: false,
+    summary: "Own our creator roster end to end — recruit, onboard, coach, and grow creators who produce content that converts.",
+    mission: "You'll own the creator roster end to end: recruiting new creators into client programs, onboarding them, getting samples in their hands, coaching them on content that converts, and keeping output and sales growing week after week. This is a high-volume, high-touch role. You're the primary point of contact for every creator on your roster — signing them, pitching them, managing their deals, and guiding their content so deal flow grows. Rosters are heading toward 300 creators per client program, so you'll need to build process and eventually help hire and lead others.",
+    responsibilities: [
+      "Recruit, onboard, and manage a growing roster of creators across TikTok Shop, Instagram, and other platforms.",
+      "Keep the roster producing despite churn — around 58% of TikTok Shop creators churn within 90 days, so recruiting and re-recruiting never stops.",
+      "Coach creators on hooks, formats, and briefs that convert — your roster improves because they get real guidance.",
+      "Treat outreach as a numbers-and-craft game — response rates decide whether a program exists at all, so pitches get answered and follow-ups go out without burning relationships.",
+      "Keep the operational machine running clean: samples shipped, briefs delivered, deadlines tracked, payments sorted.",
+      "Track creator output, GMV, and retention — know who your top 20% is and give them outsized attention.",
+      "Replace creators who go quiet and keep the roster producing despite churn."
+    ],
+    requirements: [
+      "Experience managing creator or affiliate rosters at volume — you've run 50+ creator relationships and know what breaks at scale.",
+      "Platform fluency in TikTok Shop and Instagram — self-taught, current, and specific about what's converting now.",
+      "CRM discipline — a roster of 200+ cannot be run from memory, and you already know that.",
+      "Genuine warmth and persistence — the hundredth outreach of the day gets the same care as the first.",
+      "Figure-it-out mindset — no playbook covers a creator going dark before a deadline or a sample stuck in customs."
+    ],
+    questions: [
+      "Walk me through something you taught yourself about this space in the last 60 days that nobody asked you to learn.",
+      "Tell me about a campaign or creator program that underperformed. What actually caused it?",
+      "What would make you turn down a creator who looks great on paper?"
+    ]
+  },
+  {
+    slug: "influencer-manager",
+    title: "Influencer Manager",
+    careerGroup: "launch",
+    careerOrder: 9,
+    team: "Creator",
+    level: "Manager",
+    locationType: "Remote",
+    introVideoRequired: true,
+    loomPrompt: "Record a short Loom (2-3 min) walking us through an influencer campaign you ran — how you chose the creators, structured the deals, and what the results were.",
+    portfolioRequired: false,
+    summary: "Own higher-value influencer relationships and the campaigns behind them — from choosing the right partners to proving the spend worked.",
+    mission: "You'll own our higher-value influencer relationships and the campaigns behind them, from choosing the right partners to proving the spend worked. That means selecting influencers based on audience fit, offer fit, and channel fit — not personal preference. You'll structure and negotiate deals, protect content quality and brand fit, manage the client relationship, and report results in terms the business cares about. The role is moving toward full performance accountability, so you need to be comfortable putting a CAC number next to a creator's name and defending it.",
+    responsibilities: [
+      "Build influencer programs from audience fit, offer fit, and channel fit — reject big names when the fit is wrong.",
+      "Structure and negotiate deals: rates, usage rights, exclusivity, revisions, and timing.",
+      "Write briefs that say what must be true without scripting how creators should sound.",
+      "Manage the client relationship and report results that turn numbers into decisions.",
+      "Diagnose underperformance — separate creator fit, offer fit, timing, briefing, and operations instead of only celebrating wins."
+    ],
+    requirements: [
+      "Experience running influencer campaigns with commercial accountability — you've defended spend in front of a client or finance team.",
+      "Negotiation fluency across the terms that matter: usage rights, exclusivity, revisions, and rates.",
+      "Analytical judgment — you make portfolio decisions, not spreadsheet maintenance. You know when to pay more for clear commercial alignment.",
+      "Self-taught platform fluency — you already know what content is converting, which formats are dying, and can talk specifics.",
+      "Long-game relationship instinct — your best creators overdeliver repeatedly because you treat relationships as never finished."
+    ],
+    questions: [
+      "Fixed budget for a launch. How do you divide it across creator tiers, and why?",
+      "Tell me about a campaign that underperformed. Walk me through what actually caused it.",
+      "How do you evaluate whether an influencer's audience will actually convert for a specific product — what do you look at beyond follower count?"
+    ]
   }
 ];
 

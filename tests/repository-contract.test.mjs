@@ -148,6 +148,8 @@ test("canonical roles own the stable homepage group used by authoritative render
     "social-media-strategist": "launch",
     "creative-strategist-performance-marketing": "launch",
     "community-manager": "launch",
+    "creator-manager": "launch",
+    "influencer-manager": "launch",
     "head-of-performance-marketing": "scale",
     "growth-lead-mobile-apps": "scale",
     "ai-native-product-manager-apps": "scale",
