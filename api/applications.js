@@ -7,7 +7,7 @@ import { resolveRoleState } from "./_lib/role-state.js";
 import { careerRoles } from "../scripts/careers-roles.js";
 import Busboy from "busboy";
 
-const DEFAULT_DATABASE_ID = "3792b7ec4597800fab56f5a61ff00187";
+const DEFAULT_DATABASE_ID = "3dcaf6a343728154a9ede2ebd7250e4a";
 // 4 MiB per file and 4 MiB combined, so a single file just under the promised
 // per-file limit still fits inside the 4.5 MB Vercel Function request cap with
 // ~306 KB left for multipart boundaries and field metadata. These limits are the
