@@ -12,6 +12,8 @@ const expectedRoles = [
   ["Social Media Strategist", "social-media-strategist"],
   ["Video Editor", "video-editor"],
   ["Product Marketing Lead", "product-marketing-lead"],
+  ["Creator Manager", "creator-manager"],
+  ["Influencer Manager", "influencer-manager"],
   ["Head of Performance Marketing", "head-of-performance-marketing"],
   ["Growth Lead, Mobile Apps", "growth-lead-mobile-apps"],
   ["AI-Native Product Manager, Apps", "ai-native-product-manager-apps"],
