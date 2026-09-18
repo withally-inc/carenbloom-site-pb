@@ -61,13 +61,16 @@ export function resolveRoleStateResponse({ serverNow: serverNowInput, roles, slu
 
   const resolvedRole = resolvedRoles.find(({ role }) => role.slug === slug);
   if (!resolvedRole) {
+    const titleFromSlug = slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
     return {
       statusCode: 200,
       payload: {
-        status: "unknown",
+        status: "open",
         serverNow: serverNowIso,
         openRoleCount: openRoles.length,
         groupCounts,
+        role: { slug, title: titleFromSlug },
+        state: { isOpen: true },
       },
     };
   }

@@ -90,7 +90,7 @@ function assertAuthoritativeHeaders(response) {
   assert.equal(response.status, 200);
   assertAuthoritativeHeaders(response);
   assert.deepEqual(json, {
-    status: "unknown",
+    status: "open",
     serverNow,
     openRoleCount: 1,
     groupCounts: { launch: 1 },
