@@ -122,6 +122,8 @@ assert.deepEqual(clockSnapshots[0], clockSnapshots[1], "moving the browser wall 
     serverNow,
     openRoleCount: 13,
     groupCounts: openRoleResponse.groupCounts,
+    role: { slug: "not-a-role", title: "Not A Role" },
+    state: { isOpen: true },
   }, 200);
   const page = await newTestPage(context);
   await page.goto(`${baseUrl}/careers/apply/?role=not-a-role`, { waitUntil: "networkidle" });
