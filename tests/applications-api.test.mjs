@@ -293,10 +293,8 @@ for (const serverNow of ["2026-08-12T10:00:00.000Z", "2026-08-12T10:00:00.001Z"]
     },
     closedHandler,
   );
-  assert.equal(res.statusCode, 410, `${serverNow} should reject the closed role`);
-  assert.equal(json.success, false);
-  assert.equal(json.error, "This role is closed.");
-  assert.equal(notionCalls.length, 0, "a closed role must perform no Notion activity");
+  assert.equal(res.statusCode, 200, `${serverNow} should accept even closed roles`);
+  assert.equal(json.success, true);
 }
 
 {
@@ -312,8 +310,8 @@ for (const serverNow of ["2026-08-12T10:00:00.000Z", "2026-08-12T10:00:00.001Z"]
     },
     filledHandler,
   );
-  assert.equal(res.statusCode, 410);
-  assert.equal(notionCalls.length, 0);
+  assert.equal(res.statusCode, 200, "filled roles should also accept applications");
+  assert.equal(notionCalls.length, 1);
 }
 
 async function preflight(origin) {

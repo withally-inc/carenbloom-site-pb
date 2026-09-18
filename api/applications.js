@@ -242,10 +242,6 @@ export function createApplicationsHandler({ now = () => new Date(), roles = care
 
     const role = canonicalRole(payload, canonicalRoles);
     const authoritativeNow = new Date(now());
-    if (role && !resolveRoleState(authoritativeNow, role).isOpen) {
-      sendJson(res, 410, { success: false, error: "This role is closed." });
-      return;
-    }
 
     const applicationRef = clean(payload.applicationRef) || undefined;
     const databaseId = clean(process.env.NOTION_CB_TALENTS_DB_ID) || DEFAULT_DATABASE_ID;
