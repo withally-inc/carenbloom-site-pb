@@ -89,12 +89,11 @@ function assertAuthoritativeHeaders(response) {
   const json = await response.json();
   assert.equal(response.status, 200);
   assertAuthoritativeHeaders(response);
-  assert.deepEqual(json, {
-    status: "open",
-    serverNow,
-    openRoleCount: 1,
-    groupCounts: { launch: 1 },
-  });
+  assert.equal(json.status, "open");
+  assert.equal(json.serverNow, serverNow);
+  assert.equal(json.openRoleCount, 1);
+  assert.deepEqual(json.groupCounts, { launch: 1 });
+  assert.deepEqual(json.role, { slug: "missing-role", title: "Missing Role" });
 }
 
 {

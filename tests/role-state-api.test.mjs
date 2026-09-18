@@ -104,7 +104,7 @@ for (const slug of ["closed-role", "filled-role"]) {
   const { response, json } = await request("/api/role-state?role=does-not-exist");
   assert.equal(response.statusCode, 200, "an unrecognized role should not create a browser resource error");
   assert.equal(json.status, "open");
-  assert.equal(json.role, undefined);
+  assert.deepEqual(json.role, { slug: "does-not-exist", title: "Does Not Exist" });
   assert.equal(json.openRoleCount, 1);
 }
 
