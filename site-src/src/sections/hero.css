@@ -1,0 +1,439 @@
+/* Hero: the manifesto (unlayered: wins over components).
+   A diagonal: "Care &" top left, "Bloom" at the right edge, the hand and rose
+   rising under "Bloom" so the closed bud overlaps the foot of the "oo" (text
+   stays on top and readable). First screen: wordmark, brand line, the dock
+   (counter, record link) at the bottom left, hand and bud at the right.
+
+   The scrub (40vh of scroll) is held by two natural stickies, no scroll-jacking:
+   the rose sticks where it starts and blooms in place; the dock sticks to the
+   viewport foot. Both release together when the hairline arrives under the
+   wrist, which is cut below the fold until then, so the cut never shows.
+   Rose geometry (--H, --top): the bud's top sits a little above the baseline
+   of "Bloom" (--bud), the frame ends 4% below the fold, the open flower (5% to
+   55% of the frame) is therefore on screen for the whole scrub.
+   Reduced motion: no stickies, the open flower at rest, the hairline under it. */
+
+.hero {
+  --fs: var(--fs-display);
+  --pt: clamp(112px, 6vw + 48px, 140px);
+  --pb: clamp(36px, 3.4vw, 56px); /* air between the last text and the hairline */
+  --travel: 40svh; /* the scrub distance (hero.ts maps 0.4 x innerHeight) */
+  --nav-clear: calc(var(--nav-top, 14px) + var(--nav-h, 56px) + 12px);
+  padding-top: var(--pt);
+  padding-bottom: 0;
+  /* the line masks pad past the right-set "Bloom" (descenders and overhangs stay
+     visible vertically); that padding must not widen the page */
+  overflow-x: clip;
+}
+.hero__stage {
+  position: relative;
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  grid-template-rows: auto auto 1fr auto;
+  column-gap: 24px;
+}
+/* the hairline the wrist rests on */
+.hero__stage::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--rule);
+  z-index: 2;
+}
+.hero__title,
+.hero__line,
+.hero__dock {
+  position: relative;
+  z-index: 1;
+}
+
+/* ───────── wordmark h1 ───────── */
+.hero__title {
+  grid-column: 1 / -1;
+  grid-row: 1 / 3;
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-template-rows: subgrid;
+  margin: 0;
+  font-size: var(--fs);
+  line-height: 0.9;
+}
+.hero__row {
+  display: block;
+  grid-column: 1 / -1;
+  height: 0.9em; /* the ampersand's taller line box never opens the leading */
+  white-space: nowrap;
+}
+/* optical edges: the round C overshoots left, the m's bearing sits right */
+.hero__row:first-child {
+  grid-row: 1;
+  justify-self: start;
+  margin-left: -0.05em;
+}
+.hero__row:last-child {
+  grid-row: 2;
+  justify-self: end;
+  margin-right: -0.035em;
+  margin-top: 0.12em; /* clearance under the ampersand's tail for the brand line */
+}
+/* each word rises out of its own padded mask; masks stop clipping once landed */
+.hero__mask {
+  display: inline-block;
+  overflow: clip;
+  padding: 0.12em 0.16em 0.2em;
+  margin: -0.12em -0.16em -0.2em;
+  vertical-align: baseline;
+}
+.hero__title.landed .hero__mask {
+  overflow: visible;
+}
+.hero__word {
+  display: inline-block;
+}
+/* the wordmark ampersand: Newsreader italic, sits on the Mori baseline */
+.hero__amp {
+  display: inline-block;
+  font-size: 1.1em;
+  line-height: 0.8;
+  margin-inline: 0.01em 0;
+  transform-origin: 50% 78%;
+  position: relative;
+  top: 0.02em;
+}
+.hero.is-breathing .hero__amp {
+  animation: hero-breath 5s var(--ease-breath, cubic-bezier(0.37, 0, 0.63, 1)) infinite;
+  will-change: transform;
+}
+.hero.is-breathing.is-away .hero__amp {
+  animation-play-state: paused;
+  will-change: auto;
+}
+@keyframes hero-breath {
+  0% {
+    transform: none;
+  }
+  44% {
+    transform: scale(1.06) rotate(-2deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* ───────── brand line ───────── */
+.hero__line {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: end;
+  /* last baseline on the baseline of "Bloom" */
+  margin: 0 0 calc(var(--fs) * 0.14 - 0.24em);
+  font-family: var(--ff-sans);
+  font-weight: 600;
+  font-size: clamp(25px, 2.95vw, 46px);
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+  color: var(--ink);
+  max-width: none;
+}
+.hero__ln {
+  display: block;
+  overflow: clip;
+  padding: 0.1em 0.2em 0.18em;
+  margin: -0.1em -0.2em -0.18em;
+}
+.hero__line.landed .hero__ln {
+  overflow: visible;
+}
+.hero__ln > span {
+  display: block;
+}
+.hero__line .wink {
+  font-size: 1.1em;
+  letter-spacing: -0.015em;
+  line-height: 0;
+}
+
+/* ───────── the dock: live counter, record link ───────── */
+.hero__dock {
+  grid-column: 1;
+  grid-row: 4;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 2.6vw, 40px);
+  padding: clamp(40px, 4vw, 64px) 0 var(--pb);
+  /* holds the foot of the screen during the scrub, releases with the rose */
+  position: sticky;
+  bottom: calc(100svh - var(--top) - var(--H) + var(--pb));
+}
+.hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  column-gap: clamp(40px, 5vw, 88px);
+  row-gap: 24px;
+}
+.hero__counter {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.hero__figrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.hero__figure {
+  font-family: var(--ff-sans);
+  font-weight: 600;
+  font-size: clamp(34px, 3.1vw, 48px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  margin-left: -0.04em;
+}
+/* the live dot sits on the figure's cap-height middle; the "+1" rises from it
+   into the free space above, never over a digit */
+.hero__live {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 8px;
+  height: 8px;
+  margin-top: -0.06em;
+}
+/* the dot is the clock: still between ticks (hero.ts pulses it) */
+.hero__dot:not(.pulse):not(.pulse-2)::after {
+  animation: none;
+}
+.hero__plus {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  margin-bottom: 8px;
+  translate: -50% 0;
+  font-family: var(--ff-sans);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: var(--cobalt);
+  opacity: 0;
+  pointer-events: none;
+}
+.hero__cap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 12px;
+  row-gap: 2px;
+  font-size: var(--fs-caption);
+  line-height: 1.35;
+}
+.hero__cap-a {
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+.hero__cap-b {
+  color: var(--muted);
+}
+
+/* ───────── the rose ───────── */
+.hero__mediacell {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  position: relative;
+  z-index: 0;
+  pointer-events: none;
+}
+/* the room the rose holds still in (a margin would count against the sticky) */
+.hero__mediacell::after {
+  content: "";
+  display: block;
+  height: var(--travel);
+}
+.hero__media {
+  position: sticky;
+  top: var(--top);
+  height: var(--H);
+  aspect-ratio: 896 / 1200;
+  /* centred on the column even when the frame is wider (its sides are sky) */
+  margin: calc(var(--top) - var(--pt)) 0 0 calc((100% - var(--H) * 0.7467) / 2);
+  translate: -3% 0;
+  overflow: hidden;
+}
+/* the rose's geometry, shared with the dock (resolved where used, so 100cqw
+   is the stage width). --bud: the bud's top, ~0.14em above the baseline of "Bloom" */
+.hero__stage {
+  --bud: calc(var(--pt) + 1.56 * var(--fs));
+  --H: min(calc((100svh - var(--bud)) / 0.57), calc((100cqw - 24px) * 5 / 12 * 1.6));
+  --top: max(calc(var(--bud) - 0.39 * var(--H)), calc(100svh + 0.04 * var(--H) - var(--H)), var(--nav-clear));
+}
+.hero__media-inner {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 100%;
+}
+.hero__media picture,
+.hero__still,
+.hero__end,
+.hero__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.hero__still,
+.hero__end {
+  object-fit: contain;
+  object-position: 50% 100%;
+}
+.hero__canvas,
+.hero__end {
+  opacity: 0;
+}
+/* the veil: paper over the rose until it rises in the entrance (hero.ts). The rose
+   itself is painted from the first frame underneath (it is the LCP element, and LCP
+   ignores occlusion), so the rise can sit anywhere in the sequence. */
+.hero__veil {
+  display: none;
+}
+html.js .hero:not(.is-static) .hero__veil {
+  display: block;
+  position: absolute;
+  inset: -2px;
+  z-index: 1;
+  background: var(--paper);
+  transform-origin: 50% 0%;
+  pointer-events: none;
+}
+
+/* ───────── stacked composition (< 900px) ───────── */
+@media (max-width: 899px) {
+  .hero {
+    --fs: clamp(64px, 23vw, 150px);
+    --lf: clamp(22px, 6.7vw, 44px); /* brand line size */
+    --pb: 28px;
+    /* a short hold only: the rose then rises with the page, so the open
+       flower lands mid-screen, just under the counter */
+    --travel: 90px;
+  }
+  .hero__stage {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto 1fr;
+    column-gap: 0;
+    /* where the text above the rose ends (wordmark, line, counter) */
+    --text-end: calc(var(--pt) + 1.92 * var(--fs) + 30px + 3.3 * var(--lf) + 150px);
+    --H: min(110cqw, 60svh);
+    /* the bud starts at the foot of the first screen, never over the text */
+    --top: max(calc(100svh + 0.04 * var(--H) - var(--H)), calc(var(--text-end) + 16px - 0.39 * var(--H)));
+  }
+  .hero__title {
+    letter-spacing: -0.045em;
+  }
+  .hero__line {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: start;
+    margin: clamp(22px, 3vw, 32px) 0 0;
+    font-size: var(--lf);
+  }
+  .hero__dock {
+    grid-column: 1;
+    grid-row: 4;
+    align-self: stretch;
+    justify-content: space-between;
+    position: relative;
+    bottom: auto;
+    padding-top: clamp(32px, 5vw, 48px);
+  }
+  .hero__meta {
+    flex-direction: column;
+    row-gap: 18px;
+  }
+  .hero__figure {
+    font-size: clamp(30px, 9.2vw, 52px);
+  }
+  .hero__mediacell {
+    grid-column: 1;
+    grid-row: 1 / -1;
+  }
+  .hero__media {
+    margin: calc(var(--top) - var(--pt)) 0 0 auto;
+    translate: 3% 0;
+  }
+}
+
+/* reduced motion: nothing holds, the open flower rests on the hairline */
+@media (prefers-reduced-motion: reduce) {
+  .hero {
+    --travel: 0px;
+  }
+  .hero__media,
+  .hero__dock {
+    position: relative;
+    top: auto;
+    bottom: auto;
+  }
+}
+
+/* ───────── entrance (hero.ts). Hidden only with JS; reduced motion: opacity only ───────── */
+html.js .hero:not(.is-played) :is(.hero__word, .hero__ln > span) {
+  transform: translateY(118%) rotate(2.5deg);
+  transform-origin: 0% 100%;
+}
+html.js .hero:not(.is-played) :is(.hero__beat, .hero__figure, .hero__link) {
+  opacity: 0;
+}
+/* the rose waits a little low, under its veil, for its rise */
+html.js .hero:not(.is-played) .hero__media-inner {
+  transform: translateY(5%);
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js .hero:not(.is-played) :is(.hero__word, .hero__ln > span, .hero__media-inner) {
+    transform: none;
+  }
+  html.js .hero:not(.is-played) :is(.hero__word, .hero__ln > span, .hero__media) {
+    opacity: 0;
+  }
+  html.js .hero:not(.is-static) .hero__veil {
+    display: none;
+  }
+}
+/* failsafe: the module never booted, or the hero init failed */
+@keyframes hero-failsafe {
+  to {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+  }
+}
+@keyframes hero-veil-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+html.js:not(.motion) .hero:not(.is-played) :is(.hero__word, .hero__ln > span, .hero__beat, .hero__figure, .hero__link, .hero__media, .hero__media-inner),
+html.js .hero.is-static :is(.hero__word, .hero__ln > span, .hero__beat, .hero__figure, .hero__link, .hero__media, .hero__media-inner) {
+  animation: hero-failsafe 0.6s var(--ease) 2.4s forwards;
+}
+html.js:not(.motion) .hero:not(.is-played) .hero__veil {
+  animation: hero-veil-out 0.6s var(--ease) 2.4s forwards;
+}
+html.js .hero.is-static :is(.hero__word, .hero__ln > span, .hero__beat, .hero__figure, .hero__link, .hero__media, .hero__media-inner) {
+  animation-delay: 0s;
+}
+
+@media print {
+  .hero__canvas,
+  .hero__veil {
+    display: none;
+  }
+}

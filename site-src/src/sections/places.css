@@ -1,0 +1,249 @@
+/* Places: the closing block of People. A flat halftone world map on canvas
+   (places.ts), DOM labels over it, and the line of the four cities under it as
+   the control. Colours are tokens only (the canvas reads them too). */
+
+.places {
+  margin-top: clamp(112px, 12vw, 200px);
+  padding-top: clamp(32px, 3vw, 48px);
+  border-top: 1px solid var(--line-on-ink);
+}
+.places__label {
+  color: var(--on-ink-2);
+}
+
+/* ───────── the map ───────── */
+.places__map {
+  position: relative;
+  margin-top: clamp(24px, 3vw, 48px);
+  /* the wide crop (generated: 1 x 0.42645); places.ts keeps it in sync */
+  aspect-ratio: 2.345 / 1;
+  touch-action: pan-y;
+}
+.places__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.places__pins {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.places__pin {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate3d(var(--x, -999px), var(--y, -999px), 0);
+}
+.places__tag {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  white-space: nowrap;
+  /* the name's centre line sits on the anchor */
+  translate: 0 -0.62em;
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--on-ink);
+  /* a halo of the section's own night ground (in violet mode --ink is lavender) */
+  text-shadow:
+    0 0 6px var(--night),
+    0 0 2px var(--night);
+  transition:
+    opacity var(--dur-micro) var(--ease),
+    transform var(--dur-ui) var(--ease);
+}
+.places__pin[data-side="l"] .places__tag {
+  justify-items: end;
+  left: auto;
+  right: 0;
+}
+.places__tag-name {
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+.places__tag-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--on-ink-2);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity var(--dur-micro) var(--ease),
+    transform var(--dur-ui) var(--ease);
+}
+/* the active label rises and shows its time and the sun or moon petal */
+.places__pin.is-active .places__tag {
+  transform: translateY(-6px);
+}
+.places__pin.is-active .places__tag-meta {
+  opacity: 1;
+  transform: none;
+  color: var(--on-ink);
+}
+.places[data-active] .places__pin:not(.is-active) .places__tag {
+  opacity: 0.42;
+}
+
+/* the day and night glyph: four petals open for day, one petal for night */
+.places__glyph {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  overflow: visible;
+}
+.places__sun {
+  fill: var(--sun);
+}
+.places__moon {
+  fill: none;
+  stroke: var(--on-ink-2);
+  stroke-width: 1.3;
+  display: none;
+}
+[data-night] .places__sun {
+  display: none;
+}
+[data-night] .places__moon {
+  display: inline;
+}
+
+/* ───────── the line of cities: the control ───────── */
+.places__list {
+  list-style: none;
+  margin: clamp(28px, 3vw, 44px) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  column-gap: 0;
+  row-gap: 16px;
+}
+.places__item {
+  display: flex;
+  align-items: flex-start;
+}
+.places__sep {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: clamp(26px, 2.9vw, 44px);
+  line-height: 1.1;
+  color: var(--on-ink-2);
+  padding: 0 0.32em;
+  white-space: pre;
+}
+.places__city {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--on-ink);
+  text-align: left;
+  cursor: pointer;
+  border-radius: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+.places__name {
+  font-weight: 600;
+  font-size: clamp(26px, 2.9vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  transition: color var(--dur-micro) var(--ease);
+}
+.places__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 15px;
+  line-height: 1.2;
+  color: var(--on-ink-2);
+  transition: color var(--dur-micro) var(--ease);
+}
+.places__meta .places__glyph {
+  width: 13px;
+  height: 13px;
+}
+.places__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+/* one city lit: the others step back */
+.places[data-active] .places__city:not(.is-active) .places__name {
+  color: var(--on-ink-2);
+}
+.places__city.is-active .places__meta {
+  color: var(--on-ink);
+}
+.places__city:focus-visible {
+  outline: 2px solid var(--cobalt-on-ink);
+  outline-offset: 6px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .places[data-active] .places__city:hover .places__name {
+    color: var(--on-ink);
+  }
+}
+@media (hover: none) {
+  .places__city:active .places__name {
+    opacity: 0.8;
+  }
+}
+
+/* ───────── phones: the narrow crop on the gutter, only the lit city labelled, a 2 x 2 list ───────── */
+@media (max-width: 767px) {
+  .places__map {
+    /* the narrow crop (generated: 0.7889 x 0.3353) */
+    aspect-ratio: 2.353 / 1;
+    /* on the page gutter like every other block (the full bleed made the map the one
+       element touching the screen edges) */
+  }
+  /* only the lit city is labelled on a phone; the list below names all four */
+  .places__pin:not(.is-active) .places__tag,
+  .places[data-active] .places__pin:not(.is-active) .places__tag {
+    opacity: 0; /* (as specific as the desktop dimming rule, which used to win here) */
+  }
+  .places__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 16px;
+  }
+  .places__sep {
+    display: none;
+  }
+  .places__city {
+    width: 100%;
+    padding: 14px 0 4px;
+    border-top: 1px solid var(--line-on-ink);
+    border-radius: 0;
+    transition: border-color var(--dur-micro) var(--ease);
+  }
+  .places__city.is-active {
+    border-top-color: var(--cobalt-on-ink);
+  }
+  .places__name {
+    font-size: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .places__tag,
+  .places__tag-meta {
+    transition: opacity var(--dur-micro) var(--ease);
+  }
+  .places__pin.is-active .places__tag {
+    transform: none;
+  }
+}

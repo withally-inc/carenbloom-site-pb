@@ -1,0 +1,481 @@
+/* Brands: header + the registry-driven card grid (docs/MOTION-CHALLENGE.md 1.16, 4).
+   Unlayered: wins over components. Brand colour never appears here: it lives in the
+   photography, and --ground (sampled from it) only shows while an image loads. */
+
+.brands {
+  --interval: 6s;
+}
+
+/* ───────── header: label column, then headline and lede ───────── */
+/* label, headline and lede on the page's left edge, like every section */
+.brands__head {
+  display: grid;
+  row-gap: 20px;
+  margin-bottom: clamp(48px, 5vw, 80px);
+}
+.brands__intro {
+  display: grid;
+  gap: clamp(20px, 2vw, 28px);
+}
+.brands__lede {
+  max-width: 44ch;
+}
+
+/* ───────── grid: 6 tracks, a card spans 6 / per-row (rowsFor in the registry) ───────── */
+.brands__grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: clamp(48px, 5vw, 72px);
+}
+.bcard[data-span="6"] {
+  grid-column: span 6;
+}
+.bcard[data-span="3"] {
+  grid-column: span 3;
+}
+.bcard[data-span="2"] {
+  grid-column: span 2;
+}
+@media (max-width: 767px) {
+  .brands__grid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 48px;
+  }
+  .bcard[data-span] {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ───────── card ───────── */
+.bcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  container-type: inline-size;
+  min-width: 0;
+}
+.bcard__visual {
+  position: relative;
+}
+.bcard__media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  max-height: min(76svh, 780px);
+  width: 100%;
+  border-radius: var(--radius);
+  overflow: hidden;
+  isolation: isolate;
+  background-color: var(--ground, var(--mist));
+  background-image: var(--ph, none);
+  background-size: cover;
+  background-position: center;
+  /* Safari: keep the radius clip while children transform */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+.bcard[data-span="6"] .bcard__media {
+  aspect-ratio: 16 / 9;
+}
+@media (max-width: 767px) {
+  .bcard .bcard__media,
+  .bcard[data-span="6"] .bcard__media {
+    aspect-ratio: 4 / 5;
+    max-height: none;
+  }
+}
+.bcard__wipe {
+  position: absolute;
+  inset: 0;
+}
+.bcard__stage {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+  transition: opacity 200ms var(--ease);
+}
+/* under a fine pointer the stage sits at 1.025 so an 8px shift never shows an edge */
+.bcard.has-shift .bcard__stage {
+  transform: scale(1.025);
+}
+
+/* slides: crossfade 900ms; the incoming image settles from 1.04 over 1.4s */
+.bcard__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 900ms var(--ease);
+}
+.bcard__slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.bcard__slide.is-active {
+  opacity: 1;
+  z-index: 2;
+}
+.bcard__slide.is-prev {
+  opacity: 1;
+  z-index: 1;
+  transition: none;
+}
+.bcard__slide.is-entering img,
+.bcard__slide.is-wipe img {
+  animation: bcard-settle 1.4s var(--ease) both;
+}
+/* the 'advance' moment: the next image wipes up over the current one */
+.bcard__slide.is-wipe {
+  transition: none;
+  animation: bcard-wipe 900ms var(--ease) both;
+}
+.bcard__slide.is-cut {
+  transition: none;
+}
+@keyframes bcard-settle {
+  from {
+    transform: scale(1.04);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes bcard-wipe {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* legibility: a quiet ink fall-off under the name, and a breath of it under the bar */
+.bcard__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(to top, rgba(var(--fixed-ink-rgb), 0.46) 0%, rgba(var(--fixed-ink-rgb), 0.2) 26%, rgba(var(--fixed-ink-rgb), 0) 50%),
+    linear-gradient(to bottom, rgba(var(--fixed-ink-rgb), 0.16) 0%, rgba(var(--fixed-ink-rgb), 0) 16%);
+}
+
+/* the name: display size, scaled to the card (2-up about 85px, 3-up near h2) */
+.bcard__name {
+  --ls: -0.035em;
+  position: absolute;
+  z-index: 4;
+  left: clamp(20px, 5cqi, 32px);
+  right: 72px;
+  bottom: clamp(18px, 4.4cqi, 30px);
+  margin: 0;
+  font-family: var(--ff-sans);
+  font-weight: 600;
+  font-size: clamp(44px, 13cqi, 136px);
+  line-height: 0.92;
+  letter-spacing: var(--ls);
+  color: var(--fixed-paper);
+  text-shadow: 0 1px 18px rgba(var(--fixed-ink-rgb), 0.22);
+  text-wrap: balance;
+  pointer-events: none;
+}
+
+/* E5: Hello Nancy answers a wave. The mask clips the bottom edge only, so the line
+   rises out of the baseline and keeps the name's text shadow on its other sides. */
+.bcard__reply {
+  position: absolute;
+  z-index: 4;
+  visibility: hidden;
+  padding: 0 0.12em;
+  font-family: var(--ff-serif);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--fixed-paper);
+  text-shadow: 0 1px 18px rgba(var(--fixed-ink-rgb), 0.22);
+  clip-path: inset(-1em -1em 0 -1em);
+  pointer-events: none;
+}
+.bcard__reply-in {
+  display: block;
+}
+
+/* Biird tittles: a zero-size anchor on the baseline right after each dotless i or j */
+.bcard__name .ta {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+  vertical-align: baseline;
+}
+.bcard__name .dot {
+  position: absolute;
+  left: calc(-1 * var(--tx, 0.196em) - var(--ls));
+  bottom: 0.597em;
+  width: 0.158em;
+  height: 0.159em;
+  border-radius: 50%;
+  background: currentColor;
+  color: var(--fixed-paper);
+  will-change: transform;
+  transition: color 500ms var(--ease);
+}
+/* E4: perched on the card's top edge, off the photo, the birds turn ink */
+.bcard[data-perch] .bcard__name .dot {
+  color: var(--ink);
+  transition-delay: 420ms; /* turns once it has left the photo, not mid-flight */
+}
+
+/* progress: one segment per image, 16px inset, 4px gaps; fill grows linearly */
+.bcard__bar {
+  position: absolute;
+  z-index: 4;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  gap: 4px;
+  pointer-events: none;
+}
+.bcard__seg {
+  flex: 1;
+  height: 2px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: rgba(var(--fixed-paper-rgb), 0.4);
+}
+.bcard__seg > b {
+  display: block;
+  height: 100%;
+  background: rgba(var(--fixed-paper-rgb), 0.95);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+.bcard__seg.is-done > b {
+  transform: scaleX(1);
+}
+.bcard__seg.is-active > b {
+  animation: bcard-fill var(--interval) linear forwards;
+}
+.bcard[data-paused] .bcard__seg.is-active > b {
+  animation-play-state: paused;
+}
+@keyframes bcard-fill {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* pause control (WCAG 2.2.2): glass circle, pause bars morph to a play triangle */
+.bcard__pause {
+  position: absolute;
+  z-index: 5;
+  right: 16px;
+  bottom: 16px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  color: var(--fixed-ink);
+  cursor: pointer;
+  /* keeps the reveal fade (components) alongside the press spring */
+  transition:
+    opacity var(--dur-enter) var(--ease) var(--d, 0ms),
+    transform var(--dur-spring, 430ms) var(--spring);
+}
+.bcard__pause:active {
+  transform: scale(0.94);
+  transition-duration: var(--dur-press);
+}
+.bcard__pause:focus-visible {
+  outline: 2px solid var(--fixed-paper);
+  outline-offset: 3px;
+}
+.bcard__pi {
+  position: relative;
+  z-index: 4;
+  width: 12px;
+  height: 12px;
+}
+.bcard__pi i {
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  transition: clip-path var(--dur-micro, 300ms) var(--ease);
+}
+.bcard__pi i:first-child {
+  clip-path: polygon(8% 0, 38% 0, 38% 100%, 8% 100%);
+}
+.bcard__pi i:last-child {
+  clip-path: polygon(62% 0, 92% 0, 92% 100%, 62% 100%);
+}
+.bcard__pause[data-play] .bcard__pi i:first-child {
+  clip-path: polygon(16% 0, 56% 25%, 56% 75%, 16% 100%);
+}
+.bcard__pause[data-play] .bcard__pi i:last-child {
+  clip-path: polygon(56% 25%, 96% 50%, 96% 50%, 56% 75%);
+}
+
+/* the whole card is one link: .dotlink--stretch spreads the link's ::after over the
+   card (z-index 1); the pause control sits above it, name and bar let clicks through */
+.bcard__visual > .bcard__media {
+  z-index: 0;
+}
+
+/* text under the photo */
+.bcard__body {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  padding-top: clamp(18px, 2vw, 24px);
+}
+.bcard__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin: 0;
+}
+.bcard__desc {
+  max-width: 46ch;
+  margin: 0;
+  text-wrap: pretty;
+}
+.bcard__link {
+  margin-top: 6px;
+}
+.bcard__link::after {
+  border-radius: var(--radius);
+}
+.bcard__link:focus-visible {
+  outline: none;
+}
+
+/* keyboard: the ring goes round the photo (the card's own radius + 3px) */
+.bcard--live:has(.bcard__link:focus-visible) .bcard__media {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+/* touch: a press dims the media, the link shows its gesture */
+@media (hover: none) {
+  .bcard--live:has(.bcard__link:active) .bcard__stage {
+    opacity: 0.92;
+  }
+}
+
+/* ───────── roll (Hello Nancy): a fruit-shaped window onto the next photo ───────── */
+.bcard__fruit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  width: 30%;
+  aspect-ratio: 1;
+  transform-origin: 50% 50%;
+  visibility: hidden;
+  will-change: transform;
+  -webkit-mask: var(--shape) center / contain no-repeat;
+  mask: var(--shape) center / contain no-repeat;
+}
+.bcard__fruit img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--cw);
+  height: var(--ch);
+  max-width: none;
+  object-fit: cover;
+  transform-origin: var(--fo) var(--fo);
+  will-change: transform;
+}
+
+/* ───────── coming soon: not a link, no gallery, a mist panel ───────── */
+.bcard--soon .bcard__media--soon {
+  background: var(--ground, var(--mist));
+  box-shadow: inset 0 0 0 1px var(--line);
+  -webkit-mask-image: none;
+}
+/* a row of coming-soon brands only: shorter panels */
+.bcard--short .bcard__media {
+  aspect-ratio: 16 / 10;
+}
+/* the mark as a bud: not yet bloomed (petals at .42, faint), still */
+.bcard__bud {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: clamp(72px, 22cqi, 128px);
+  height: auto;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  color: var(--ink);
+}
+.bcard--soon .bcard__name {
+  font-size: clamp(36px, 9cqi, 88px);
+  color: var(--ink);
+  text-shadow: none;
+  right: clamp(20px, 5cqi, 32px);
+}
+
+/* mobile, more than three brands: coming-soon brands become compact rows under the cards */
+@media (max-width: 767px) {
+  .brands__grid[data-compact] .bcard--soon {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "name chip" "cat chip";
+    align-items: center;
+    column-gap: 16px;
+    row-gap: 2px;
+    min-height: 72px;
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+  }
+  .brands__grid[data-compact] .bcard--soon + .bcard--soon {
+    margin-top: -48px;
+  }
+  .brands__grid[data-compact] .bcard--soon:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .brands__grid[data-compact] .bcard--soon :is(.bcard__visual, .bcard__body, .bcard__meta) {
+    display: contents;
+  }
+  .brands__grid[data-compact] .bcard--soon :is(.bcard__media, .bcard__desc) {
+    display: none;
+  }
+  .brands__grid[data-compact] .bcard--soon .bcard__name {
+    grid-area: name;
+    position: static;
+    font-size: var(--fs-h3);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+  }
+  .brands__grid[data-compact] .bcard--soon .label {
+    grid-area: cat;
+  }
+  .brands__grid[data-compact] .bcard--soon .chip {
+    grid-area: chip;
+  }
+}
+
+/* ───────── reduced motion: crossfades only, 200ms ───────── */
+@media (prefers-reduced-motion: reduce) {
+  .bcard__slide {
+    transition-duration: 200ms;
+  }
+  .bcard__slide.is-entering img,
+  .bcard__slide.is-wipe img,
+  .bcard__slide.is-wipe {
+    animation: none;
+  }
+  .bcard__seg.is-active > b {
+    animation-duration: var(--interval);
+  }
+  .bcard__fruit {
+    display: none;
+  }
+}

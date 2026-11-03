@@ -1,0 +1,234 @@
+/* Fonts, document defaults, focus, selection, reduced motion. Imported into @layer base. */
+
+@font-face {
+  font-family: "PP Mori";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/PPMori-Regular.woff2) format("woff2");
+}
+@font-face {
+  font-family: "PP Mori";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/PPMori-Semibold.woff2) format("woff2");
+}
+/* Newsreader italic, self-hosted static cuts from the Google Fonts variable file:
+   400 at optical size 72 for wink words and the wordmark ampersand, 300 at 32 for quotes. */
+@font-face {
+  font-family: "Newsreader";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/Newsreader-Italic-400.woff2) format("woff2");
+}
+@font-face {
+  font-family: "Newsreader";
+  font-style: italic;
+  font-weight: 300;
+  font-display: swap;
+  src: url(/fonts/Newsreader-Italic-300.woff2) format("woff2");
+}
+
+/* metric-matched fallbacks (measured on a sample string against Arial / Georgia),
+   so text takes the same room before and after the web fonts arrive */
+@font-face {
+  font-family: "PP Mori Fallback";
+  font-weight: 400;
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 104.39%;
+  ascent-override: 93.4%;
+  descent-override: 26.34%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "PP Mori Fallback";
+  font-weight: 600;
+  src: local("Arial Bold"), local("Arial-BoldMT");
+  size-adjust: 98.96%;
+  ascent-override: 98.53%;
+  descent-override: 27.79%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Newsreader Fallback";
+  font-style: italic;
+  src: local("Georgia Italic"), local("Georgia-Italic");
+  size-adjust: 84.46%;
+  ascent-override: 87.02%;
+  descent-override: 31.38%;
+  line-gap-override: 0%;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--paper);
+  scroll-behavior: auto;
+  /* scrolls the browser makes itself (focusing a field, find in page, a fragment
+     without JS) stop under the nav, like scrollToTarget() */
+  scroll-padding-top: var(--nav-offset);
+}
+body {
+  min-height: 100svh;
+  background: var(--paper);
+  color: var(--ink-2);
+  font-family: var(--ff-sans);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+h1, h2, h3, h4 {
+  color: var(--fg);
+  font-weight: 600;
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+img, video, svg {
+  display: block;
+}
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+::selection {
+  background: var(--sun);
+  color: var(--on-sun);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+:focus:not(:focus-visible),
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+html.is-locked,
+html.is-locked body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 200;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  transform: translateY(-160%);
+  transition: transform var(--dur-ui) var(--ease);
+}
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* theme switch (src/lib/theme.ts): for the frame the tokens change, nothing runs
+   its own colour transition, so the new theme is whole the moment the flood shows it */
+html.cb-theme-switch,
+html.cb-theme-switch *,
+html.cb-theme-switch *::before,
+html.cb-theme-switch *::after {
+  transition: none !important;
+}
+/* the flood: a View Transition of the root only. The new theme opens from the mark in
+   a four-petal shape (keyframes written by theme.ts on ::view-transition-new(root));
+   the old page stays still underneath. No element gets a view-transition-name, so
+   nothing becomes a backdrop root (MOTION-CHALLENGE 2.3 concerned route changes and a
+   glass header; neither applies here). */
+html.cb-flood::view-transition-old(root),
+html.cb-flood::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html.cb-flood::view-transition-new(root) {
+  z-index: 2;
+}
+/* reduced motion: a short crossfade instead of the flood */
+html.cb-fade::view-transition-old(root),
+html.cb-fade::view-transition-new(root) {
+  animation-duration: 200ms;
+  animation-timing-function: var(--ease);
+}
+/* browsers without View Transitions: a flood of the new ground, then the page flips under it */
+.cb-flood-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  pointer-events: none;
+}
+
+/* route fade between our own pages: the nav is in the first frame and never
+   animates; only the content fades in (head snippet adds html.pgt-fade for a
+   same-origin navigate, never on back/forward or reduced motion). No View Transitions
+   (MOTION-CHALLENGE 2.3). */
+@keyframes pgt-in {
+  from {
+    opacity: 0;
+  }
+}
+html.pgt-fade body > :not(.nav, .skip-link, .preloader, script) {
+  animation: pgt-in 240ms var(--ease) both;
+}
+
+/* reduced motion: what fades keeps a short fade, anything that moves changes at once */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.2s !important;
+    transition-property: opacity, color, background-color, border-color, outline-color, fill, stroke, visibility !important;
+  }
+}

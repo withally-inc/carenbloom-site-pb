@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Page not found | Care &amp; Bloom</title>
+  <meta name="robots" content="noindex" />
+  <meta name="description" content="This page does not exist. Find our brands, people and open roles from the Care &amp; Bloom home page." />
+  <meta property="og:site_name" content="Care &amp; Bloom" />
+  <meta property="og:title" content="Page not found | Care &amp; Bloom" />
+  <meta property="og:image" content="%VITE_SITE_URL%/og.png?v=2" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#F4F6F8" />
+  <script>
+    // theme before first paint (src/lib/theme.ts): the stored choice, else system dark means violet
+    (function () {
+      var t = null
+      try { t = localStorage.getItem('cb-theme') } catch (e) {}
+      if (t !== 'violet' && t !== 'light') {
+        try { t = matchMedia('(prefers-color-scheme: dark)').matches ? 'violet' : 'light' } catch (e) { t = 'light' }
+      }
+      document.documentElement.setAttribute('data-theme', t)
+      if (t === 'violet') document.querySelector('meta[name="theme-color"]').setAttribute('content', '#160F2E')
+    })()
+  </script>
+  <meta name="author" content="Care &amp; Bloom" />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <link rel="preload" href="/fonts/PPMori-Semibold.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/PPMori-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/Newsreader-Italic-400.woff2" as="font" type="font/woff2" crossorigin />
+  <script>
+    // before first paint: motion gating, whether the bloom intro plays (once per
+    // session), and the content fade for a same-origin navigation (never back/forward)
+    (function () {
+      var h = document.documentElement
+      h.classList.add('js')
+      var rm = false
+      try {
+        rm = matchMedia('(prefers-reduced-motion: reduce)').matches
+        var seen = sessionStorage.getItem('cb-intro') === '1'
+        h.classList.add(seen || rm ? 'no-preload' : 'intro')
+      } catch (e) {
+        h.classList.add('no-preload')
+      }
+      try {
+        var nav = performance.getEntriesByType('navigation')[0]
+        var same = document.referrer && new URL(document.referrer).origin === location.origin
+        if (same && !rm && (!nav || nav.type === 'navigate')) h.classList.add('pgt-fade')
+      } catch (e) {}
+    })()
+  </script>
+</head>
+<body data-page="notfound">
+  <!-- Curious is a good sign. Open roles: https://carenbloom.com/careers -->
+  <!-- @include chrome/nav.html -->
+  <main id="main" tabindex="-1">
+    <!-- @include sections/notfound.html -->
+  </main>
+  <!-- @include chrome/footer.html -->
+  <script type="module" src="/src/pages/notfound.ts"></script>
+</body>
+</html>

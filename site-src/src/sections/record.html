@@ -1,0 +1,39 @@
+<!-- record: the facts at two scales. 1 the headline over a strip of 36
+     month cells that tick in turn, the last one handing over to the sun under
+     "profitably"; 2 the dominant 1,000,000+ set across the measure over a field
+     of 1,000 dots (one dot, 1,000 customers) whose last dot is live, with the
+     revenue stated plainly beside the label (9 figures). Then the proof as a sentence. The visuals are aria-hidden: every fact is text.
+     Without JS everything shows in its final state. -->
+<section id="record" class="section record" data-section="record" aria-labelledby="record-title">
+  <div class="wrap">
+    <div class="record__head">
+      <p class="label record__label" data-reveal>Operating record</p>
+      <h2 class="h2 record__title" id="record-title" data-lines>In under 36 months, <span class="record__nb"><span class="record__sun"><span class="wink">profitably</span></span>.</span></h2>
+      <div class="record__months" aria-hidden="true">
+          <div class="record__year"><div class="record__cells"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i><i style="--i:8"></i><i style="--i:9"></i><i style="--i:10"></i><i style="--i:11"></i></div><span class="record__yl">Year 1</span></div>
+          <div class="record__year"><div class="record__cells"><i style="--i:12"></i><i style="--i:13"></i><i style="--i:14"></i><i style="--i:15"></i><i style="--i:16"></i><i style="--i:17"></i><i style="--i:18"></i><i style="--i:19"></i><i style="--i:20"></i><i style="--i:21"></i><i style="--i:22"></i><i style="--i:23"></i></div><span class="record__yl">Year 2</span></div>
+          <div class="record__year"><div class="record__cells"><i style="--i:24"></i><i style="--i:25"></i><i style="--i:26"></i><i style="--i:27"></i><i style="--i:28"></i><i style="--i:29"></i><i style="--i:30"></i><i style="--i:31"></i><i style="--i:32"></i><i style="--i:33"></i><i style="--i:34"></i><i style="--i:35"></i></div><span class="record__yl">Year 3</span></div>
+      </div>
+    </div>
+
+    <div class="record__cust">
+      <p class="record__big">
+        <span class="record__top">
+          <span class="label record__k" data-reveal="fade">Customers</span>
+          <span class="record__revline" data-reveal="fade">Revenue <b class="tnum">9 figures</b></span>
+        </span>
+        <span class="record__n tnum" data-odo>1,000,000+</span>
+      </p>
+      <div class="record__field">
+        <canvas class="record__dots" aria-hidden="true"></canvas>
+        <span class="record__livepos" aria-hidden="true"><span class="live-dot record__live"></span></span>
+      </div>
+      <p class="record__legend caption">
+        <span class="record__key"><span class="record__key-dot" aria-hidden="true"></span>Each dot is 1,000 customers.</span>
+        <span class="record__rate tnum">+1 ≈ every 23 s</span>
+      </p>
+    </div>
+
+    <p class="record__proof" data-reveal="rise">Operators who previously scaled <img class="theme-only-light" src="/img/logos/im8.svg" alt="IM8" width="107" height="32" loading="lazy" decoding="async" /><img class="theme-only-violet" src="/img/logos/im8-violet.svg" alt="IM8" width="107" height="32" loading="lazy" decoding="async" />, <img class="theme-only-light" src="/img/logos/peak21.svg" alt="Peak21" width="116" height="32" loading="lazy" decoding="async" /><img class="theme-only-violet" src="/img/logos/peak21-violet.svg" alt="Peak21" width="116" height="32" loading="lazy" decoding="async" /> and <img class="record__casetify theme-only-light" src="/img/logos/casetify.svg" alt="CASETiFY" width="77" height="32" loading="lazy" decoding="async" /><img class="record__casetify theme-only-violet" src="/img/logos/casetify-violet.svg" alt="CASETiFY" width="77" height="32" loading="lazy" decoding="async" />.</p>
+  </div>
+</section>

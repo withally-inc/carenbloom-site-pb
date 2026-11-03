@@ -1,0 +1,141 @@
+<!-- work: How we work. The 7 operating values (tablist + card), the player-coach model,
+     and the lemon, which lives in this section only (work.ts). -->
+<section id="work" class="section work" data-section="work" data-spy="work" aria-labelledby="work-title">
+  <div class="lemon" aria-hidden="true" data-lemon><span class="lemon__fruit"></span></div>
+
+  <div class="wrap work__wrap">
+    <header class="work__head">
+      <p class="label" data-reveal>How we work</p>
+      <h2 class="h2 work__title" id="work-title" data-lines>How we raise the <span class="wink">ceiling</span>.</h2>
+    </header>
+
+    <div class="values" data-values data-reveal="rise" data-delay="120">
+      <div class="values__side">
+        <h3 class="values__title" id="values-title">Our operating values</h3>
+        <div class="values__list" role="tablist" aria-orientation="vertical" aria-label="All seven operating values">
+          <span class="values__lens" aria-hidden="true"></span>
+          <button type="button" class="values__tab" role="tab" id="value-tab-1" aria-selected="true" aria-controls="value-panel" tabindex="0"><span class="values__n">01</span><span class="values__name">Outsized ambition</span></button>
+          <button type="button" class="values__tab" role="tab" id="value-tab-2" aria-selected="false" aria-controls="value-panel" tabindex="-1"><span class="values__n">02</span><span class="values__name">Agency</span></button>
+          <button type="button" class="values__tab" role="tab" id="value-tab-3" aria-selected="false" aria-controls="value-panel" tabindex="-1"><span class="values__n">03</span><span class="values__name">Reduce cycle time</span></button>
+          <button type="button" class="values__tab" role="tab" id="value-tab-4" aria-selected="false" aria-controls="value-panel" tabindex="-1"><span class="values__n">04</span><span class="values__name">Relentless upskilling</span></button>
+          <button type="button" class="values__tab" role="tab" id="value-tab-5" aria-selected="false" aria-controls="value-panel" tabindex="-1"><span class="values__n">05</span><span class="values__name">Organic (re)org</span></button>
+          <button type="button" class="values__tab" role="tab" id="value-tab-6" aria-selected="false" aria-controls="value-panel" tabindex="-1"><span class="values__n">06</span><span class="values__name">Human potential</span></button>
+          <button type="button" class="values__tab" role="tab" id="value-tab-7" aria-selected="false" aria-controls="value-panel" tabindex="-1"><span class="values__n">07</span><span class="values__name">Creativity</span></button>
+        </div>
+      </div>
+
+      <div class="values__card" role="tabpanel" id="value-panel" aria-labelledby="value-tab-1" tabindex="0">
+        <div class="values__top">
+          <p class="values__count" aria-hidden="true">
+            <span class="values__swap">
+              <span class="values__swap-a"><span class="values__count-n" data-count>01</span><span class="values__count-of">/ 07</span></span>
+              <span class="values__swap-b"><span class="values__time" data-time>0.00 s</span></span>
+            </span>
+          </p>
+          <div class="values__arrows">
+            <button type="button" class="values__arrow" data-step="-1" aria-controls="value-panel" aria-label="Previous value"><span aria-hidden="true">←</span></button>
+            <button type="button" class="values__arrow" data-step="1" aria-controls="value-panel" aria-label="Next value"><span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+        <div class="values__slot" data-slot>
+          <div class="values__face is-active" data-face="0">
+            <h4 class="values__face-name">Outsized ambition</h4>
+            <p class="values__face-line">Pick goals big enough to force better systems, sharper judgment, and measurable movement.</p>
+          </div>
+          <div class="values__face" data-face="1">
+            <h4 class="values__face-name">Agency</h4>
+            <p class="values__face-line">We value actors: people who see the gap, name the move, and push the work forward because they care about the outcome.</p>
+          </div>
+          <div class="values__face" data-face="2">
+            <h4 class="values__face-name">Reduce cycle time</h4>
+            <p class="values__face-line">Move in tight loops: act, read the number, reflect, and change the system quickly.</p>
+          </div>
+          <div class="values__face" data-face="3">
+            <h4 class="values__face-name">Relentless upskilling</h4>
+            <p class="values__face-line">Getting better at the craft is an everyday expectation for the team and for every leader.</p>
+          </div>
+          <div class="values__face" data-face="4">
+            <h4 class="values__face-name">Organic (re)org</h4>
+            <p class="values__face-line">Create structure around the problem, then rewrite it as soon as the structure stops serving the number.</p>
+          </div>
+          <div class="values__face" data-face="5">
+            <h4 class="values__face-name">Human potential</h4>
+            <p class="values__face-line">Treat entrepreneurship as a path for people to discover a larger version of themselves.</p>
+          </div>
+          <div class="values__face" data-face="6">
+            <h4 class="values__face-name">Creativity</h4>
+            <p class="values__face-line">Original thinking matters most when it becomes shipped product, sharper creative, or better customer insight.</p>
+          </div>
+        </div>
+        <div class="values__dots" aria-hidden="true"><i class="is-on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </div>
+
+    <!-- player-coach: one object. The pod diagram (left) lights the roles each text
+         names (hover, work.ts); the Coach / Player switch swaps the paired rows and
+         moves the player coach from the pod's edge into it. Copy verbatim (COPY.md). -->
+    <div class="pc" data-pc data-state="coach">
+      <div class="pc__left">
+        <h3 class="pc__title" data-lines aria-label="Focused teams. Player coaches.">Focused teams.<br />Player coaches.</h3>
+        <figure class="pod" data-reveal="rise">
+          <div class="pod__stage" aria-hidden="true">
+            <svg class="pod__svg" viewBox="0 24 400 380" focusable="false">
+              <circle class="pod__ring" cx="200" cy="200" r="150" />
+              <g class="pod__role" data-role="pilot"><path d="M78,200 L104.95,226.95 A38.11 38.11 0 1 0 104.95,173.05 Z" /><path class="pod__vein" d="M96.4,200 C119.4,179.04 149.04,180.95 150.95,200" /></g>
+              <g class="pod__role" data-role="copilot"><path d="M322,200 L295.05,173.05 A38.11 38.11 0 1 0 295.05,226.95 Z" /><path class="pod__vein" d="M303.6,200 C280.6,220.96 250.96,219.05 249.05,200" /></g>
+              <g class="pod__role pod__coach" data-role="coach"><path d="M200,322 L226.95,295.05 A38.11 38.11 0 1 0 173.05,295.05 Z" /><path class="pod__vein" d="M200,303.6 C179.04,280.6 180.95,250.96 200,249.05" /></g>
+            </svg>
+            <span class="pod__name">Pod</span>
+            <span class="pod__kpi">KPI</span>
+            <span class="pod__tag" data-role="pilot">Pilot</span>
+            <span class="pod__tag" data-role="copilot">Co-pilot</span>
+            <span class="pod__tag pod__tag--coach" data-role="coach">Player coach</span>
+          </div>
+          <figcaption class="sr-only">Diagram of a pod: a pilot and a co-pilot own one KPI. A player coach stands at the edge of the pod to coach and steps inside it to play.</figcaption>
+        </figure>
+      </div>
+
+      <div class="pc__right">
+        <div class="pc__roles" data-stagger="80">
+          <div class="pc__role" data-lights="pilot copilot" data-reveal="rise">
+            <h4 class="pc__role-title"><svg class="pc__key" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5,3.5 L3.5,10.6 A7.1 7.1 0 1 0 10.6,3.5 Z"/><path d="M20.5,3.5 L13.4,3.5 A7.1 7.1 0 1 0 20.5,10.6 Z"/></svg>Pilot and co-pilot teams</h4>
+            <p class="pc__role-body">Small pods own specific KPIs with a clear pilot, a strong co-pilot, a visible scorecard, and enough autonomy to move within the day.</p>
+          </div>
+          <div class="pc__role" data-lights="coach" data-reveal="rise">
+            <h4 class="pc__role-title"><svg class="pc__key" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,22 L17.02,16.98 A7.1 7.1 0 1 0 6.98,16.98 Z"/></svg>Player coaches</h4>
+            <p class="pc__role-body">Senior owners coach and play: they build the system, mentor the team, and personally take the hardest position when an area is new, broken, or below floor.</p>
+          </div>
+        </div>
+
+        <div class="pc__means" data-lights="coach" data-reveal="rise">
+          <div class="pc__means-head">
+            <h3 class="pc__means-title" id="pc-means-title">What player-coach means</h3>
+            <div class="seg" role="tablist" aria-labelledby="pc-means-title">
+              <span class="seg__thumb" aria-hidden="true"></span>
+              <button type="button" class="seg__tab" role="tab" id="pc-tab-coach" aria-controls="pc-panel-coach" aria-selected="true" tabindex="0">Coach</button>
+              <button type="button" class="seg__tab" role="tab" id="pc-tab-player" aria-controls="pc-panel-player" aria-selected="false" tabindex="-1">Player</button>
+            </div>
+          </div>
+          <div class="pc__panels">
+            <div class="pc__panel" role="tabpanel" id="pc-panel-coach" aria-labelledby="pc-tab-coach" data-panel="coach">
+              <p class="label pc__panel-label" id="pc-coach">Coach: what you own</p>
+              <ul role="list" aria-labelledby="pc-coach">
+            <li class="pc__item" style="--row:0"><svg class="pc__petal" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M9.98,2.02 L5.42,2.02 A4.56 4.56 0 1 0 9.98,6.58 Z"/></svg><p><strong>The KPI your team is hitting.</strong> <span>The daily report, the Tuesday call, and the number.</span></p></li>
+            <li class="pc__item" style="--row:1"><svg class="pc__petal" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M9.98,2.02 L5.42,2.02 A4.56 4.56 0 1 0 9.98,6.58 Z"/></svg><p><strong>The frameworks, scorecards, and rituals.</strong> <span>The operating system everyone runs on.</span></p></li>
+            <li class="pc__item" style="--row:2"><svg class="pc__petal" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M9.98,2.02 L5.42,2.02 A4.56 4.56 0 1 0 9.98,6.58 Z"/></svg><p><strong>Your people have what they need to ship.</strong> <span>Resourcing, unblocking, and escalation before momentum dies.</span></p></li>
+              </ul>
+            </div>
+            <div class="pc__panel" role="tabpanel" id="pc-panel-player" aria-labelledby="pc-tab-player" data-panel="player">
+              <p class="label pc__panel-label" id="pc-player">Player: what you do not delegate</p>
+              <ul role="list" aria-labelledby="pc-player">
+            <li class="pc__item" style="--row:0"><svg class="pc__petal" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M9.98,2.02 L5.42,2.02 A4.56 4.56 0 1 0 9.98,6.58 Z"/></svg><p><strong>Below floor, fix it yourself today.</strong> <span>If the work is broken, jump in.</span></p></li>
+            <li class="pc__item" style="--row:1"><svg class="pc__petal" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M9.98,2.02 L5.42,2.02 A4.56 4.56 0 1 0 9.98,6.58 Z"/></svg><p><strong>The new and evolving areas.</strong> <span>Own the work before the recipe is locked.</span></p></li>
+            <li class="pc__item" style="--row:2"><svg class="pc__petal" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M9.98,2.02 L5.42,2.02 A4.56 4.56 0 1 0 9.98,6.58 Z"/></svg><p><strong>Rewriting structure as gaps appear.</strong> <span>Fight silos and work that does not ladder to the number.</span></p></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

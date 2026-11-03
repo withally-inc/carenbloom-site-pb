@@ -1,0 +1,65 @@
+/* Print (MOTION-CHALLENGE 2.7): ink on white, chrome and moving parts hidden,
+   external links print their URL. lib/print.ts reveals everything on beforeprint. */
+@media print {
+  @page {
+    margin: 16mm 14mm;
+  }
+  html,
+  body {
+    background: #fff !important;
+    color: var(--ink) !important;
+  }
+  .nav,
+  .preloader,
+  .skip-link,
+  .footer__bloom,
+  canvas,
+  video,
+  [data-print="hide"],
+  [data-egg],
+  .lemon,
+  .statement__copy {
+    display: none !important;
+  }
+  .surface-ink,
+  .surface-mist,
+  .surface-raised,
+  .footer {
+    background: #fff !important;
+    box-shadow: none !important;
+    --fg: var(--ink);
+    --fg-2: var(--ink-2);
+    --fg-muted: var(--muted);
+    --accent: var(--ink);
+    --rule: var(--line);
+    color: var(--ink-2) !important;
+  }
+  .section {
+    padding-block: 12mm;
+    break-inside: avoid-page;
+  }
+  [data-reveal],
+  [data-reveal] > *,
+  [data-lines],
+  [data-lines] .line {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+    animation: none !important;
+  }
+  a[href^="http"]:not([href*="carenbloom.com"])::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .dotlink--stretch::after {
+    position: static;
+  }
+  .dotlink::before,
+  .dotlink > span::before,
+  .dotlink > span::after {
+    display: none !important;
+  }
+}

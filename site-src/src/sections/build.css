@@ -1,0 +1,445 @@
+/* build: "Build with us". Large headline left (a short natural sticky on desktop),
+   the form on a raised card right. Fields follow the apply form: static labels,
+   white-on-paper inputs (here paper on white), cobalt ring on focus, the sun
+   highlighter on an invalid label, no red, no shake. Hover only on fine pointers. */
+
+.build {
+  --bw-h: 56px;
+  --bw-r: 12px;
+  --bw-line: rgba(var(--ink-rgb), 0.14);
+  --bw-ring: 0 0 0 3px rgba(var(--cobalt-rgb), 0.22);
+}
+
+.build__wrap {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(40px, 5vw, 72px) 24px;
+  align-items: start;
+}
+.build__head {
+  grid-column: 1 / -1;
+  display: grid;
+  align-content: start;
+  gap: 22px;
+}
+.build__title {
+  margin: 0;
+  /* one size below h1, the footer statements' scale: the two audiences read as a pair */
+  font-size: clamp(44px, 5.8vw, 88px);
+  max-width: 11ch;
+}
+.build__lede {
+  margin: 4px 0 0;
+  max-width: 34ch;
+}
+.build__card {
+  grid-column: 1 / -1;
+  position: relative;
+  padding: clamp(20px, 2.6vw, 40px);
+  background: var(--paper-2);
+  border-radius: var(--radius);
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 1px 2px rgba(var(--shadow-rgb), 0.04),
+    0 24px 48px -32px rgba(var(--shadow-rgb), 0.18);
+}
+@media (min-width: 1024px) {
+  .build__head {
+    grid-column: 1 / span 5;
+    position: sticky;
+    top: var(--nav-offset);
+  }
+  .build__card {
+    grid-column: 7 / -1;
+  }
+}
+
+/* ───────── form ───────── */
+.bw {
+  display: grid;
+  gap: 26px;
+}
+.bw-grid {
+  display: grid;
+  gap: 26px;
+}
+@media (min-width: 640px) {
+  .bw-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+.bw-field {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+legend.bw-label {
+  float: left;
+  width: 100%;
+}
+legend.bw-label + * {
+  clear: both;
+}
+.bw-label {
+  display: block;
+  margin-bottom: 10px;
+  padding: 0;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+}
+/* the sun highlighter on an invalid label: drawn left to right (700ms, 60ms apart
+   down the form), retracts to the right once the field is right */
+.bw-label__text {
+  background: linear-gradient(var(--sun), var(--sun)) no-repeat 0 88% / 0% 0.46em;
+  transition: background-size 300ms var(--ease);
+  padding: 0 0.08em;
+  margin: 0 -0.08em;
+}
+.bw-field[data-invalid] .bw-label__text {
+  background-size: 100% 0.46em;
+  transition: background-size 700ms var(--ease) var(--hl-d, 0ms);
+}
+.bw-field[data-was-invalid]:not([data-invalid]) .bw-label__text {
+  background-position: 100% 88%;
+}
+/* violet mode: the band covers the label and its type turns dark (BRAND, Violet mode) */
+[data-theme="violet"] .bw-label__text {
+  background-position: 0 var(--hl-y);
+  background-size: 0% var(--hl-h);
+  transition:
+    background-size 300ms var(--ease),
+    color 200ms var(--ease);
+}
+[data-theme="violet"] .bw-field[data-invalid] .bw-label__text {
+  background-size: 100% var(--hl-h);
+  color: var(--hl-fg);
+  transition:
+    background-size 700ms var(--ease) var(--hl-d, 0ms),
+    color 300ms var(--ease) calc(var(--hl-d, 0ms) + 120ms);
+}
+[data-theme="violet"] .bw-field[data-was-invalid]:not([data-invalid]) .bw-label__text {
+  background-position: 100% var(--hl-y);
+}
+
+.bw-input {
+  width: 100%;
+  min-width: 0;
+  height: var(--bw-h);
+  padding: 0 18px;
+  border: 1px solid var(--bw-line);
+  border-radius: var(--bw-r);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 17px;
+  line-height: 1.4;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition:
+    border-color 200ms var(--ease),
+    background-color 200ms var(--ease),
+    box-shadow 200ms var(--ease);
+}
+.bw-input::placeholder {
+  color: var(--muted);
+  opacity: 0.8;
+}
+.bw-input:focus,
+.bw-input:focus-visible {
+  outline: none;
+  border-color: var(--ink-2);
+  background: var(--paper-2);
+  box-shadow: var(--bw-ring);
+}
+@media (hover: hover) and (pointer: fine) {
+  .bw-input:hover:not(:focus) {
+    border-color: rgba(var(--ink-rgb), 0.28);
+  }
+}
+
+/* the message opens under the field: fade + 4px rise, height by grid rows */
+.bw-error {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin: 0;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ink);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    grid-template-rows 300ms var(--ease),
+    opacity 300ms var(--ease),
+    transform 300ms var(--ease);
+}
+.bw-error > span {
+  min-height: 0;
+  overflow: hidden;
+}
+.bw-error > span::before {
+  content: "";
+  display: block;
+  height: 8px;
+}
+.bw-field[data-invalid] .bw-error {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: none;
+}
+
+/* ───────── category tiles (real radios), one petal each ───────── */
+.bw-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.bw-tile {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.bw-tile--wide {
+  grid-column: 1 / -1;
+}
+.bw-tile__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.bw-tile__face {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  height: var(--bw-h);
+  padding: 0 16px 0 14px;
+  border: 1px solid var(--bw-line);
+  border-radius: var(--bw-r);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1.2;
+  pointer-events: none;
+  transition:
+    background-color var(--dur-micro) var(--ease),
+    border-color var(--dur-micro) var(--ease),
+    color var(--dur-micro) var(--ease),
+    transform var(--dur-spring) var(--spring);
+}
+.bw-tile__face > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.bw-tile__icon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4; /* the spaces icons' 2 in the 42 box, nudged for 24px */
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bw-tile__icon--mark {
+  stroke: none;
+}
+/* chosen: the icon redraws, path by path (the spaces draw-in) */
+.bw-tile__icon.is-drawing path {
+  stroke-dasharray: 1 2;
+  animation: bw-draw 700ms var(--ease) both;
+  animation-delay: calc(var(--i) * 200ms / var(--n));
+}
+@keyframes bw-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.bw-tile__input:checked + .bw-tile__face {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.bw-tile__input:active + .bw-tile__face {
+  transform: scale(0.97);
+  transition-duration: var(--dur-micro), var(--dur-micro), var(--dur-micro), var(--dur-press);
+  transition-timing-function: var(--ease), var(--ease), var(--ease), ease-out;
+}
+.bw-tile__input:focus-visible + .bw-tile__face {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .bw-tile:hover .bw-tile__input:not(:checked) + .bw-tile__face {
+    border-color: rgba(var(--ink-rgb), 0.32);
+  }
+}
+
+/* ───────── submit ───────── */
+.bw-submit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 20px;
+  margin-top: 4px;
+}
+.bw-help {
+  flex: 1 1 220px;
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 40ch;
+}
+.bw-status {
+  margin: -12px 0 0;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.bw-status:empty {
+  display: none;
+}
+.bw-status__hl {
+  background: linear-gradient(var(--sun), var(--sun)) no-repeat 0 88% / 100% 0.46em;
+  padding: 0 0.08em;
+  margin: 0 -0.08em;
+}
+[data-theme="violet"] .bw-status__hl {
+  background-position: 0 var(--hl-y);
+  background-size: 100% var(--hl-h);
+  color: var(--on-sun);
+}
+
+/* ───────── confirmation ───────── */
+.bw-done {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 14px;
+}
+.bw-done[hidden] {
+  display: none;
+}
+.bw-done__mark {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+  color: var(--ink);
+  overflow: visible;
+}
+.bw-done__title {
+  margin: 0;
+  font-size: clamp(26px, 2.2vw + 0.4rem, 36px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+  outline: none;
+}
+.bw-done__text {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 44ch;
+}
+.bw-done__block {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  margin-top: 14px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+.bw-done__caption {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+  color: var(--muted);
+}
+.bw-done__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.bw-done__email {
+  margin-right: 6px;
+  font-size: clamp(18px, 1.3vw + 0.3rem, 22px);
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+.bw-done__edit {
+  margin-top: 10px;
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  color: var(--ink-2);
+  font: inherit;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--ink-rgb), 0.3);
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition:
+    color var(--dur-micro) var(--ease),
+    text-decoration-color var(--dur-micro) var(--ease);
+}
+.bw-done__edit:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .bw-done__edit:hover {
+    color: var(--ink);
+    text-decoration-color: currentColor;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bw-error,
+  .bw-tile__face,
+  .bw-label__text,
+  .bw-input {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 390: two tiles per row, each label on one line */
+@media (max-width: 479px) {
+  .bw-tiles {
+    gap: 8px;
+  }
+  .bw-tile__face {
+    gap: 9px;
+    padding: 0 10px 0 11px;
+  }
+  .bw-tile__icon {
+    width: 20px;
+    height: 20px;
+  }
+}

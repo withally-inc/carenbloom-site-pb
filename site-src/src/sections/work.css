@@ -1,0 +1,422 @@
+/* How we work: the 7 values (tablist + card), the player-coach model and the
+   lemon. Unlayered: wins over components.
+
+   Layers inside the section (isolated): ground < card ground < lemon < text.
+   The card itself never creates a stacking context, so the lemon can pass
+   over its white ground and still sit under its words. */
+
+.work {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+.work__head,
+.values__side,
+.values__top,
+.values__slot,
+.values__dots,
+.pc {
+  position: relative;
+  z-index: 2;
+}
+
+/* ───────── head ───────── */
+.work__head {
+  display: grid;
+  gap: 20px;
+}
+.work__title {
+  max-width: 16ch;
+}
+
+/* ───────── values ───────── */
+.values {
+  --row-h: 56px;
+  margin-top: clamp(48px, 5vw, 80px);
+  display: grid;
+  gap: 24px;
+}
+.values__title {
+  font-size: var(--fs-h3);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.values__list {
+  position: relative;
+  margin-top: 20px;
+  display: grid;
+}
+.values__lens {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: var(--row-h);
+  border-radius: 16px;
+  background: var(--mist);
+  transform-origin: 50% 0;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+.values__tab {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  height: var(--row-h);
+  width: 100%;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 16px;
+  background: none;
+  font: inherit;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  color: var(--ink-2);
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--dur-micro) var(--ease);
+}
+.values__n {
+  width: 2ch;
+  flex: none;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--dur-micro) var(--ease);
+}
+.values__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.values__tab[aria-selected="true"] {
+  color: var(--ink);
+}
+.values__tab[aria-selected="true"] .values__n {
+  color: var(--cobalt);
+}
+.values__tab:focus-visible {
+  outline-offset: -2px;
+  border-radius: 16px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .values__tab:hover {
+    color: var(--ink);
+  }
+}
+/* without the script the active row carries its own ground */
+html:not(.motion) .values__tab[aria-selected="true"] {
+  background: var(--mist);
+}
+
+/* the card: one large white plate; its ground is under the lemon, its words above */
+.values__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(40px, 5vw, 72px);
+  min-height: clamp(360px, 32vw, 460px);
+  padding: clamp(24px, 3vw, 44px);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 1px 2px rgba(var(--shadow-rgb), 0.04),
+    0 32px 64px -40px rgba(var(--shadow-rgb), 0.2);
+  touch-action: pan-y;
+}
+.values__card:focus-visible {
+  outline-offset: 4px;
+  border-radius: var(--radius);
+}
+.values__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 40px;
+}
+.values__count {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.values__count-n {
+  color: var(--cobalt);
+}
+.values__count-of {
+  margin-left: 0.4em;
+}
+/* the counter's slot: "03 / 07" or the cycle time (egg E2) */
+.values__swap {
+  display: inline-grid;
+  overflow: hidden;
+  padding: 2px 0.1em;
+  margin: -2px -0.1em;
+}
+.values__swap > span {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
+  transition:
+    transform var(--dur-ui) var(--ease),
+    opacity var(--dur-micro) var(--ease);
+}
+.values__swap-b {
+  transform: translateY(110%);
+  opacity: 0;
+}
+.values__count.is-time .values__swap-a {
+  transform: translateY(-110%);
+  opacity: 0;
+}
+.values__count.is-time .values__swap-b {
+  transform: none;
+  opacity: 1;
+}
+.values__time {
+  color: var(--ink);
+}
+
+.values__arrows {
+  display: none;
+  gap: 8px;
+}
+.values__arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-micro) var(--ease),
+    transform var(--dur-spring) var(--spring);
+}
+.values__arrow:active {
+  transform: scale(0.94);
+  transition-duration: var(--dur-press);
+  transition-timing-function: ease-out;
+  background: rgba(var(--ink-rgb), 0.05);
+}
+
+/* faces: all seven are in the HTML; with the script they share one cell, so the
+   card always has the height of the longest value and never jumps */
+html.motion .values__slot {
+  display: grid;
+}
+html.motion .values__face {
+  grid-area: 1 / 1;
+}
+html.motion .values__face:not(.is-active, .is-leaving) {
+  visibility: hidden;
+}
+html:not(.motion) .values__face + .values__face {
+  margin-top: 40px;
+}
+.values__face-name {
+  font-size: clamp(36px, 3.7vw, 58px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-wrap: balance;
+  max-width: 14ch;
+}
+.values__face-line {
+  margin-top: 20px;
+  font-size: var(--fs-lede);
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--ink-2);
+  max-width: 31ch;
+}
+.values__face > * {
+  will-change: auto;
+}
+
+.values__dots {
+  display: none;
+  gap: 8px;
+}
+.values__dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(var(--ink-rgb), 0.16);
+  transition:
+    background-color var(--dur-micro) var(--ease),
+    transform var(--dur-spring) var(--spring);
+}
+.values__dots i.is-on {
+  background: var(--cobalt);
+  transform: scale(1.18);
+}
+
+/* ───────── the lemon (work.ts) ───────── */
+.lemon {
+  --ls: 180px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: var(--ls);
+  height: var(--ls);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-ui) var(--ease);
+  will-change: transform;
+}
+.lemon.is-on {
+  opacity: 1;
+}
+/* passing under words people are reading, it steps back */
+.lemon.is-on.is-faint {
+  opacity: 0.4;
+}
+.lemon__fruit {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-image: url(/img/lemon-sprite-180.webp);
+  background-image: image-set(url(/img/lemon-sprite-180.webp) 1x, url(/img/lemon-sprite-360.webp) 2x);
+  background-repeat: no-repeat;
+  background-size: calc(var(--ls) * 10) var(--ls);
+  background-position: calc(var(--f, 0) * var(--ls) * -1) 0;
+}
+@media (max-width: 1099px) {
+  .lemon {
+    --ls: 120px;
+  }
+}
+@media (max-width: 767px) {
+  .lemon {
+    --ls: 96px;
+  }
+}
+
+/* ───────── layout ───────── */
+@media (min-width: 768px) {
+  .values {
+    grid-template-columns: minmax(280px, 5fr) minmax(0, 7fr);
+    gap: clamp(24px, 4vw, 72px);
+    align-items: stretch;
+  }
+  .values__side {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* phones: the list folds away; the card steps with arrows, dots and a swipe */
+@media (max-width: 767px) {
+  .values__side .values__list {
+    display: none;
+  }
+  .values__arrows {
+    display: flex;
+  }
+  .values__dots {
+    display: flex;
+  }
+  .values__card {
+    gap: 36px;
+    min-height: 0;
+  }
+  .values__face-line {
+    font-size: 19px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .values__swap > span {
+    transition: opacity 200ms linear;
+    transform: none !important;
+  }
+}
+
+/* ───────── values art (work.art.ts) ─────────
+   A halftone hand per value, cropped by the card edge it enters from, under the
+   words and under the lemon. Placement comes from the manifest as custom
+   properties: --scale (height share of the card), --hide (share outside the
+   card), --along (0 flush top or left, 1 flush bottom or right), --ratio. */
+.values__art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.values__hand {
+  --k: 1;
+  position: absolute;
+  height: calc(var(--scale, 0.78) * var(--k) * 100%);
+  width: auto;
+  max-width: none;
+  aspect-ratio: var(--ratio, 1);
+  visibility: hidden;
+  user-select: none;
+}
+.values__hand.is-on {
+  visibility: visible;
+}
+.values__hand[data-edge="right"] {
+  right: 0;
+  top: calc(var(--along) * 100%);
+  transform: translate(calc((var(--hide) + var(--hx, 0)) * 100%), calc(var(--along) * -100%));
+}
+.values__hand[data-edge="left"] {
+  left: 0;
+  top: calc(var(--along) * 100%);
+  transform: translate(calc((var(--hide) + var(--hx, 0)) * -100%), calc(var(--along) * -100%));
+}
+.values__hand[data-edge="bottom"] {
+  bottom: 0;
+  left: calc(var(--along) * 100%);
+  transform: translate(calc(var(--along) * -100%), calc((var(--hide) + var(--hx, 0)) * 100%));
+}
+.values__hand[data-edge="top"] {
+  top: 0;
+  left: calc(var(--along) * 100%);
+  transform: translate(calc(var(--along) * -100%), calc((var(--hide) + var(--hx, 0)) * -100%));
+}
+/* `?art=demo` only, until the files land */
+.values__hand--demo {
+  display: grid;
+  place-items: center;
+  border: 1.5px dashed var(--accent);
+  border-radius: 18px;
+  background: var(--mist);
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 28px;
+}
+/* phones: the art sits smaller and further behind the edge */
+@media (max-width: 767px) {
+  .values__hand {
+    --k: 0.66;
+    --hx: 0.1;
+  }
+}
+/* violet theme: the lemon's own variant, set by work.art.ts once the file loads */
+.lemon.lemon--violet .lemon__fruit {
+  background-image: url(/img/lemon-sprite-violet-180.webp);
+  background-image: image-set(url(/img/lemon-sprite-violet-180.webp) 1x, url(/img/lemon-sprite-violet-360.webp) 2x);
+}

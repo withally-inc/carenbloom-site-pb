@@ -1,0 +1,41 @@
+{
+  "common": "Studio photograph, photorealistic, shot on a 100mm macro lens. A single real adult human hand, cropped at the wrist by the frame edge, no forearm beyond the wrist, no sleeve. Natural unmanicured short nails, no nail polish, no rings, no watch, no bracelet, no jewelry, no tattoos. Pure white seamless background, perfectly flat and evenly lit, no cast shadows on the background, no vignette, no floor line. Soft daylight from the upper left, gentle shadows on the hand, high contrast, tack sharp. The object is painted one solid matte saturated cobalt blue (#2331E4) all over, every part of it the same blue, like a painted prop; nothing else in the image is blue. No text, no logos, no letters, no numbers, no markings on anything. Only the hand and the object, nothing else in the frame.",
+  "reference": "Use the reference image only for the hand's pose language, the crop at the wrist and the light direction. Do not copy its halftone style or colors: the output must be an ordinary full-color photograph.",
+  "values": {
+    "01": {
+      "edge": "bottom-right",
+      "aspect": "4:5",
+      "prompt": "The hand enters the frame from the bottom right corner, wrist at the bottom right edge, and holds up a small toy rocket ship (a classic retro rocket with three fins and a round porthole) between thumb and fingers, the rocket pointing straight up, filling the upper middle of the frame."
+    },
+    "02": {
+      "edge": "right",
+      "aspect": "5:4",
+      "prompt": "The hand enters the frame from the right edge, wrist at the right edge, palm down, and holds out a single old-fashioned key (round bow, long shank, simple bit) pinched between thumb and index finger, the key pointing left toward the center of the frame, as if offering it."
+    },
+    "03": {
+      "edge": "bottom-right",
+      "aspect": "4:5",
+      "prompt": "The hand enters the frame from the bottom right corner, wrist at the bottom right edge, holding a mechanical pocket stopwatch upright in the curled fingers, and the tip of the thumb is pressing down on the round crown button at the top of the stopwatch, clearly on the button, as if starting the timer. The stopwatch body, crown, ring and bezel are blue; the dial is plain blue too with no numbers or marks, only two simple hands."
+    },
+    "04": {
+      "edge": "bottom",
+      "aspect": "4:5",
+      "prompt": "The hand enters the frame from the bottom edge, wrist at the bottom edge, and holds a small handheld pencil sharpener with a pencil inserted in it, a long curled wood shaving spiraling out of the sharpener. The pencil, the sharpener and the curled shaving are all blue. The pencil points up and to the left."
+    },
+    "05": {
+      "edge": "bottom-right",
+      "aspect": "4:5",
+      "prompt": "The hand enters the frame from the bottom right corner, wrist at the bottom right edge, and gently holds a plant cutting (a short stem with three or four leaves, like a pothos cutting) by the stem, with a tangle of fine bare roots hanging below the fingers, no soil. The leaves, stem and roots are all blue."
+    },
+    "06": {
+      "edge": "bottom",
+      "aspect": "4:5",
+      "prompt": "The hand enters the frame from the bottom edge, wrist at the bottom edge, palm open and facing up, cupped slightly, and a single large seed rests in the palm, sprouting: a short curved stem rising from it with two small rounded first leaves (cotyledons), and a short white root. The seed, stem and leaves are all blue."
+    },
+    "07": {
+      "edge": "right",
+      "aspect": "5:4",
+      "prompt": "The hand enters the frame from the right edge, wrist at the right edge, holding a pair of scissors with the fingers in the handles, cutting into a small square of paper about the size of a palm, held in the air at the scissor blades on the left; the cut is half done and a narrow strip of paper curls up and away from the blades in a loose spiral. Lots of empty white space. The scissors and the paper are both blue."
+    }
+  }
+}

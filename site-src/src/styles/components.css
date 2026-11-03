@@ -1,0 +1,879 @@
+/* Shared components. Imported into @layer components, so Tailwind utilities
+   and section stylesheets (unlayered) always win over these. */
+
+/* ───────── layout ───────── */
+.wrap {
+  width: 100%;
+  max-width: calc(var(--maxw) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.section {
+  position: relative;
+  padding-block: var(--sec-pad);
+}
+.section--tight {
+  padding-block: var(--sec-pad-tight);
+}
+.section--first {
+  padding-top: var(--page-top);
+}
+/* on-ink scope: remaps text, links (dot), focus ring and lines for the ONE
+   dark section per page. Never cobalt (2.35:1) or muted (3.78:1) on ink.
+   .surface-ink = .on-ink + the ink ground. */
+.on-ink,
+.surface-ink {
+  --fg: var(--on-ink);
+  --fg-2: var(--on-ink-2);
+  --fg-muted: var(--on-ink-2);
+  --accent: var(--cobalt-on-ink);
+  --rule: var(--line-on-ink);
+  color: var(--on-ink-2);
+}
+.surface-ink {
+  background: var(--night);
+}
+.on-ink ::selection,
+.surface-ink ::selection {
+  background: var(--sun);
+  color: var(--ink);
+}
+.surface-mist {
+  background: var(--mist);
+}
+.surface-raised {
+  background: var(--paper-2);
+}
+.rule {
+  height: 1px;
+  background: var(--rule);
+  border: 0;
+}
+
+/* ───────── type ───────── */
+.display,
+.h1,
+.h2,
+.h3 {
+  font-family: var(--ff-sans);
+  font-weight: 600;
+  color: var(--fg);
+  text-wrap: balance;
+  font-kerning: normal;
+}
+.display {
+  font-size: var(--fs-display);
+  line-height: 0.92;
+  /* tightens with size: -0.03em at 64px, about -0.035em at 1440 wide */
+  letter-spacing: clamp(-0.04em, calc(-0.024em - 0.08vw), -0.03em);
+}
+.h1 {
+  font-size: var(--fs-h1);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+}
+.h2 {
+  font-size: var(--fs-h2);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+.h3 {
+  font-size: var(--fs-h3);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+.lede {
+  font-size: var(--fs-lede);
+  line-height: 1.45;
+  color: var(--fg);
+  letter-spacing: -0.01em;
+  max-width: 40ch;
+}
+.body {
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--fg-2);
+  max-width: 62ch;
+}
+.small {
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+.caption {
+  font-size: var(--fs-caption);
+  line-height: 1.45;
+  color: var(--fg-muted);
+}
+.label {
+  display: inline-block;
+  font-family: var(--ff-sans);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+/* one wink word per headline, never two. 1.08em up to h2, 1.12em at display
+   and h1 (Newsreader's x-height is smaller than Mori's). The end padding keeps
+   the italic overhang inside line masks; the negative margin keeps spacing even. */
+.wink {
+  font-family: var(--ff-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.08em;
+  letter-spacing: -0.01em;
+  padding-inline-end: 0.08em;
+  margin-inline-end: -0.04em;
+}
+:is(.display, .h1) .wink {
+  font-size: 1.12em;
+}
+
+/* sun highlighter: a band under the lower half of the x-height, drawn left to
+   right with the house curve when lib/reveal.ts adds .is-in. At most one per
+   screen, never on a wink word. */
+/* In violet mode the band covers the word (--hl-y, --hl-h) and the type turns dark
+   (--hl-fg) as the band arrives: sun always carries dark type. */
+.hl {
+  background: linear-gradient(var(--sun), var(--sun)) no-repeat 0 var(--hl-y) / 0% var(--hl-h);
+  transition:
+    background-size 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+    color 400ms var(--ease) 120ms;
+  padding: 0 0.06em;
+  margin: 0 -0.06em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.hl.is-in,
+html:not(.js) .hl {
+  background-size: 100% var(--hl-h);
+  color: var(--hl-fg);
+}
+.wink.hl,
+.hl .wink {
+  background: none;
+}
+.quote {
+  font-family: var(--ff-serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(26px, 2.4vw + 0.4rem, 40px);
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  text-wrap: balance;
+}
+
+/* ───────── wordmark C: icon + live text ───────── */
+.wordmark {
+  display: inline-block;
+  font-family: var(--ff-sans);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--fg);
+}
+.wink-amp {
+  font-family: var(--ff-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.08em;
+  letter-spacing: 0;
+  line-height: 0;
+  margin-inline: 0.04em 0.02em;
+}
+.mark {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  fill: currentColor;
+  overflow: visible;
+}
+
+/* ───────── buttons: immobile on hover, colour only; press .97 ───────── */
+.btn {
+  --btn-bg: var(--ink);
+  --btn-fg: var(--paper);
+  --btn-bg-hover: var(--ink-hover);
+  --btn-border: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--ff-sans);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  /* release springs back (430ms --spring); only the press itself is 100ms ease-out */
+  transition:
+    background-color var(--dur-micro) var(--ease),
+    color var(--dur-micro) var(--ease),
+    border-color var(--dur-micro) var(--ease),
+    transform var(--dur-spring) var(--spring);
+}
+.btn:active {
+  transform: scale(0.97);
+  transition-duration: var(--dur-micro), var(--dur-micro), var(--dur-micro), var(--dur-press);
+  transition-timing-function: var(--ease), var(--ease), var(--ease), ease-out;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    background: var(--btn-bg-hover);
+  }
+}
+.btn--ink {
+  --btn-bg: var(--ink);
+  --btn-fg: var(--paper);
+  --btn-bg-hover: var(--ink-hover);
+}
+.btn--cobalt {
+  --btn-bg: var(--cobalt);
+  --btn-fg: var(--on-cobalt);
+  --btn-bg-hover: var(--cobalt-hover);
+}
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--fg);
+  --btn-bg-hover: rgba(var(--ink-rgb), 0.06);
+  --btn-border: var(--rule);
+}
+.surface-ink .btn--ghost {
+  --btn-bg-hover: rgba(220, 237, 245, 0.08);
+}
+.btn--sm {
+  height: 36px;
+  padding: 0 14px;
+  font-size: 13.5px;
+}
+.btn--lg {
+  height: 56px;
+  padding: 0 28px;
+  font-size: 16px;
+}
+.btn[disabled],
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+  transition: none;
+}
+
+/* ───────── petal loader (BRAND 9): petalLoader() in lib/bloom.ts, careers and apply ───────── */
+.petal-loader {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--accent);
+  overflow: visible;
+}
+.petal-loader .petal {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  animation: cb-petal-open 1.2s cubic-bezier(0.16, 1, 0.3, 1) infinite both;
+}
+.petal-loader .petal:nth-of-type(2) {
+  animation-delay: 0.12s;
+}
+.petal-loader .petal:nth-of-type(3) {
+  animation-delay: 0.24s;
+}
+.petal-loader .petal:nth-of-type(4) {
+  animation-delay: 0.36s;
+}
+@keyframes cb-petal-open {
+  0% {
+    transform: scale(0) rotate(-50deg);
+    opacity: 0;
+  }
+  38%,
+  70% {
+    transform: none;
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.5) rotate(18deg);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .petal-loader .petal {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+/* ───────── dot link ─────────
+   <a class="dotlink" href="…"><span>Visit brand ↗</span></a>
+   A cobalt dot appears on the left and pushes the label; the underline draws
+   in from the left and retracts to the right. Transform only. */
+.dotlink {
+  --dot: var(--accent);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  max-width: max-content;
+  color: var(--fg);
+  font-weight: 600;
+  line-height: 1.3;
+  cursor: pointer;
+}
+.dotlink::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: var(--dot);
+  transform: scale(0);
+  transition: transform var(--dur-spring) var(--spring);
+}
+.dotlink:focus-visible {
+  border-radius: 6px;
+  outline-offset: 4px;
+}
+.dotlink > span {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 3px;
+  transition: transform 550ms var(--ease);
+}
+/* resting hairline, then the drawn line on top */
+.dotlink > span::before,
+.dotlink > span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+}
+.dotlink > span::before {
+  opacity: 0.22;
+}
+.dotlink > span::after {
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 550ms var(--ease);
+}
+.dotlink:focus-visible::before,
+.dotlink[aria-current]::before {
+  transform: scale(1);
+}
+.dotlink:focus-visible > span,
+.dotlink[aria-current] > span {
+  transform: translateX(14px);
+}
+.dotlink:focus-visible > span::after,
+.dotlink[aria-current] > span::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+@media (hover: hover) and (pointer: fine) {
+  .dotlink:hover::before {
+    transform: scale(1);
+  }
+  .dotlink:hover > span {
+    transform: translateX(14px);
+  }
+  .dotlink:hover > span::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+}
+.dotlink--quiet > span::before {
+  opacity: 0;
+}
+/* touch: a tap shows the link gesture during the press */
+@media (hover: none) {
+  .dotlink:active::before {
+    transform: scale(1);
+  }
+  .dotlink:active > span {
+    transform: translateX(14px);
+  }
+  .dotlink:active > span::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+}
+/* stretched link: the dot link's ::after covers its card (position: relative on the card);
+   hovering the card is then hovering the link. Controls inside the card sit above with z-index. */
+.dotlink--stretch {
+  position: static;
+}
+.dotlink--stretch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+.dotlink--stretch::before {
+  /* the dot stays with the label: an in-flow item of zero net width */
+  position: relative;
+  top: auto;
+  margin-top: 0;
+  margin-right: -6px;
+}
+/* whole-block links: mark the block (the card or row the ::after covers) .link-block.
+   Parts of the block painted above the link's ::after (photos, names) would not count
+   as hovering the link, so the block counts instead: the pointer anywhere on it gives
+   its stretched dot link the gesture, except over the block's own controls (buttons).
+   A block that is itself the <a> (careers rows) needs none of this. */
+@media (hover: hover) and (pointer: fine) {
+  .link-block:hover:not(:has(button:hover)) .dotlink--stretch::before {
+    transform: scale(1);
+  }
+  .link-block:hover:not(:has(button:hover)) .dotlink--stretch > span {
+    transform: translateX(14px);
+  }
+  .link-block:hover:not(:has(button:hover)) .dotlink--stretch > span::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+}
+@media (hover: none) {
+  .link-block:active:not(:has(button:active)) .dotlink--stretch::before {
+    transform: scale(1);
+  }
+  .link-block:active:not(:has(button:active)) .dotlink--stretch > span {
+    transform: translateX(14px);
+  }
+  .link-block:active:not(:has(button:active)) .dotlink--stretch > span::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+}
+
+
+/* ───────── chips ───────── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 26px;
+  padding: 0 11px;
+  border-radius: 999px;
+  font-family: var(--ff-sans);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--fg);
+  background: rgba(var(--ink-rgb), 0.05);
+}
+/* "In market": the highlighter, always ink text. Its sun ground draws left to
+   right when its block reveals (lib/reveal.ts adds .is-in), then the dot pops.
+   Chips are never interactive. */
+.chip--sun {
+  color: var(--on-sun);
+  background: linear-gradient(var(--sun), var(--sun)) no-repeat 0 0 / 100% 100%;
+  transition:
+    background-size 700ms var(--ease),
+    color 300ms var(--ease) 150ms;
+}
+.chip--sun::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--on-sun);
+  transition:
+    transform var(--dur-spring) var(--spring) 450ms,
+    background-color 300ms var(--ease) 150ms;
+}
+html.js.motion .chip--sun:not(.is-in) {
+  background-size: 0% 100%;
+  box-shadow: inset 0 0 0 1px rgba(var(--ink-rgb), 0.08);
+  color: var(--fg);
+}
+html.js.motion .chip--sun:not(.is-in)::before {
+  background: var(--fg);
+}
+html.js.motion .chip--sun:not(.is-in)::before {
+  transform: scale(0);
+}
+/* "Coming soon" */
+.chip--line {
+  background: transparent;
+  color: var(--fg-muted);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+/* ───────── card ───────── */
+.card {
+  position: relative;
+  background: var(--paper-2);
+  border-radius: var(--radius);
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 1px 2px rgba(var(--shadow-rgb), 0.04),
+    0 24px 48px -32px rgba(var(--shadow-rgb), 0.18);
+}
+[data-theme="violet"] .card {
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 1px 2px rgba(var(--shadow-rgb), 0.3),
+    0 24px 48px -32px rgba(var(--shadow-rgb), 0.6);
+}
+.card--mist {
+  background: var(--mist);
+  box-shadow: none;
+}
+
+/* ───────── live dot: cobalt, with a slow ring ───────── */
+.live-dot {
+  position: relative;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent);
+}
+/* still between ticks: it moves only when something happens (lib/live.ts pulse()) */
+.live-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+}
+.live-dot.pulse::after {
+  animation: live-ring 1.2s var(--ease) 1;
+}
+.live-dot.pulse-2::after {
+  animation:
+    live-ring 1.2s var(--ease) 1,
+    live-ring 1.2s var(--ease) 180ms 1;
+}
+@keyframes live-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+/* not live (empty states) */
+.live-dot--off {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--fg-muted);
+}
+
+/* ───────── odometer (lib/odometer.ts) ───────── */
+.odo {
+  /* a tight window (digits are 0.72em tall): at rest nothing of the reel shows,
+     mid-roll only the two digits in passage */
+  --odo-h: 0.92em;
+  display: inline-flex;
+  align-items: baseline;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.odo__cell {
+  position: relative;
+  display: inline-block;
+  height: var(--odo-h);
+  line-height: var(--odo-h);
+  /* vertical clip only, never the sides of a wide digit */
+  clip-path: inset(0 -0.3em);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.odo__ghost {
+  visibility: hidden;
+}
+.odo__strip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  /* no will-change: 64 reels held 89 composited layers for the life of the page and
+     made every scroll frame re-layerize; a reel only moves for about 1.5s */
+}
+.odo__strip > span {
+  display: block;
+  height: var(--odo-h);
+}
+.odo__sym {
+  display: inline-block;
+  line-height: var(--odo-h);
+}
+.odo__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* ───────── copy-to-clipboard label swap (lib/copy.ts) ───────── */
+.swap {
+  display: inline-grid;
+  overflow: hidden;
+}
+.swap > span {
+  grid-area: 1 / 1;
+  transition:
+    transform 500ms var(--ease),
+    opacity 300ms var(--ease);
+}
+.swap__b {
+  transform: translateY(100%);
+  opacity: 0;
+}
+[data-copied] .swap__a {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+[data-copied] .swap__b {
+  transform: none;
+  opacity: 1;
+}
+/* same swap, for anything that is not a copy button */
+[data-swapped] .swap__a {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+[data-swapped] .swap__b {
+  transform: none;
+  opacity: 1;
+}
+
+/* ───────── multi-state label slot (lib/slot.ts setSlot) ───────── */
+.slot {
+  position: relative;
+  display: inline-grid;
+  vertical-align: bottom;
+}
+.slot > [data-slot-item] {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  transition:
+    transform var(--dur-ui) var(--ease),
+    opacity var(--dur-micro) var(--ease);
+}
+.slot > [data-slot-item]:not([data-on]) {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transform: translateY(70%);
+  pointer-events: none;
+}
+.slot > [data-leaving] {
+  transform: translateY(-70%);
+}
+
+/* ───────── theme-only media (src/lib/theme.ts) ─────────
+   Two siblings, one per theme: <img class="theme-only-light" loading="lazy" …> and
+   <img class="theme-only-violet" loading="lazy" …>. The hidden one is display:none,
+   so with loading="lazy" it is never fetched until its theme is on; once fetched it
+   stays cached, so toggling back costs nothing. Eager images (LCP) need a preload of
+   the active theme instead (docs/VIOLET-SWEEP.md, hero). */
+:root:not([data-theme="violet"]) .theme-only-violet,
+:root[data-theme="violet"] .theme-only-light {
+  display: none !important;
+}
+
+/* ───────── glass: frosted round control over photos (the brand-card pause buttons) ───────── */
+.glass {
+  position: relative;
+  isolation: isolate;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0.5px rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0.5px rgba(var(--fixed-ink-rgb), 0.04),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.6),
+    0 0.5px 1px rgba(var(--fixed-ink-rgb), 0.05),
+    0 4px 10px -4px rgba(var(--fixed-ink-rgb), 0.07),
+    0 16px 36px -12px rgba(var(--fixed-ink-rgb), 0.16);
+}
+.glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.15) 32%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.12) 70%, rgba(255, 255, 255, 0.75) 100%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 3;
+}
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(120px circle at 50% -40%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 70%);
+  opacity: 0;
+  transition: opacity 500ms var(--ease);
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: soft-light;
+}
+@media (hover: hover) and (pointer: fine) {
+  .glass:hover::before {
+    opacity: 1;
+  }
+}
+
+/* ───────── reveal primitives (lib/reveal.ts) ─────────
+   Gated on html.js: without JS everything is simply shown. If the module never
+   boots (html.js but no html.motion), a failsafe shows everything after 2.4s. */
+[data-reveal] {
+  transition:
+    opacity var(--dur-enter) var(--ease),
+    transform var(--dur-enter) var(--ease),
+    filter var(--dur-enter) var(--ease);
+  transition-delay: var(--d, 0ms);
+}
+html.js [data-reveal]:not(.in) {
+  opacity: 0;
+  transform: translate3d(0, var(--rise), 0);
+}
+/* blur only where it is cheap: fine pointers at 768px and up, text-sized elements
+   (cards, panels and images use data-reveal="rise" or "wipe") */
+@media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+  html.js [data-reveal=""]:not(.in),
+  html.js [data-reveal="blur"]:not(.in) {
+    filter: blur(6px);
+  }
+}
+@media not ((hover: hover) and (pointer: fine) and (min-width: 768px)) {
+  [data-reveal]:not([data-reveal="wipe"]) {
+    transition:
+      opacity var(--dur-enter) var(--ease),
+      transform var(--dur-enter) var(--ease);
+    transition-delay: var(--d, 0ms);
+  }
+}
+html.js [data-reveal="fade"]:not(.in) {
+  transform: none;
+  filter: none;
+}
+html.js [data-reveal="scale"]:not(.in) {
+  transform: scale(0.96);
+  filter: none;
+}
+/* images: wipe up from the bottom, inner media settles from 1.08 */
+[data-reveal="wipe"] {
+  overflow: hidden;
+  transition: clip-path 1.2s var(--ease);
+  transition-delay: var(--d, 0ms);
+}
+html.js [data-reveal="wipe"]:not(.in) {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  clip-path: inset(100% 0 0 0);
+}
+[data-reveal="wipe"] > :is(img, picture, video, .media) {
+  transition: transform 1.4s var(--ease);
+  transition-delay: var(--d, 0ms);
+}
+html.js [data-reveal="wipe"]:not(.in) > :is(img, picture, video, .media) {
+  transform: scale(1.08);
+}
+[data-reveal="wipe"] > picture > img {
+  width: 100%;
+  height: 100%;
+}
+/* masked line headlines: lines are split and driven by GSAP (lib/split.ts).
+   Masks are padded so descenders and italic overhangs are never cut. */
+html.js [data-lines]:not([data-split]) {
+  opacity: 0;
+}
+[data-lines] .line-mask {
+  padding: 0.1em 0.14em 0.2em;
+  margin: -0.1em -0.14em -0.2em;
+}
+[data-lines] .line {
+  display: block;
+}
+/* landed headlines stop clipping, so breathing or hovered wink words are never cut */
+[data-lines].landed .line-mask {
+  overflow: visible !important;
+}
+
+/* image arrival: the placeholder sits under the image as a background, the
+   image fades in once decoded (lib/media.ts decodeFade adds .is-loaded).
+   <div class="ph" style="--ph:url(data:image/webp;base64,…)"><img data-decode …></div> */
+.ph {
+  background-color: var(--mist);
+  background-image: var(--ph, none);
+  background-size: cover;
+  background-position: center;
+}
+img[data-decode] {
+  transition: opacity 400ms var(--ease);
+}
+html.js.motion img[data-decode]:not(.is-loaded) {
+  opacity: 0;
+}
+
+@keyframes cb-failsafe {
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    clip-path: none;
+  }
+}
+html.js:not(.motion) :is([data-reveal], [data-reveal] > *, [data-lines]) {
+  animation: cb-failsafe 0.6s var(--ease) 2.4s forwards;
+}
+html.js:not(.motion) .hl {
+  background-size: 100% 0.42em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal]:not(.in),
+  html.js [data-reveal="wipe"]:not(.in) {
+    transform: none;
+    filter: none;
+    clip-path: none;
+  }
+  html.js [data-reveal="wipe"]:not(.in) {
+    opacity: 0;
+  }
+  html.js [data-reveal="wipe"] > * {
+    transform: none !important;
+  }
+  .live-dot::after {
+    animation: none !important;
+  }
+}
