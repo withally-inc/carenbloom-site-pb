@@ -1,6 +1,6 @@
 import './careers.css'
 import { gsap } from 'gsap'
-import { getRoleState, type Role, type RoleState } from '../lib/roles'
+import { getRoleState, subscribeRoleState, type Role, type RoleState } from '../lib/roles'
 import { revealLater } from '../lib/reveal'
 import { petalLoader } from '../lib/bloom'
 import { cleanDashes } from '../lib/text'
@@ -22,8 +22,6 @@ const GROUPS = [
 ] as const
 
 const STAGGER = 50 // capped at 6 rows by the reveal runner
-const FALLBACK_REFRESH_MS = 15 * 60 * 1000
-const MAX_TIMEOUT = 2 ** 31 - 1
 
 type View = 'loading' | 'ready' | 'empty' | 'error'
 
@@ -34,7 +32,6 @@ const h = <K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text?: strin
   return el
 }
 
-const str = (v: unknown) => (typeof v === 'string' ? v : '')
 const plural = (n: number, one: string, many: string) => (n === 1 ? one : many)
 
 function roleRow(role: Role): HTMLLIElement {
@@ -91,18 +88,6 @@ function roleGroup(group: (typeof GROUPS)[number], roles: Role[], count: number)
   return sec
 }
 
-function nextRefreshDelay(state: RoleState): number {
-  const raw = state as RoleState & { serverNow?: string; nextBoundaryAt?: string }
-  const now = Date.parse(str(raw.serverNow))
-  if (!Number.isFinite(now)) return FALLBACK_REFRESH_MS
-  const marks = [
-    Date.parse(str(raw.nextBoundaryAt)),
-    ...state.roles.flatMap((r) => [Date.parse(str(r.state?.nextRefreshAt)), Date.parse(str(r.state?.effectiveClosesAt))]),
-  ].filter((t) => Number.isFinite(t) && t > now)
-  if (!marks.length) return FALLBACK_REFRESH_MS
-  return Math.max(1000, Math.min(...marks) - now)
-}
-
 export function init(root: HTMLElement): () => void {
   const list = root.querySelector<HTMLElement>('[data-careers-list]')
   const status = root.querySelector<HTMLElement>('[data-careers-status]')
@@ -114,7 +99,6 @@ export function init(root: HTMLElement): () => void {
 
   root.querySelectorAll<HTMLElement>('[data-petal-loader]').forEach((el) => el.replaceChildren(petalLoader()))
 
-  let refreshTimer = 0
   let alive = true
   let view: View = 'loading'
   let signature = ''
@@ -164,7 +148,6 @@ export function init(root: HTMLElement): () => void {
 
   const render = async (state: RoleState | null, animate: boolean) => {
     if (!alive) return
-    clearTimeout(refreshTimer)
 
     if (!state || !Array.isArray(state.roles)) {
       signature = ''
@@ -227,46 +210,23 @@ export function init(root: HTMLElement): () => void {
       if (!quiet) revealLater(root)
       else if (view === 'ready') odometer(count, String(n))
     }
-
-    // the server publishes its next boundary (a close or a weekly refresh): re-read then
-    refreshTimer = window.setTimeout(() => void load(true), Math.min(MAX_TIMEOUT, nextRefreshDelay(state)))
-  }
-
-  const load = async (force = false) => {
-    const state = await getRoleState(force)
-    await render(state, true)
   }
 
   const retryLoad = async (button: HTMLButtonElement) => {
     if (button.disabled) return
-    // width locked to the idle label so nothing jumps while checking
-    button.style.width = `${button.getBoundingClientRect().width}px`
     button.disabled = true
     button.setAttribute('aria-busy', 'true')
-    const label = button.querySelector('.careers__retry-label')!
-    label.textContent = 'Checking…'
+    button.querySelector('.careers__retry-label')!.textContent = 'Checking…'
     button.prepend(petalLoader('careers__retry-loader'))
-    const [state] = await Promise.all([getRoleState(true), new Promise((r) => setTimeout(r, 450))])
-    if (!alive) return
-    if (!state) {
-      button.disabled = false
-      button.removeAttribute('aria-busy')
-      button.querySelector('.petal-loader')?.remove()
-      label.textContent = 'Try again'
-      button.style.width = ''
-      say('Current openings are temporarily unavailable.')
-      return
-    }
-    view = 'loading'
-    list.dataset.state = 'loading'
-    await render(state, true)
+    await getRoleState(true) // the shared publisher renders success or a fresh retry state
   }
 
   setStatus('loading')
-  void load()
+  const unsubscribe = subscribeRoleState((state) => void render(state, true))
+  void getRoleState()
 
   return () => {
     alive = false
-    clearTimeout(refreshTimer)
+    unsubscribe()
   }
 }

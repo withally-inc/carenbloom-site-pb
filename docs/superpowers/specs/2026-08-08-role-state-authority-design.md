@@ -54,10 +54,7 @@ Unknown, closed, malformed, and failed endpoint responses render explicit unavai
 
 ## Homepage
 
-Static HTML contains no role rows and no numeric open-role claim.
-The homepage fetches the collection response, renders only authoritative open roles, and derives the section label, group counts, navigation chips, and hero recruiting count from that same response.
-Endpoint failure leaves a neutral unavailable message and no role links.
-The endpoint response carries the stable group identifiers needed to preserve the approved group order and labels.
+The v4 collection surfaces and their availability contract are owned by the [README](../../../README.md#canonical-role-data-and-lifecycle).
 
 ## Application intake
 

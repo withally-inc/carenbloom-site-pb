@@ -1,8 +1,6 @@
 import { odometer, type Odometer } from './odometer'
 
-// Live role state from the careers API (proxied at /api by Vite and Vercel).
-// One request per page, shared by everything that shows the count.
-
+// One collection owner publishes every response and refreshes at server boundaries.
 export type Role = {
   slug: string
   title: string
@@ -13,76 +11,83 @@ export type Role = {
 }
 export type RoleState = {
   status: string
+  serverNow: string
+  nextBoundaryAt: string | null
   openRoleCount: number
   groupCounts: Record<string, number>
   roles: Role[]
 }
 export type RoleCountState = 'loading' | 'ready' | 'zero' | 'error'
-
-export const FALLBACK_ROLE_COUNT = 15
-export const ROLES_EVENT = 'roles:state' // window event, detail: { state, count }
-const CACHE = 'cb-roles'
-
+export const ROLES_EVENT = 'roles:state'
+const FALLBACK_REFRESH_MS = 15 * 60 * 1000
+const MAX_TIMEOUT = 2 ** 31 - 1
+const consumers = new Set<(state: RoleState | null) => void>()
+const odos = new WeakMap<HTMLElement, Odometer>()
 let pending: Promise<RoleState | null> | null = null
+let inFlight = false
+let settled = false
+let current: RoleState | null = null
+let refreshTimer = 0
 
-export function getRoleState(force = false): Promise<RoleState | null> {
-  if (pending && !force) return pending
-  pending = fetch('/api/role-state', { headers: { accept: 'application/json' } })
-    .then((r) => (r.ok ? (r.json() as Promise<RoleState>) : null))
-    .then((d) => (d && typeof d.openRoleCount === 'number' ? d : null))
-    .catch(() => null)
-  pending.then((d) => {
-    if (!d) return
-    try {
-      sessionStorage.setItem(CACHE, String(d.openRoleCount))
-    } catch {
-      /* private mode */
-    }
-  })
-  return pending
+function publish(data: RoleState | null) {
+  current = data
+  settled = true
+  renderCounts(data ? (data.openRoleCount === 0 ? 'zero' : 'ready') : 'error', data?.openRoleCount ?? null)
+  consumers.forEach((consume) => consume(data))
 }
 
-/** the count seen earlier in this session, if any (no roll when it has not changed) */
-export function cachedRoleCount(): number | null {
-  try {
-    const v = sessionStorage.getItem(CACHE)
-    return v === null ? null : Number(v)
-  } catch {
-    return null
-  }
-}
-
-function setState(state: RoleCountState, count: number | null) {
+function renderCounts(state: RoleCountState, count: number | null) {
   const html = document.documentElement
   html.dataset.rolesState = state
-  if (count !== null) html.dataset.roles = String(count)
+  if (count === null) delete html.dataset.roles
+  else html.dataset.roles = String(count)
+  document.querySelectorAll<HTMLElement>('[data-role-count]').forEach((el) => {
+    if (count === null) {
+      el.replaceChildren()
+      el.removeAttribute('aria-label')
+      el.removeAttribute('data-odo')
+      odos.delete(el)
+      return
+    }
+    let odo = odos.get(el)
+    if (!odo) {
+      odo = odometer(el, count)
+      delete el.dataset.odo
+      odos.set(el, odo)
+    } else odo.to(count)
+  })
+  document.querySelectorAll<HTMLElement>('[data-role-count-fold]').forEach((el) => (el.hidden = count === null))
+  document.querySelectorAll<HTMLElement>('[data-role-noun]').forEach((el) => (el.textContent = count === 1 ? 'open role' : 'open roles'))
   window.dispatchEvent(new CustomEvent(ROLES_EVENT, { detail: { state, count } }))
 }
 
-const odos = new WeakMap<HTMLElement, Odometer>()
+export function subscribeRoleState(consume: (state: RoleState | null) => void): () => void {
+  consumers.add(consume)
+  if (settled) consume(current)
+  return () => consumers.delete(consume)
+}
 
-// Fill every [data-role-count] with the live count, rolling the digits when the
-// value changes (odometer), pluralize [data-role-noun], and publish the state on
-// <html data-roles-state="loading|ready|zero|error" data-roles="15"> plus a
-// 'roles:state' window event. On a failed request the static fallback stays.
-export async function bindRoleCount(root: ParentNode = document) {
-  const cached = cachedRoleCount()
-  setState('loading', cached)
-  const state = await getRoleState()
-  const n = state ? state.openRoleCount : FALLBACK_ROLE_COUNT
-  root.querySelectorAll<HTMLElement>('[data-role-count]').forEach((el) => {
-    const shown = (el.querySelector('.odo__sr')?.textContent ?? el.textContent ?? '').trim()
-    if (shown === String(n)) return
-    let o = odos.get(el)
-    if (!o) {
-      o = odometer(el, shown || String(cached ?? FALLBACK_ROLE_COUNT))
-      odos.set(el, o)
-    }
-    o.to(n)
-  })
-  root.querySelectorAll<HTMLElement>('[data-role-noun]').forEach((el) => (el.textContent = n === 1 ? 'open role' : 'open roles'))
-  // legacy caption wrapper: reads "No current openings" when nothing is open
-  if (state && n === 0) root.querySelectorAll<HTMLElement>('[data-role-caption]').forEach((el) => (el.textContent = 'No current openings'))
-  setState(!state ? 'error' : n === 0 ? 'zero' : 'ready', state ? n : null)
-  return n
+export function getRoleState(force = false): Promise<RoleState | null> {
+  if (pending && (inFlight || !force)) return pending
+  clearTimeout(refreshTimer)
+  inFlight = true
+  pending = fetch('/api/role-state', { cache: 'no-store', headers: { accept: 'application/json' } })
+    .then((r) => (r.ok ? (r.json() as Promise<RoleState>) : null))
+    .then((d) => (d && Number.isInteger(d.openRoleCount) && d.openRoleCount >= 0 && Array.isArray(d.roles) ? d : null))
+    .catch(() => null)
+    .then((data) => {
+      inFlight = false
+      publish(data)
+      const now = Date.parse(data?.serverNow ?? '')
+      const boundary = Date.parse(data?.nextBoundaryAt ?? '')
+      const delay = Number.isFinite(now) && Number.isFinite(boundary) ? Math.max(1000, boundary - now) : FALLBACK_REFRESH_MS
+      refreshTimer = window.setTimeout(() => void getRoleState(true), Math.min(MAX_TIMEOUT, delay))
+      return data
+    })
+  return pending
+}
+
+export function bindRoleCount() {
+  if (!settled) renderCounts('loading', null)
+  return getRoleState()
 }

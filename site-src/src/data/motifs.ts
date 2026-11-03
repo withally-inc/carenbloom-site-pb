@@ -28,4 +28,3 @@ export function motifMask(shape: MotifShape): string {
   const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>${MOTIFS[shape]}</svg>`
   return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`
 }
-

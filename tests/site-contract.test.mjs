@@ -42,11 +42,26 @@ test("pages are indexable and canonical to the production domain", () => {
   }
 });
 
-test("the browser talks to the same-origin role-state and applications APIs", () => {
-  const bundles = readFileSync(path.join(root, "careers/apply/index.html"), "utf8").match(/\/assets\/[\w.-]+\.js/g) ?? [];
-  const code = bundles.map((bundle) => readFileSync(path.join(root, bundle), "utf8")).join("\n");
-  assert.match(code, /\/api\/role-state/);
-  assert.match(code, /\/api\/applications/);
+test("the built browser calls both same-origin APIs", async () => {
+  const { chromium } = await import("playwright");
+  const { fixture, fillApplication, submit } = await import("./helpers/site-browser.mjs");
+  const browser = await chromium.launch();
+  try {
+    const f = await fixture(browser);
+    await f.open();
+    await fillApplication(f.page);
+    await submit(f.page);
+    await f.page.locator("[data-success]:not([hidden])").waitFor();
+    assert.equal(f.calls.collections.length, 1);
+    assert.equal(f.calls.collections[0].url(), `${f.origin}/api/role-state`);
+    assert.equal(f.calls.roles[0].url(), `${f.origin}/api/role-state?role=chief-of-staff`);
+    assert.equal(f.calls.applications.length, 1);
+    assert.equal(f.calls.applications[0].url(), `${f.origin}/api/applications`);
+    assert.equal(f.calls.applications[0].method(), "POST");
+    await f.close();
+  } finally {
+    await browser.close();
+  }
 });
 
 test("the runtime owners stay in place beside the site", () => {
