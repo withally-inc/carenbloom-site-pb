@@ -354,8 +354,10 @@ export function init(root: HTMLElement): () => void {
       const v = { d: Math.floor(total / 86400), h: Math.floor((total % 86400) / 3600), m: Math.floor((total % 3600) / 60), s: total % 60 }
       for (const k of ['d', 'h', 'm'] as const) {
         if (last[k] === v[k]) continue
-        if (!odos[k]) odos[k] = odometer(parts[k], String(v[k]))
-        else odos[k]!.to(String(v[k]))
+        if (!odos[k]) {
+          odos[k] = odometer(parts[k], String(v[k]))
+          delete parts[k].dataset.odo
+        } else odos[k]!.to(String(v[k]))
         last[k] = v[k]
       }
       parts.s.textContent = String(v.s)

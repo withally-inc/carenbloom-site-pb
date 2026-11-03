@@ -52,6 +52,7 @@ function renderCounts(state: RoleCountState, count: number | null) {
     let odo = odos.get(el)
     if (!odo) {
       odo = odometer(el, count)
+      delete el.dataset.odo
       odos.set(el, odo)
     } else odo.to(count)
   })

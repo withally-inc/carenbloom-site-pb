@@ -32,13 +32,20 @@ The application form submits only when served from `carenbloom.com` or `www.care
 
 Use Node.js 22.12 or newer and pnpm 10.20.0, pinned in `site-src/package.json`.
 The source package permits dependency install scripts only for Sharp and esbuild.
-If pnpm is unavailable locally, run `npm exec --package=pnpm@10.20.0 -- npm run build:site`.
+The build commands use npm to invoke that exact pnpm version without a global installation.
 
 ```sh
 npm run build:site
 ```
 
-`scripts/build-site.mjs` installs `site-src/` dependencies when needed, builds it with `VITE_SITE_URL=https://carenbloom.com`, and replaces the built entries at the repository root. It refuses to overwrite any runtime owner (`api/`, `functions/`, `scripts/`, `tests/`, configuration). For a live-reloading preview of the source alone, run `pnpm dev` inside `site-src/` (its `/api` calls then need the local server below).
+`scripts/build-site.mjs` installs `site-src/` dependencies when needed, builds it with `VITE_SITE_URL=https://carenbloom.com`, and replaces the built entries at the repository root.
+It refuses to overwrite any runtime owner (`api/`, `functions/`, `scripts/`, `tests/`, configuration).
+For a live-reloading preview of the source alone, run `pnpm dev` inside `site-src/` (its `/api` calls then need the local server below).
+
+Run `npm run check:site` to check output without publishing.
+It copies build inputs into a temporary directory inside the worktree, installs clean dependencies with the frozen lockfile and pinned pnpm, and builds twice with the production site URL.
+Both builds must be byte-identical and match every published file, including file additions and removals.
+The check runs as part of `npm test` and removes its temporary build directory afterward.
 
 ## Local development and tests
 
