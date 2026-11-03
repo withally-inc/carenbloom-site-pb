@@ -1,6 +1,8 @@
 # Handoff
 
-> **Integration pass, 2026-10-21:** every item below carries its resolution. Two stay open: the API's answer for unknown slugs (owner side) and the "≈ +N" wording (Rahul at preview). Results and Lighthouse in `docs/QA.md`.
+> **Integration pass, 2026-10-21:** historical resolutions and wording questions are recorded below.
+> Current API behavior is owned by the [README](../../README.md#canonical-role-data-and-lifecycle).
+> Results and Lighthouse are in `docs/QA.md`.
 
 
 ## Foundation v2 (2026-10-21): notes for section agents
@@ -12,8 +14,7 @@
   - Informational, applied by the sections.
 - Careers agent: `/404.html` exists (`src/sections/notfound.*` placeholders are yours). Listen for `egg:bloom` to bloom the bud. Use `budPetals()` from `lib/bloom.ts`.
   - **Resolved:** the careers agent built the 404 bud; it now uses petal states (see the brands item on `budPetals()`).
-- Nav "Open roles" now shows "(n)" only once the API answers. `bindRoleCount()` publishes `html[data-roles-state]` and a `roles:state` event; reuse them instead of a second fetch.
-  - Informational; the nav, footer and careers all listen to `roles:state`.
+- Collection consumers: see [FOUNDATION's helper reference](FOUNDATION.md#lib) and the [README lifecycle contract](../../README.md#canonical-role-data-and-lifecycle).
 
 ## People + How we work (people agent, 2026-10-21)
 - Copydeck: the portrait alt reads "Portrait of {name}, printed in cobalt duotone", but at rest the People section shows the ink print (cobalt only develops on hover/focus). Proposed: "Portrait of Rahul Ramchand" / "Portrait of Momoko Kashiwabara". Shipped verbatim until cleared.
@@ -30,12 +31,10 @@
   - **Resolved:** `initial ?? (el.dataset.odo || el.textContent?.trim() || '0')`; record and careers no longer write the value twice.
 - Footer: on `/careers` the footer repeats "Join the *spaceship*." right under the page's own h1 of the same words. Proposed: hide statement 1 on `body[data-page="careers"]` and `body[data-page="apply"]`, keep "Start a conversation.".
   - **Resolved:** COPY-DECISIONS 8, `.statement--careers` hidden on both pages, the remaining statement takes the full width.
-- `vercel.json` has `trailingSlash: false`: every role row links to `/careers/apply/?role=…` (COPY.md), which Vercel will 308 to `/careers/apply?role=…`. Either link without the slash everywhere (smoke uses the slash) or set `trailingSlash` for that path. One hop, nothing breaks.
-  - **Resolved:** COPY-DECISIONS 9. Rows link to `/careers/apply?role=…`, smoke uses it, the local preview emulates Vercel's 308 for a trailing slash (query kept). The link to the live site keeps the slash, which carenbloom.com canonicalises to.
+- Deployed role routes and canonical URLs: see the [README](../../README.md#routes).
 - Shared helpers live in `src/sections/careers.ts` and are imported by `apply.ts`: `cleanDashes()` (the one dash helper of COPY-DECISIONS 2), `petalLoader()` (BRAND 9 loader, CSS in `careers.css`), `revealLater()`. Candidates for `src/lib/` if another section needs them.
   - **Resolved:** `cleanDashes()` in `lib/text.ts`, `petalLoader()` in `lib/bloom.ts` (CSS in components.css), `revealLater()` in `lib/reveal.ts`. Apply no longer loads careers.css.
-- Owner (API): `/api/role-state?role=<anything>` answers 200 `{status:"open", role:{slug,title}}` for unknown slugs. The live page then breaks; ours shows "Role not found" when the role has no `questions` or no `state.effectiveClosesAt`. Worth fixing at the source.
-  - **Open, owner side:** the API still answers unknown slugs with 200. The front end guard (`isRealRole`) stays until it is fixed at the source.
+- Unknown-role behavior: see the [README lifecycle contract](../../README.md#canonical-role-data-and-lifecycle).
 - Decision: the brief's design intent says the row arrow "advances on hover"; MOTION-CHALLENGE 1.28 says it does not move (one gesture per link). Followed the challenge: dot + 14px push + cobalt hairline, the arrow only turns cobalt.
   - Kept as decided (MOTION-CHALLENGE 1.28).
 

@@ -13,7 +13,7 @@ Answers to the open questions at the end of docs/COPY.md. Section agents apply t
 6. E5 Hello Nancy reply: "Hello yourself." approved. No fallback needed.
 7. Portrait alt text: "Portrait of Rahul Ramchand" and "Portrait of Momoko Kashiwabara".
 8. Footer on /careers and /careers/apply: hide the "Join the *spaceship*." statement (the page h1 already says it); keep "Start a conversation.".
-9. Role links: `/careers/apply?role=<slug>` without the trailing slash everywhere (matches `trailingSlash: false`).
+9. Role links and production canonical URLs: see [README routes](../../README.md#routes) and [role metadata](../../README.md#canonical-role-data-and-lifecycle).
 10. Closing bloom in the footer as a back-to-top control: label "Back to top" (visible on hover/focus, and as the accessible name).
 
 11. Navigation: four links, "Brands", "People", "How we work", "Careers", one per petal of the mark. Approved.

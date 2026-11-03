@@ -43,11 +43,11 @@ function htmlInclude(): Plugin {
   }
 }
 
-// Vercel's cleanUrls + trailingSlash: false, locally: /careers and /careers/apply
+// Local Vite development and preview: /careers and /careers/apply
 // serve their index.html (with appType 'mpa' there is no SPA fallback to the home
 // page), a page path with a trailing slash 308s to the bare path with its query
 // (/careers/apply/?role=x to /careers/apply?role=x), and any other page-like path
-// serves 404.html, as on Vercel.
+// serves 404.html. The root README owns deployed route conventions.
 const PAGES = new Set(['/', '/careers', '/careers/apply', '/404'])
 function cleanUrls(): Plugin {
   type Next = () => void

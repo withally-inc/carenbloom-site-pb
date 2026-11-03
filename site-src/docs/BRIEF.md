@@ -1,6 +1,7 @@
 # Care & Bloom website v4 — build brief
 
-Single source of truth for every agent working on this repo. Read it fully before touching code.
+Design brief for the v4 redesign.
+The [root README](../../README.md) owns current runtime routes, API boundaries, build commands, and review deployment policy.
 Owner: Melriver (Mehdi Izemmour). Client: Care & Bloom, a Hong Kong consumer health group (Rahul Ramchand, Momoko Kashiwabara).
 Approved direction page: https://claude.ai/artifact/4jsjVKQCbcA2t7LRmcaAe3 (decisions below are final).
 
@@ -86,8 +87,8 @@ Hero: "Join the *spaceship*." + one paragraph from the current careers page. Liv
 ### Apply (`/careers/apply/?role=slug`)
 Rebuild the existing form in the new design (fields listed in `docs/reference-current-site/careers/apply/index.html`, logic in `docs/reference-current-site/scripts/careers-apply.js`: read it, mirror its payload exactly). **Submission guard:** real POST to `/api/applications` ONLY when `location.hostname` is `carenbloom.com` or `www.carenbloom.com`. On any other host show a clear inline notice "Preview: applications are not sent from this address." and do not send. Never point the form at another host.
 
-### API proxy
-`vercel.json` rewrites `/api/:path*` → `https://carenbloom.com/api/:path*` (the API has no CORS). Local dev: Vite `server.proxy` for `/api` with `changeOrigin`.
+### API integration
+See the [root README](../../README.md#canonical-role-data-and-lifecycle) for deployed API ownership and CORS, and [local development guidance](../../README.md#changing-the-site) for the Vite proxy.
 
 ## 7. Content rules
 

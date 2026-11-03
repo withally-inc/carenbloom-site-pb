@@ -38,9 +38,10 @@ The build commands use npm to invoke that exact pnpm version without a global in
 npm run build:site
 ```
 
-`scripts/build-site.mjs` installs `site-src/` dependencies when needed, builds it with `VITE_SITE_URL=https://carenbloom.com`, and replaces the built entries at the repository root.
+`scripts/build-site.mjs` installs `site-src/` dependencies when needed, defaults to `VITE_SITE_URL=https://carenbloom.com`, and replaces the built entries at the repository root.
 It refuses to overwrite any runtime owner (`api/`, `functions/`, `scripts/`, `tests/`, configuration).
-For a live-reloading preview of the source alone, run `pnpm dev` inside `site-src/` (its `/api` calls then need the local server below).
+For a live-reloading preview of the source alone, run `pnpm dev` inside `site-src/`.
+Vite proxies `/api` to production according to `site-src/vite.config.ts`; use `npm run serve` below for the isolated dry-run runtime.
 
 Run `npm run check:site` to check output without publishing.
 It copies build inputs into a temporary directory inside the worktree, installs clean dependencies with the frozen lockfile and pinned pnpm, and builds twice with the production site URL.

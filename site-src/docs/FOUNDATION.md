@@ -9,7 +9,8 @@ Motion values come from `docs/MOTION-CHALLENGE.md` section 0; the constants belo
 - `<name>.ts` exports `init(root: HTMLElement): () => void` (return a cleanup). It runs under the preloader, before reveals start. Import `./<name>.css` there.
 - DOM you add later (fetched lists): call `watch(container)` from `lib/reveal.ts` so its reveals register.
 - People is the one dark section: `class="section surface-ink"`. `.on-ink` remaps text, dot links, focus ring and lines without the ground. The nav turns ink-toned (`nav[data-tone="ink"]`) while its line overlaps any `.surface-ink`, by itself.
-- Pages: `/` home, `/careers`, `/careers/apply?role=<slug>` (no trailing slash; `/careers/apply/` 308s), `/404.html` (`sections/notfound`, `body[data-page="notfound"]`).
+- Pages and deployed slash conventions: see [README routes](../../README.md#routes).
+  The 404 uses `sections/notfound` and `body[data-page="notfound"]`.
 
 ## Tokens (`tokens.css`; Tailwind: `bg-paper`, `text-ink-2`, `font-serif`, `text-h2`, `ease-house`, `ease-spring`…)
 `--paper --paper-2 --mist --ink --ink-2 --muted(#5F6A78) --line --cobalt --sun`; on ink: `--on-ink --on-ink-2 --cobalt-on-ink --line-on-ink`.
@@ -43,7 +44,9 @@ Budget: three beats per section (label + headline, lede, content block). Reveals
 - `bloom.ts`: `ICON_PATH`, `iconSVG()`, `buildPetals(svg)` → `{ petals, states, settle, split }`, `openPetals(p)`, `budPetals(p, amount | [n,e,s,w], { opacity, rotate, stagger, instant })` (1 open, .42 bud, on `SPRING.touch`), `petalLoader(cls)`. Tween `p.states` (never the groups) for scale, rotate, x, y: each writes its transform about the centre (21, 21) explicitly, so it is exact even under the preloader. No `svgOrigin`.
 - `text.ts`: `cleanDashes(text)` (API text: em and en dashes become a comma). `reveal.ts` also exports `revealLater(el)` for fetched content.
 - `.link-block` on a card or row holding a `.dotlink--stretch`: the pointer anywhere on the block gives the link its gesture (components.css).
-- `roles.ts`: `getRoleState()` (cached `/api/role-state`), `cachedRoleCount()`, `bindRoleCount()` (boot runs it: `[data-role-count]` rolls, `[data-role-noun]`, `html[data-roles-state="loading|ready|zero|error"]`, window event `roles:state` {state, count}).
+- `roles.ts`: `getRoleState(force?)` shares the collection request; `subscribeRoleState(consumer)` returns an unsubscribe function and delivers the latest settled response to new consumers.
+  Boot calls `bindRoleCount()`; count selectors and the `roles:state` event are defined in [the implementation](../src/lib/roles.ts).
+  The [README](../../README.md#canonical-role-data-and-lifecycle) owns refresh and availability behavior.
 - `eggs.ts`: `playEgg(id, run, { throttle })` (one at a time, reduced-motion gate, marks found), `onTyped(word, fn)`, `onReturn((secondsAway) => …)`, `onDwell(el, fn, { ms >= 800, tap, stayOnMove, onLeave })`, `markFound(id)`, `foundEggs()`, `EGGS`, `EGG_TOTAL`. Ids: away, cycle, reorg, perch, wave, cities, console, bloom, print.
 - `copy.ts` `copyText`, `bindCopy(btn)` · `slot.ts` `setSlot` · `media.ts` `decodeFade` · `prefetch.ts`, `print.ts` (boot wires them).
 
