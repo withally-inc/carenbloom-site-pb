@@ -124,6 +124,27 @@ export function init(root: HTMLElement): () => void {
   let submissionReference: string | null = null
   let isSubmitting = false
 
+  const setIndexable = (openSlug?: string) => {
+    let robots = document.querySelector<HTMLMetaElement>('meta[name="robots"]')
+    if (!robots) {
+      robots = document.createElement('meta')
+      robots.name = 'robots'
+      document.head.append(robots)
+    }
+    robots.content = openSlug ? 'index, follow' : 'noindex'
+    document.querySelector('link[rel="canonical"]')?.remove()
+    document.querySelector('meta[property="og:url"]')?.remove()
+    if (!openSlug) return
+    const url = `https://carenbloom.com/careers/apply/?role=${encodeURIComponent(openSlug)}`
+    const canonical = document.createElement('link')
+    canonical.rel = 'canonical'
+    canonical.href = url
+    const ogUrl = document.createElement('meta')
+    ogUrl.setAttribute('property', 'og:url')
+    ogUrl.content = url
+    document.head.append(canonical, ogUrl)
+  }
+
   /* ───────── page states ───────── */
 
   const showReceipt = (ref: string) => {
@@ -134,6 +155,7 @@ export function init(root: HTMLElement): () => void {
 
   let slowTimer = 0
   const showUnavailable = (state: string, heading: string, message: string, retry = false) => {
+    setIndexable()
     clearTimeout(slowTimer)
     stateBox.classList.add('is-slow')
     stateBox.dataset.state = state
@@ -219,6 +241,7 @@ export function init(root: HTMLElement): () => void {
   function openRole(r: RoleDetail, state: CloseState, serverNow: string) {
     clearTimeout(slowTimer)
     role = r
+    setIndexable(r.slug)
     const title = cleanDashes(r.title)
     const location = cleanDashes(r.locationType) || 'Remote'
     const isRemote = location === 'Remote'
@@ -409,7 +432,7 @@ export function init(root: HTMLElement): () => void {
         if (refreshController === controller) refreshController = null
       }
       if (takenDown) return
-      if (next?.status === 'unknown') {
+      if (next?.status === 'unknown' || (next?.role?.slug === r.slug && !isRealRole(next, r.slug))) {
         takeDown('unknown', 'Role not found', 'This role is not one of our current openings.')
         return
       }

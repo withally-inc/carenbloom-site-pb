@@ -14,6 +14,15 @@ try {
   assert.match(await page.title(), /Care & Bloom/);
   assert.equal(await page.locator("h1").first().isVisible(), true, "the home headline should be visible");
 
+  await page.goto(`${baseUrl}/#careers`, { waitUntil: "load" });
+  const careersAnchor = page.locator('#careers');
+  assert.equal(await careersAnchor.count(), 1, "legacy careers fragments reach a meaningful section");
+  const openings = careersAnchor.locator('a[href="/careers"]').first();
+  await openings.click();
+  await page.waitForURL(/\/careers\/?$/);
+  await page.locator('[data-careers-list][data-state="ready"]').waitFor();
+  assert.equal(await page.locator('[data-careers-list] a[href*="role="]').count() > 0, true);
+
   const roleState = await (await fetch(`${baseUrl}/api/role-state`)).json();
   assert.ok(roleState.openRoleCount > 0, "the dry-run API should report open roles");
 

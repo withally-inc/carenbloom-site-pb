@@ -322,8 +322,8 @@ html:not(.js) .nav__theme {
   overflow: hidden;
   white-space: nowrap;
 }
-/* without JS the static count shows; with JS it opens once the API has answered */
-html.js .nav__roles:not([data-count="ready"]) .nav__countfold {
+/* Counts are revealed only after the API confirms availability. */
+.nav__countfold[hidden] {
   grid-template-columns: 0fr;
   opacity: 0;
 }

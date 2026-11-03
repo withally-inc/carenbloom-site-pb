@@ -410,7 +410,7 @@ States
 | Element | Role | Text | Source |
 |---|---|---|---|
 | Heading | h2 | About Care & Bloom | verbatim |
-| Para 1 | body | We launch and scale consumer health companies with $100M+ potential each. Our operators previously scaled IM8 (NASDAQ, $100M+ in 12 months), Casetify and Peak21. Our flagship brand crossed 8-figure revenue and 1M+ customers in under 36 months. | tightened from: "We launch and scale (...) Built by operators who previously scaled IM8 (NASDAQ, $100M+ in 12 months), Casetify, and Peak21 / our flagship brand crossed 8-figure revenue and 1M+ customers in under 36 months. We're just getting started." See owner question 1. |
+| Para 1 | body | We launch and scale consumer health companies with $100M+ potential each. Our operators previously scaled IM8 (NASDAQ, $100M+ in 12 months), Casetify and Peak21. Our flagship brand crossed 9-figure revenue and 1M+ customers in under 36 months. | tightened from: "We launch and scale (...) Built by operators who previously scaled IM8 (NASDAQ, $100M+ in 12 months), Casetify, and Peak21 / our flagship brand crossed 9-figure revenue and 1M+ customers in under 36 months. We're just getting started." See owner question 1. |
 | Para 2 | body | We recruit builders: people who have scaled revenue, shipped product, built and broken things, and want to do it again alongside people who ship. | tightened from: "We're not hiring for roles / we're recruiting builders. (...)" |
 | Para 3 | body + links | Our brands: hellonancy.com · biird.co | tightened from: "Check out our flagship brands: hellonancy.com · biird.co" |
 | Heading | h2 | About the role | verbatim |
@@ -613,7 +613,7 @@ The bloom icon (preloader, nav, footer) is `aria-hidden="true"` wherever the wor
 
 ## Owner questions
 
-1. **8-figure or 9 figures.** The apply page says the flagship brand "crossed 8-figure revenue"; the home says "Revenue 9 figures" and "9 figures in sexual health". I kept both, each in its own scope (flagship vs group). Confirm, or tell me which number to use everywhere.
+1. **Revenue confirmed.** The flagship brand copy uses "9-figure revenue", consistent with the home page’s "Revenue 9 figures".
 2. **Role copy from the API** (`mission`, `requirements`, `questions`, `loomPrompt`) contains em dashes and antitheses, e.g. "This isn't brand design, every asset gets tested" written with a dash. It renders as-is. Fix at the source, or allow the front end to swap each spaced dash for a comma?
 3. **Group intros** for Platform / Launch / Scale / Source & Build do not exist on the live site. The deck ships headings and counts only. Supply one line per group if you want them.
 4. **"<3 min"** sits next to the countdown on the live apply page with no explanation. I read it as the time to apply and wrote "<3 min to apply". Confirm.

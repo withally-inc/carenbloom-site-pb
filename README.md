@@ -2,7 +2,8 @@
 
 This repository is the canonical source for carenbloom.com: the home page, the careers page, the direct role application page, and the role-state and application APIs behind them.
 
-The v4 site (redesign by Melriver, November 2026) replaced the Pattern Breaking v3 front end. The v3 pages, tests and evidence remain in the Git history before this change.
+The v4 site (redesign by Melriver, November 2026) replaced the Pattern Breaking v3 front end.
+The v3 pages, tests and evidence remain in the Git history before this change.
 
 ## Layout
 
@@ -17,17 +18,21 @@ The v4 site (redesign by Melriver, November 2026) replaced the Pattern Breaking 
 | Route | Owner |
 | --- | --- |
 | `/` | Home |
-| `/careers` | Open roles, listed from `/api/role-state` |
-| `/careers/apply?role=<slug>` | Authoritative open, closed, unknown, or unavailable state for one canonical role, with its JobPosting metadata |
+| `/careers/` | Open roles, listed from `/api/role-state` |
+| `/careers/apply/?role=<slug>` | Authoritative open, closed, unknown, or unavailable state for one canonical role, with its JobPosting metadata |
 | `/api/role-state` | Non-cacheable canonical role lifecycle and open-role collection API |
 | `/api/applications` | Same-origin Cloudflare relay to the Vercel application intake API |
-| `/pb-live/` | Compatibility redirect to `/` |
+| `/pb-live` and `/pb-live/` | Compatibility redirects to `/` |
+| `/talents` and `/talents/` | Compatibility redirects to `/careers/`, preserving queries |
+| `/#careers` | Careers footer anchor with a direct link to openings |
 
 The application form submits only when served from `carenbloom.com` or `www.carenbloom.com`; on every other host it stays fail-closed and sends nothing.
 
 ## Changing the site
 
-Use Node.js 22 or newer and pnpm.
+Use Node.js 22.12 or newer and pnpm 10.20.0, pinned in `site-src/package.json`.
+The source package permits dependency install scripts only for Sharp and esbuild.
+If pnpm is unavailable locally, run `npm exec --package=pnpm@10.20.0 -- npm run build:site`.
 
 ```sh
 npm run build:site
@@ -50,9 +55,18 @@ Run the complete self-contained suite with:
 npm test
 ```
 
-The test command starts its own isolated dry-run server and covers the published site (every page present, every local asset reference resolvable, no noindex, canonical production URLs, same-origin APIs), server-authoritative role state on both the Cloudflare Pages and Vercel runtimes, the transparent Cloudflare application relay, application payload and API closure behavior, the health check, and a browser pass over home, careers, a real role with its JobPosting, and an unknown role.
+The test command starts its own isolated dry-run server and checks published HTML and its direct asset references, same-origin API calls from the built client, server-authoritative role state on both runtimes, the transparent Cloudflare relay, payload mapping, API closure, and health checks.
+Browser fixtures intercept every request, serve local build bytes at isolated production and preview origins, and mock submissions.
+They cover required answers, role-specific uploads, multipart bytes, upload limits, duplicate submissions, recovery, preview guards, deadlines, accepted receipts after closure, synchronized counts, collection boundaries, and per-role indexability.
+Home and careers remain indexable.
+The shared apply template has no role canonical or active `JobPosting`; confirmed openings receive per-role metadata, while unknown, closed, and unavailable states set `noindex`.
 
 No automated test performs a real application or Notion write.
+
+After the fix branch deploys, run `PREVIEW_URL=https://<deployment>.care-and-bloom.pages.dev npm run test:preview` against that exact preview.
+This checks real redirect status, destination, preserved queries, rendered pages, a genuine 404, same-origin endpoint availability, role metadata, and the preview submission guard.
+An additional request interceptor blocks every application POST even if that guard fails.
+Fixture-only zero, outage, no-script, and boundary scenarios remain in the local suite.
 
 ## Canonical role data and lifecycle
 
@@ -68,7 +82,8 @@ It accepts an injected server instant and resolves the HKT Monday window start, 
 
 `api/role-state.js` keeps the equivalent Vercel endpoint available for review deployments and direct consumers.
 
-`scripts/api-endpoints.js` resolves `/api/role-state` and `/api/applications` same-origin on every host, while honouring explicit `window.CB_ROLE_STATE_ENDPOINT` and `window.CB_TALENTS_ENDPOINT` overrides.
+`scripts/api-endpoints.js` remains available to legacy consumers with its explicit endpoint overrides.
+The v4 browser calls `/api/role-state` and `/api/applications` same-origin directly and does not use those overrides.
 
 `functions/api/applications.js` accepts the production browser request on Cloudflare Pages and streams its unchanged method, headers, and multipart body to `https://carenbloom-site-pb.vercel.app/api/applications`.
 
@@ -82,11 +97,16 @@ The `/api/health` cron probes the applicant-facing `${SITE_URL}/api/applications
 
 The Cloudflare application relay forwards that `Origin` header and does not add or widen CORS policy.
 
-The homepage reloads on the collection's `nextBoundaryAt`, which the API resolves from the canonical roles even when nothing is currently open.
+The shared collection owner refreshes home and careers counts at the server's `nextBoundaryAt`, including when no roles are open.
+Every response updates desktop navigation, the mobile menu, the footer state, and the careers list without reloading the page.
 
-The application countdown anchors that server instant to monotonic elapsed time, and the homepage renders every role row and advertised count from the same open-role response.
+The application countdown anchors its role response to monotonic elapsed time.
+The dedicated careers page renders role rows and advertised counts from the same collection response.
 
-Static, unknown, closed, and endpoint-failure states contain no form, active `JobPosting`, role row, numeric open-role claim, or fallback role.
+Static collection surfaces make no numeric availability claim.
+A collection failure removes stale counts and role rows; zero openings displays the confirmed zero state.
+An unknown, closed, or unavailable application hides the form and exposes no active `JobPosting` or indexable role metadata.
+A confirmed open role sets canonical and `og:url` to its production URL with `/careers/apply/?role=<slug>`.
 
 `/api/applications` resolves the same canonical role state using its own server clock before any Notion operation, returns HTTP 410 at and after factual closure, and ignores client-supplied date or open-state claims.
 
@@ -138,4 +158,6 @@ One separately deferred blocker remains open and must be resolved and tested bef
 
 `/api/applications` validates only the answers, resume, and portfolio material the client chooses to send: a direct POST that omits `questions` still passes validation, and `portfolioRequired` is not enforced server-side even though `scripts/careers-roles.js` already carries the canonical questions and portfolio flags the handler uses for `introVideoRequired`.
 
-The captain deliberately deferred this work because publishing comes first and equivalent enforcement exists elsewhere. Review traffic is dry-run-only, so no incomplete application can reach Notion today.
+The captain deliberately deferred this work because publishing comes first and equivalent enforcement exists elsewhere.
+Automated review submissions use mocks or the isolated dry-run server.
+Preview-host application forms send nothing; the production relay retains its production intake behavior.

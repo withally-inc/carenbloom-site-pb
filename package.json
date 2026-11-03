@@ -8,14 +8,15 @@
     "build:site": "node scripts/build-site.mjs",
     "package:deployment": "node scripts/package-deployment.mjs",
     "deploy:review": "NOTION_INTAKE_DRY_RUN=1 npm run package:deployment && vercel deploy --cwd .vercel-deploy",
-    "test:contracts": "node --test tests/site-contract.test.mjs tests/api-endpoints.test.mjs",
+    "test:contracts": "node --test tests/site-contract.test.mjs tests/api-endpoints.test.mjs tests/redirects.test.mjs",
     "test:api": "node tests/application-payload.test.mjs && node tests/applications-api.test.mjs",
     "test:deadline": "node tests/careers-deadline.test.mjs",
     "test:role-state": "node tests/role-state-api.test.mjs",
     "test:cloudflare-role-state": "node tests/cloudflare-role-state.test.mjs",
     "test:cloudflare-applications": "node tests/cloudflare-applications.test.mjs",
     "test:metadata": "node tests/server-runtime.test.mjs",
-    "test:browser": "node tests/site-browser.test.mjs",
+    "test:preview": "node tests/preview-browser.test.mjs",
+    "test:browser": "node tests/site-browser.test.mjs && node tests/role-state-browser.test.mjs && node tests/application-flow-browser.test.mjs",
     "test": "node scripts/test.mjs"
   },
   "dependencies": {

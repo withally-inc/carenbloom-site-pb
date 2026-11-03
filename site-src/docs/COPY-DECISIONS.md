@@ -2,7 +2,7 @@
 
 Answers to the open questions at the end of docs/COPY.md. Section agents apply these.
 
-1. "8-figure" (apply page, flagship brand) and "9 figures" (home, group) both stay as written. They describe different scopes. Rahul confirms at preview.
+1. The flagship brand copy uses "9-figure revenue", consistent with the home page’s "9 figures", as confirmed for publication.
 2. Role text from the API is rendered as received, except em and en dashes, which the site replaces with a comma and a space at render time (one helper, `cleanDashes()`). No other rewriting of API text.
 3. Role groups: heading and count only. No invented intros.
 4. "<3 min to apply" is kept, as the deck proposes. Rahul confirms at preview.
