@@ -1,0 +1,194 @@
+{
+  "note": "Values card art. Hand in ink, object in cobalt, transparent lossless WebP, 45° dot screen matched to the hero rose. edge = card edge the wrist is cut by; anchor = the image point (0..1) that sits on that edge; scale = image height as a share of the card height, which the dot size is locked to; visible = fraction of the image along the entry axis inside the card (the rest, wrist side, is cropped by the card). Rebuild: node scripts/values/build.mjs",
+  "values": [
+    {
+      "n": 1,
+      "id": "rocket",
+      "name": "Outsized ambition",
+      "src": "/img/values/value-01.webp",
+      "srcset": [
+        "/img/values/value-01-600.webp 380w",
+        "/img/values/value-01.webp 761w"
+      ],
+      "srcViolet": "/img/values/value-01-violet.webp",
+      "srcsetViolet": [
+        "/img/values/value-01-violet-600.webp 380w",
+        "/img/values/value-01-violet.webp 761w"
+      ],
+      "width": 761,
+      "height": 1200,
+      "scale": 0.56,
+      "edge": "bottom",
+      "enters": "bottom-right",
+      "anchor": [
+        0.4,
+        0.75
+      ],
+      "visible": 0.75,
+      "bytes": 34312,
+      "sun": 0.0173
+    },
+    {
+      "n": 2,
+      "id": "key",
+      "name": "Agency",
+      "src": "/img/values/value-02.webp",
+      "srcset": [
+        "/img/values/value-02-600.webp 600w",
+        "/img/values/value-02.webp 1200w"
+      ],
+      "srcViolet": "/img/values/value-02-violet.webp",
+      "srcsetViolet": [
+        "/img/values/value-02-violet-600.webp 600w",
+        "/img/values/value-02-violet.webp 1200w"
+      ],
+      "width": 1200,
+      "height": 801,
+      "scale": 0.52,
+      "edge": "right",
+      "enters": "right",
+      "anchor": [
+        0.64,
+        0.466
+      ],
+      "visible": 0.64,
+      "bytes": 35334,
+      "sun": 0.0082
+    },
+    {
+      "n": 3,
+      "id": "stopwatch",
+      "name": "Reduce cycle time",
+      "src": "/img/values/value-03.webp",
+      "srcset": [
+        "/img/values/value-03-600.webp 497w",
+        "/img/values/value-03.webp 995w"
+      ],
+      "srcViolet": "/img/values/value-03-violet.webp",
+      "srcsetViolet": [
+        "/img/values/value-03-violet-600.webp 497w",
+        "/img/values/value-03-violet.webp 995w"
+      ],
+      "width": 995,
+      "height": 1200,
+      "scale": 0.56,
+      "edge": "right",
+      "enters": "bottom-right",
+      "anchor": [
+        0.78,
+        0.556
+      ],
+      "visible": 0.78,
+      "bytes": 62078,
+      "sun": 0.0209
+    },
+    {
+      "n": 4,
+      "id": "pencil",
+      "name": "Relentless upskilling",
+      "src": "/img/values/value-04.webp",
+      "srcset": [
+        "/img/values/value-04-600.webp 431w",
+        "/img/values/value-04.webp 861w"
+      ],
+      "srcViolet": "/img/values/value-04-violet.webp",
+      "srcsetViolet": [
+        "/img/values/value-04-violet-600.webp 431w",
+        "/img/values/value-04-violet.webp 861w"
+      ],
+      "width": 861,
+      "height": 1200,
+      "scale": 0.56,
+      "edge": "bottom",
+      "enters": "bottom",
+      "anchor": [
+        0.785,
+        0.66
+      ],
+      "visible": 0.66,
+      "bytes": 30832,
+      "sun": 0.0148
+    },
+    {
+      "n": 5,
+      "id": "cutting",
+      "name": "Organic (re)org",
+      "src": "/img/values/value-05.webp",
+      "srcset": [
+        "/img/values/value-05-600.webp 445w",
+        "/img/values/value-05.webp 889w"
+      ],
+      "srcViolet": "/img/values/value-05-violet.webp",
+      "srcsetViolet": [
+        "/img/values/value-05-violet-600.webp 445w",
+        "/img/values/value-05-violet.webp 889w"
+      ],
+      "width": 889,
+      "height": 1200,
+      "scale": 0.56,
+      "edge": "bottom",
+      "enters": "bottom-right",
+      "anchor": [
+        0.957,
+        1
+      ],
+      "visible": 1,
+      "bytes": 34346,
+      "sun": 0.0203
+    },
+    {
+      "n": 6,
+      "id": "seedling",
+      "name": "Human potential",
+      "src": "/img/values/value-06.webp",
+      "srcset": [
+        "/img/values/value-06-600.webp 318w",
+        "/img/values/value-06.webp 637w"
+      ],
+      "srcViolet": "/img/values/value-06-violet.webp",
+      "srcsetViolet": [
+        "/img/values/value-06-violet-600.webp 318w",
+        "/img/values/value-06-violet.webp 637w"
+      ],
+      "width": 637,
+      "height": 1200,
+      "scale": 0.56,
+      "edge": "bottom",
+      "enters": "bottom",
+      "anchor": [
+        0.635,
+        0.77
+      ],
+      "visible": 0.77,
+      "bytes": 45622,
+      "sun": 0.0213
+    },
+    {
+      "n": 7,
+      "id": "scissors",
+      "name": "Creativity",
+      "src": "/img/values/value-07.webp",
+      "srcset": [
+        "/img/values/value-07-600.webp 600w",
+        "/img/values/value-07.webp 1200w"
+      ],
+      "srcViolet": "/img/values/value-07-violet.webp",
+      "srcsetViolet": [
+        "/img/values/value-07-violet-600.webp 600w",
+        "/img/values/value-07-violet.webp 1200w"
+      ],
+      "width": 1200,
+      "height": 750,
+      "scale": 0.52,
+      "edge": "right",
+      "enters": "right",
+      "anchor": [
+        0.91,
+        0.623
+      ],
+      "visible": 0.91,
+      "bytes": 31682,
+      "sun": 0.0111
+    }
+  ]
+}

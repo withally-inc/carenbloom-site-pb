@@ -1,221 +1,437 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="description" content="Care &amp; Bloom careers — location varies by role.">
-    <meta property="og:title" content="Apply | Care & Bloom">
-    <meta property="og:description" content="Care &amp; Bloom careers — location varies by role.">
-    <meta property="og:type" content="website">
-    <title>Apply | Care & Bloom</title>
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
-    <link rel="icon" href="/favicon-16.png" type="image/png" sizes="16x16">
-    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
-    <link rel="icon" href="/favicon-512.png" type="image/png" sizes="512x512">
-    <link rel="apple-touch-icon" href="/apple-touch-icon-180.png" sizes="180x180">
-    <link rel="stylesheet" href="/tokens.css">
-    <link rel="stylesheet" href="/assets/pb-apply.css">
-  </head>
-  <body>
-    <div class="application-header-surface">
-      <div class="application-header-inner">
-        <header class="application-topbar mono">
-          <a href="/" aria-label="Care and Bloom home">Care &amp; Bloom</a>
-          <nav aria-label="Primary">
-            <a href="/#themes">Themes</a>
-            <a href="/#brands">Brands</a>
-            <a href="/#people">People</a>
-            <a href="/#careers">Careers</a>
-          </nav>
-          <a class="roles-chip" href="/#careers" data-open-role-count>Careers</a>
-        </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Apply | Care &amp; Bloom</title>
+  <meta name="description" content="Apply for an open role at Care &amp; Bloom." />
+  <meta name="theme-color" content="#F4F6F8" />
+  <script>
+    // theme before first paint (src/lib/theme.ts): the stored choice, else system dark means violet
+    (function () {
+      var t = null
+      try { t = localStorage.getItem('cb-theme') } catch (e) {}
+      if (t !== 'violet' && t !== 'light') {
+        try { t = matchMedia('(prefers-color-scheme: dark)').matches ? 'violet' : 'light' } catch (e) { t = 'light' }
+      }
+      document.documentElement.setAttribute('data-theme', t)
+      if (t === 'violet') document.querySelector('meta[name="theme-color"]').setAttribute('content', '#160F2E')
+    })()
+  </script>
+  <meta name="author" content="Care &amp; Bloom" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Care &amp; Bloom" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:title" content="Apply | Care &amp; Bloom" />
+  <meta property="og:description" content="Apply for an open role at Care &amp; Bloom." />
+  <meta property="og:image" content="https://carenbloom.com/og-careers.png?v=2" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Join the spaceship. A hand holding a halftone rocket, Care &amp; Bloom careers" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Apply | Care &amp; Bloom" />
+  <meta name="twitter:description" content="Apply for an open role at Care &amp; Bloom." />
+  <meta name="twitter:image" content="https://carenbloom.com/og-careers.png?v=2" />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <link rel="preload" href="/fonts/PPMori-Semibold.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/PPMori-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/Newsreader-Italic-400.woff2" as="font" type="font/woff2" crossorigin />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Care & Bloom",
+    "legalName": "Care & Bloom Limited",
+    "url": "https://carenbloom.com/",
+    "logo": "https://carenbloom.com/brand/logo-mark.png",
+    "email": "hello@carenbloom.com"
+  }
+  </script>
+  <script>
+    // before first paint: motion gating, whether the bloom intro plays (once per
+    // session), and the content fade for a same-origin navigation (never back/forward)
+    (function () {
+      var h = document.documentElement
+      h.classList.add('js')
+      var rm = false
+      try {
+        rm = matchMedia('(prefers-reduced-motion: reduce)').matches
+        var seen = sessionStorage.getItem('cb-intro') === '1'
+        h.classList.add(seen || rm ? 'no-preload' : 'intro')
+      } catch (e) {
+        h.classList.add('no-preload')
+      }
+      try {
+        var nav = performance.getEntriesByType('navigation')[0]
+        var same = document.referrer && new URL(document.referrer).origin === location.origin
+        if (same && !rm && (!nav || nav.type === 'navigate')) h.classList.add('pgt-fade')
+      } catch (e) {}
+    })()
+  </script>
+  <script type="module" crossorigin src="/assets/apply-Bcv80mxi.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/boot-ClrDvjh7.js">
+  <link rel="modulepreload" crossorigin href="/assets/text-9hPVkzXo.js">
+  <link rel="stylesheet" crossorigin href="/assets/boot-DaAMFFyK.css">
+  <link rel="stylesheet" crossorigin href="/assets/apply-DW91z4Rz.css">
+</head>
+<body data-page="apply">
+  <!-- Curious is a good sign. Open roles: https://carenbloom.com/careers -->
+  <div class="preloader" aria-hidden="true">
+  <svg class="preloader__mark" viewBox="0 0 42 42" focusable="false"><path d="M12.5798 12.6486C12.5798 11.9426 12.5445 11.2752 12.5798 10.6142C12.6729 9.14911 13.1898 7.81912 14.2076 6.77539C16.4391 4.49013 18.7332 2.2724 21.0193 0C21.061 0.0369888 21.1445 0.101317 21.2167 0.175294C23.2877 2.24506 25.365 4.30679 27.4248 6.38781C29.0301 8.01693 29.6611 9.98699 29.3512 12.2562C29.3352 12.3736 29.3239 12.491 29.3079 12.6502C29.4588 12.6389 29.5856 12.6357 29.7124 12.618C31.9295 12.3157 33.8864 12.893 35.4918 14.4626C37.651 16.5758 39.7702 18.7308 41.9133 20.8665C41.9406 20.8955 41.9615 20.9309 42.0016 20.9823C41.9374 21.0595 41.8764 21.1431 41.8042 21.2155C39.7445 23.2789 37.6912 25.3454 35.6234 27.3991C33.9876 29.0218 32.0129 29.6634 29.7317 29.3547C29.6145 29.3386 29.4957 29.3289 29.3319 29.3112C29.3448 29.4608 29.348 29.5879 29.3657 29.7133C29.6675 31.9342 29.0863 33.8946 27.5179 35.4932C25.4148 37.6466 23.27 39.755 21.1477 41.881C21.1108 41.918 21.0658 41.947 21 42.0016C20.8925 41.9003 20.7849 41.807 20.6789 41.7057C18.6754 39.7019 16.6714 37.6986 14.6668 35.6958C12.9587 33.9992 12.2924 31.9664 12.6488 29.5846C12.66 29.5074 12.6617 29.4238 12.6713 29.3016L12.1495 29.3659C10.0256 29.6248 8.12805 29.0861 6.58689 27.5889C4.39072 25.4564 2.25235 23.2676 0.0850851 21.1029C0.0538881 21.066 0.0254498 21.0267 0 20.9855C0.054583 20.9196 0.10435 20.844 0.160538 20.7813C2.23362 18.7099 4.30617 16.6402 6.37819 14.572C8.02691 12.9332 10.0144 12.3012 12.3181 12.6261C12.4128 12.6405 12.5172 12.6438 12.5798 12.6486ZM24.5046 16.0483C24.999 15.5369 25.3907 15.0834 25.8306 14.6862C27.8004 12.8962 27.969 9.71842 25.8033 7.67277C24.6185 6.55507 23.49 5.37786 22.3437 4.21994C21.9038 3.77769 21.4864 3.31291 21.0594 2.86422C19.3818 4.34538 19.096 7.18548 20.4349 9.02045C20.9583 9.73772 21.6213 10.3569 22.2554 10.9841C23.4338 12.15 24.1963 13.5202 24.4195 15.1751C24.4532 15.4131 24.4676 15.6608 24.5046 16.0483ZM17.4312 25.9678C16.9593 26.4502 16.5338 26.915 16.0924 27.3573C14.1274 29.3322 14.1129 32.1899 16.0699 34.16C17.6036 35.7039 19.1421 37.2413 20.6854 38.7724C20.7849 38.8721 20.8925 38.9637 20.9936 39.057C22.5669 37.5565 22.8928 34.8966 21.6566 33.1066C21.1317 32.3459 20.4429 31.6898 19.7831 31.0336C18.8954 30.1491 18.189 29.1585 17.8342 27.9523C17.656 27.354 17.5773 26.7108 17.4312 25.9678ZM39.0927 20.9823C37.5178 19.4047 35.9895 17.872 34.4579 16.341C34.2589 16.1432 34.0646 15.9406 33.8511 15.7589C33.3725 15.3387 32.8131 15.0211 32.2073 14.8255C31.6016 14.63 30.9624 14.5607 30.3289 14.6218C28.3784 14.7827 27.253 16.1625 25.9944 17.4877C26.1693 17.5038 26.2705 17.515 26.3716 17.5215C27.989 17.6131 29.519 18.2864 30.6805 19.4175C31.2054 19.9129 31.7079 20.4323 32.2184 20.9437C33.0748 21.8306 34.2415 22.3495 35.4725 22.3911C36.8516 22.4442 38.0492 21.9714 39.0927 20.9855V20.9823ZM16.0314 24.4882C15.8516 24.4673 15.7889 24.4545 15.7247 24.4528C14.0134 24.3745 12.395 23.6506 11.1943 22.4265C10.679 21.9199 10.1894 21.3876 9.65638 20.9035C8.38331 19.7424 6.8903 19.3291 5.20626 19.7118C4.34186 19.8942 3.55277 20.3343 2.94267 20.9743C2.966 21.0186 2.99341 21.0606 3.02454 21.0997C4.70538 22.7819 6.35089 24.5011 8.0815 26.1318C9.38828 27.3605 10.9712 27.6516 12.7002 27.1209C14.1193 26.6834 14.9397 25.503 16.0314 24.4882ZM17.2242 21.0032C17.2267 21.751 17.4505 22.4811 17.8673 23.1014C18.284 23.7217 18.875 24.2043 19.5656 24.4882C20.2561 24.7721 21.0151 24.8444 21.7467 24.6962C22.4783 24.5479 23.1496 24.1857 23.6757 23.6553C24.2018 23.1249 24.5591 22.4501 24.7024 21.7163C24.8457 20.9825 24.7686 20.2226 24.4809 19.5327C24.1931 18.8428 23.7076 18.2538 23.0857 17.8403C22.4639 17.4268 21.7336 17.2072 20.9872 17.2095C19.9866 17.2146 19.0287 17.6167 18.3234 18.3277C17.6181 19.0388 17.2229 20.0008 17.2242 21.0032ZM15.2848 22.3171C14.9525 20.598 15.2495 19.0637 16.1325 17.7225C15.4598 17.0149 14.8755 16.2751 14.1643 15.6768C13.2911 14.9416 12.1767 14.5569 11.0368 14.5973C9.8968 14.6378 8.81233 15.1003 7.9932 15.8956C7.53246 16.341 7.08616 16.801 6.63505 17.2561C6.57042 17.3319 6.51089 17.412 6.45685 17.4957C6.56923 17.5086 6.63184 17.5198 6.69445 17.5231C8.46418 17.6016 10.1346 18.3643 11.3549 19.6507C11.814 20.1155 12.2715 20.5851 12.7435 21.037C13.439 21.7154 14.3265 22.1625 15.2848 22.3171ZM22.2715 15.2667C22.2853 15.2184 22.2945 15.1689 22.2988 15.1188C22.2945 15.0525 22.2837 14.9868 22.2667 14.9226C22.0523 14.0731 21.6162 13.2961 21.0032 12.6711C20.5505 12.216 20.0962 11.7641 19.6403 11.3105C18.3897 10.0642 17.6608 8.57659 17.5404 6.7979C17.5316 6.71192 17.5176 6.62653 17.4987 6.5422C16.879 7.12276 16.1823 7.64543 15.6477 8.30158C14.5849 9.60423 14.3521 11.1031 14.8755 12.7177C15.3651 14.2311 16.6687 15.0673 17.6464 16.1738C18.316 15.7171 19.0712 15.4013 19.8661 15.2454C20.6611 15.0895 21.4794 15.0968 22.2715 15.2667ZM24.3023 25.8166C23.6315 26.2706 22.8759 26.5839 22.081 26.7376C21.2861 26.8913 20.4684 26.8821 19.6772 26.7108C19.8271 27.685 20.2825 28.5862 20.9775 29.2839C21.4592 29.7664 21.9408 30.2488 22.4224 30.7313C23.5259 31.8192 24.2307 33.2482 24.4227 34.7872C24.4548 35.0188 24.4676 35.2536 24.5014 35.6219C25.0616 35.0461 25.5384 34.5508 26.0233 34.0619C26.8474 33.2347 27.33 32.1265 27.3746 30.9586C27.4193 29.7907 27.0227 28.6489 26.2641 27.7609C25.6685 27.0758 24.9765 26.4792 24.3039 25.8166H24.3023ZM25.8274 24.2985C26.4696 24.9594 27.0571 25.6268 27.7137 26.2106C28.6005 26.992 29.7511 27.4057 30.9314 27.3675C32.1118 27.3292 33.2333 26.842 34.0678 26.0048C34.466 25.6075 34.8625 25.2119 35.2574 24.8131C35.3457 24.7246 35.418 24.6281 35.5159 24.5284C34.8641 24.4046 34.2428 24.3322 33.6472 24.1618C32.5041 23.8174 31.4683 23.185 30.6387 22.3252C29.958 21.6497 29.2629 20.9823 28.526 20.3728C28.0236 19.9579 27.3926 19.7665 26.7023 19.6507C26.8794 20.4442 26.8933 21.2656 26.7432 22.0646C26.593 22.8637 26.282 23.6238 25.829 24.2985H25.8274Z" fill="currentColor"/></svg>
+</div>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+<header class="nav" data-nav data-state="top">
+  <div class="nav__band" aria-hidden="true"></div>
+  <div class="nav__cluster">
+    <div class="nav__brand">
+      <!-- first in focus order: below 960px it sits over the mark, left of the wordmark -->
+      <button class="nav__menu" type="button" aria-expanded="false" aria-controls="nav-panel" aria-label="Open menu"></button>
+      <!-- desktop: the mark switches violet mode (src/lib/theme.ts). Below 960px the menu button covers it;
+           without JS it stays decorative (tabindex and aria-hidden are lifted by nav.ts) -->
+      <button class="nav__theme" type="button" aria-label="Switch to violet mode" aria-pressed="false" tabindex="-1" aria-hidden="true"><span class="nav__mark"><svg class="nav__icon mark" viewBox="0 0 42 42" aria-hidden="true" focusable="false"><path d="M12.5798 12.6486C12.5798 11.9426 12.5445 11.2752 12.5798 10.6142C12.6729 9.14911 13.1898 7.81912 14.2076 6.77539C16.4391 4.49013 18.7332 2.2724 21.0193 0C21.061 0.0369888 21.1445 0.101317 21.2167 0.175294C23.2877 2.24506 25.365 4.30679 27.4248 6.38781C29.0301 8.01693 29.6611 9.98699 29.3512 12.2562C29.3352 12.3736 29.3239 12.491 29.3079 12.6502C29.4588 12.6389 29.5856 12.6357 29.7124 12.618C31.9295 12.3157 33.8864 12.893 35.4918 14.4626C37.651 16.5758 39.7702 18.7308 41.9133 20.8665C41.9406 20.8955 41.9615 20.9309 42.0016 20.9823C41.9374 21.0595 41.8764 21.1431 41.8042 21.2155C39.7445 23.2789 37.6912 25.3454 35.6234 27.3991C33.9876 29.0218 32.0129 29.6634 29.7317 29.3547C29.6145 29.3386 29.4957 29.3289 29.3319 29.3112C29.3448 29.4608 29.348 29.5879 29.3657 29.7133C29.6675 31.9342 29.0863 33.8946 27.5179 35.4932C25.4148 37.6466 23.27 39.755 21.1477 41.881C21.1108 41.918 21.0658 41.947 21 42.0016C20.8925 41.9003 20.7849 41.807 20.6789 41.7057C18.6754 39.7019 16.6714 37.6986 14.6668 35.6958C12.9587 33.9992 12.2924 31.9664 12.6488 29.5846C12.66 29.5074 12.6617 29.4238 12.6713 29.3016L12.1495 29.3659C10.0256 29.6248 8.12805 29.0861 6.58689 27.5889C4.39072 25.4564 2.25235 23.2676 0.0850851 21.1029C0.0538881 21.066 0.0254498 21.0267 0 20.9855C0.054583 20.9196 0.10435 20.844 0.160538 20.7813C2.23362 18.7099 4.30617 16.6402 6.37819 14.572C8.02691 12.9332 10.0144 12.3012 12.3181 12.6261C12.4128 12.6405 12.5172 12.6438 12.5798 12.6486ZM24.5046 16.0483C24.999 15.5369 25.3907 15.0834 25.8306 14.6862C27.8004 12.8962 27.969 9.71842 25.8033 7.67277C24.6185 6.55507 23.49 5.37786 22.3437 4.21994C21.9038 3.77769 21.4864 3.31291 21.0594 2.86422C19.3818 4.34538 19.096 7.18548 20.4349 9.02045C20.9583 9.73772 21.6213 10.3569 22.2554 10.9841C23.4338 12.15 24.1963 13.5202 24.4195 15.1751C24.4532 15.4131 24.4676 15.6608 24.5046 16.0483ZM17.4312 25.9678C16.9593 26.4502 16.5338 26.915 16.0924 27.3573C14.1274 29.3322 14.1129 32.1899 16.0699 34.16C17.6036 35.7039 19.1421 37.2413 20.6854 38.7724C20.7849 38.8721 20.8925 38.9637 20.9936 39.057C22.5669 37.5565 22.8928 34.8966 21.6566 33.1066C21.1317 32.3459 20.4429 31.6898 19.7831 31.0336C18.8954 30.1491 18.189 29.1585 17.8342 27.9523C17.656 27.354 17.5773 26.7108 17.4312 25.9678ZM39.0927 20.9823C37.5178 19.4047 35.9895 17.872 34.4579 16.341C34.2589 16.1432 34.0646 15.9406 33.8511 15.7589C33.3725 15.3387 32.8131 15.0211 32.2073 14.8255C31.6016 14.63 30.9624 14.5607 30.3289 14.6218C28.3784 14.7827 27.253 16.1625 25.9944 17.4877C26.1693 17.5038 26.2705 17.515 26.3716 17.5215C27.989 17.6131 29.519 18.2864 30.6805 19.4175C31.2054 19.9129 31.7079 20.4323 32.2184 20.9437C33.0748 21.8306 34.2415 22.3495 35.4725 22.3911C36.8516 22.4442 38.0492 21.9714 39.0927 20.9855V20.9823ZM16.0314 24.4882C15.8516 24.4673 15.7889 24.4545 15.7247 24.4528C14.0134 24.3745 12.395 23.6506 11.1943 22.4265C10.679 21.9199 10.1894 21.3876 9.65638 20.9035C8.38331 19.7424 6.8903 19.3291 5.20626 19.7118C4.34186 19.8942 3.55277 20.3343 2.94267 20.9743C2.966 21.0186 2.99341 21.0606 3.02454 21.0997C4.70538 22.7819 6.35089 24.5011 8.0815 26.1318C9.38828 27.3605 10.9712 27.6516 12.7002 27.1209C14.1193 26.6834 14.9397 25.503 16.0314 24.4882ZM17.2242 21.0032C17.2267 21.751 17.4505 22.4811 17.8673 23.1014C18.284 23.7217 18.875 24.2043 19.5656 24.4882C20.2561 24.7721 21.0151 24.8444 21.7467 24.6962C22.4783 24.5479 23.1496 24.1857 23.6757 23.6553C24.2018 23.1249 24.5591 22.4501 24.7024 21.7163C24.8457 20.9825 24.7686 20.2226 24.4809 19.5327C24.1931 18.8428 23.7076 18.2538 23.0857 17.8403C22.4639 17.4268 21.7336 17.2072 20.9872 17.2095C19.9866 17.2146 19.0287 17.6167 18.3234 18.3277C17.6181 19.0388 17.2229 20.0008 17.2242 21.0032ZM15.2848 22.3171C14.9525 20.598 15.2495 19.0637 16.1325 17.7225C15.4598 17.0149 14.8755 16.2751 14.1643 15.6768C13.2911 14.9416 12.1767 14.5569 11.0368 14.5973C9.8968 14.6378 8.81233 15.1003 7.9932 15.8956C7.53246 16.341 7.08616 16.801 6.63505 17.2561C6.57042 17.3319 6.51089 17.412 6.45685 17.4957C6.56923 17.5086 6.63184 17.5198 6.69445 17.5231C8.46418 17.6016 10.1346 18.3643 11.3549 19.6507C11.814 20.1155 12.2715 20.5851 12.7435 21.037C13.439 21.7154 14.3265 22.1625 15.2848 22.3171ZM22.2715 15.2667C22.2853 15.2184 22.2945 15.1689 22.2988 15.1188C22.2945 15.0525 22.2837 14.9868 22.2667 14.9226C22.0523 14.0731 21.6162 13.2961 21.0032 12.6711C20.5505 12.216 20.0962 11.7641 19.6403 11.3105C18.3897 10.0642 17.6608 8.57659 17.5404 6.7979C17.5316 6.71192 17.5176 6.62653 17.4987 6.5422C16.879 7.12276 16.1823 7.64543 15.6477 8.30158C14.5849 9.60423 14.3521 11.1031 14.8755 12.7177C15.3651 14.2311 16.6687 15.0673 17.6464 16.1738C18.316 15.7171 19.0712 15.4013 19.8661 15.2454C20.6611 15.0895 21.4794 15.0968 22.2715 15.2667ZM24.3023 25.8166C23.6315 26.2706 22.8759 26.5839 22.081 26.7376C21.2861 26.8913 20.4684 26.8821 19.6772 26.7108C19.8271 27.685 20.2825 28.5862 20.9775 29.2839C21.4592 29.7664 21.9408 30.2488 22.4224 30.7313C23.5259 31.8192 24.2307 33.2482 24.4227 34.7872C24.4548 35.0188 24.4676 35.2536 24.5014 35.6219C25.0616 35.0461 25.5384 34.5508 26.0233 34.0619C26.8474 33.2347 27.33 32.1265 27.3746 30.9586C27.4193 29.7907 27.0227 28.6489 26.2641 27.7609C25.6685 27.0758 24.9765 26.4792 24.3039 25.8166H24.3023ZM25.8274 24.2985C26.4696 24.9594 27.0571 25.6268 27.7137 26.2106C28.6005 26.992 29.7511 27.4057 30.9314 27.3675C32.1118 27.3292 33.2333 26.842 34.0678 26.0048C34.466 25.6075 34.8625 25.2119 35.2574 24.8131C35.3457 24.7246 35.418 24.6281 35.5159 24.5284C34.8641 24.4046 34.2428 24.3322 33.6472 24.1618C32.5041 23.8174 31.4683 23.185 30.6387 22.3252C29.958 21.6497 29.2629 20.9823 28.526 20.3728C28.0236 19.9579 27.3926 19.7665 26.7023 19.6507C26.8794 20.4442 26.8933 21.2656 26.7432 22.0646C26.593 22.8637 26.282 23.6238 25.829 24.2985H25.8274Z" fill="currentColor"/></svg></span></button>
+      <a class="nav__home" href="/" aria-label="Care &amp; Bloom home"><span class="nav__word" aria-hidden="true"><span class="wordmark">Care <span class="wink-amp">&amp;</span> Bloom</span></span></a>
+    </div>
+    <div class="nav__right">
+      <nav class="nav__links" aria-label="Primary"><a class="nav__link" href="/#brands" data-key="brands"><span class="nav__bullet" aria-hidden="true"></span><span class="nav__label">Brands</span></a><a class="nav__link" href="/#people" data-key="people"><span class="nav__bullet" aria-hidden="true"></span><span class="nav__label">People</span></a><a class="nav__link" href="/#work" data-key="work"><span class="nav__bullet" aria-hidden="true"></span><span class="nav__label">How we work</span></a><a class="nav__link" href="/careers" data-key="careers"><span class="nav__bullet" aria-hidden="true"></span><span class="nav__label">Careers</span></a></nav>
+      <a class="nav__roles" href="/careers"><span class="live-dot" aria-hidden="true"></span><span class="nav__rolestext">Open roles<span class="nav__countfold" data-role-count-fold hidden><span>&nbsp;(<span class="tnum" data-role-count></span>)</span></span></span></a>
+    </div>
+  </div>
+  <div class="panel" id="nav-panel" role="dialog" aria-modal="true" aria-label="Menu" inert>
+    <div class="panel__ground"></div>
+    <div class="panel__top">
+      <button class="panel__close" type="button" aria-label="Close menu"><span class="panel__x" aria-hidden="true"></span></button>
+      <a class="panel__home" href="/" aria-label="Care &amp; Bloom home"><span class="wordmark">Care <span class="wink-amp">&amp;</span> Bloom</span></a>
+    </div>
+    <nav class="panel__quarters" aria-label="Primary">
+      <a class="quarter quarter--brands" href="/#brands" data-key="brands"><span>Brands</span></a><a class="quarter quarter--people" href="/#people" data-key="people"><span>People</span></a><a class="quarter quarter--work" href="/#work" data-key="work"><span>How we work</span></a><a class="quarter quarter--careers" href="/careers" data-key="careers"><span>Careers</span></a>
+      <span class="panel__rule panel__rule--v" aria-hidden="true"></span><span class="panel__rule panel__rule--h" aria-hidden="true"></span>
+      <span class="panel__flower" aria-hidden="true"></span>
+    </nav>
+    <div class="panel__foot">
+      <a class="btn btn--cobalt btn--lg panel__roles" href="/careers"><span>Open roles<span data-role-count-fold hidden> (<span class="tnum" data-role-count></span>)</span></span></a>
+      <a class="dotlink panel__mail" href="mailto:hello@carenbloom.com"><span>hello@carenbloom.com</span></a>
+      <p class="caption panel__cities">Hong Kong · Shenzhen · London · San Francisco</p>
+      <button class="panel__theme" type="button" aria-pressed="false"><span class="panel__theme-label">Violet mode</span><span class="panel__switch" aria-hidden="true"><span class="panel__knob"></span></span></button>
+    </div>
+  </div>
+</header>
+
+  <main id="main" tabindex="-1">
+    <!-- apply: role page and application form (docs/COPY.md "Apply", MOTION-CHALLENGE 1.30 to 1.33, 2.9, 2.11).
+     Mirrors the live careers-apply.js flow and payload. The form only posts from carenbloom.com. -->
+<section id="apply" class="section section--first apply" data-section="apply" data-spy="careers" aria-labelledby="apply-title">
+  <div class="wrap">
+
+    <!-- states before the form: checking, not found, unavailable, closed -->
+    <div class="apply-state" data-role-unavailable data-state="checking">
+      <p class="label apply-state__label"><span class="apply-state__loader" data-petal-loader></span><span>Care &amp; Bloom careers</span></p>
+      <h1 class="h1 apply-state__title" id="apply-title" data-role-state-title>Checking role availability</h1>
+      <p class="lede apply-state__msg" data-role-state-message>Confirming that this role is still open.</p>
+      <p class="body apply-state__receipt" data-submission-receipt role="status"></p>
+      <div class="apply-state__actions">
+        <button class="btn btn--ink apply-state__retry" type="button" data-role-retry hidden>Try again</button>
+        <a class="dotlink" href="/careers"><span>← Back to careers</span></a>
       </div>
     </div>
 
-    <main data-role-page-state="checking">
-      <section class="section role-unavailable" data-role-unavailable>
-        <p class="role-location">Care &amp; Bloom careers</p>
-        <h1 class="page-title" data-role-state-title>Checking role availability</h1>
-        <p data-role-state-message>We are confirming this role with the hiring server.</p>
-        <p data-submission-receipt role="status"></p>
-        <a class="role-back" href="/#careers">← Back to careers</a>
-      </section>
-      <section class="section role-hero" data-role-content hidden>
-        <div>
-          <a class="role-back" href="/#careers">← Back to open roles</a>
-          <p class="role-location">Varies by role</p>
-          <h1 class="page-title" data-role-title>Open role</h1>
+    <!-- the open role -->
+    <div class="apply-role" data-role-content hidden>
+      <header class="role-hero">
+        <a class="dotlink role-hero__back" href="/careers" data-enter><span>← Back to open roles</span></a>
+        <p class="label role-hero__loc" data-role-location data-enter>Remote</p>
+        <h1 class="h1 role-hero__title" id="role-title" data-role-title data-enter-lines>Open role</h1>
+        <div class="role-hero__grid">
+          <p class="lede role-hero__summary" data-role-summary data-enter></p>
+          <div class="role-close" data-enter="rise">
+            <p class="role-close__label" data-close-date>Weekly closing window</p>
+            <p class="role-close__timer tnum"><time data-close-countdown>Loading deadline</time></p>
+            <p class="role-close__effort caption">&lt;3 min to apply</p>
+            <a class="btn btn--cobalt btn--lg role-close__apply" href="#application-form" data-close-apply>Apply</a>
+          </div>
         </div>
-        <div class="role-meta" aria-label="Role details">
-          <a class="role-close-apply" href="#application-form" aria-label="Apply for this role" data-close-apply>
-            <span class="role-close-copy">
-              <span class="role-close-line">
-                <span data-close-date>Weekly closing window</span>
-              </span>
-              <span class="role-close-timer">
-                <time data-close-countdown>Loading deadline</time>
-                <small>&lt;3 min</small>
-              </span>
-            </span>
-            <span class="role-close-apply-bar">Apply</span>
-          </a>
-          <p data-role-summary>Care &amp; Bloom is hiring across product, growth, creative, and operations.</p>
-          <dl>
-            <div>
-              <dt>Location</dt>
-              <dd>Varies by role</dd>
+        <dl class="role-meta" aria-label="Role details" data-enter="rise">
+          <div class="role-meta__item"><dt class="label">Location</dt><dd data-role-location-dd>Remote</dd></div>
+          <div class="role-meta__item"><dt class="label">Type</dt><dd>Full time</dd></div>
+          <div class="role-meta__item"><dt class="label">Level</dt><dd data-role-level>Varies by role</dd></div>
+        </dl>
+      </header>
+
+      <article class="role-copy" aria-labelledby="role-about-title">
+        <section class="role-block">
+          <h2 class="role-block__title" id="role-about-title" data-enter>About Care &amp; Bloom</h2>
+          <div class="role-block__body" data-enter="rise">
+            <p class="body">We launch and scale consumer health companies with $100M+ potential each. Our operators previously scaled IM8 (NASDAQ, $100M+ in 12 months), Casetify and Peak21. Our flagship brand crossed 9-figure revenue and 1M+ customers in under 36 months.</p>
+            <p class="body">We recruit builders: people who have scaled revenue, shipped product, built and broken things, and want to do it again alongside people who ship.</p>
+            <p class="body">Our brands: <a class="dotlink dotlink--inline" href="https://hellonancy.com" target="_blank" rel="noopener"><span>hellonancy.com</span></a> · <a class="dotlink dotlink--inline" href="https://biird.co" target="_blank" rel="noopener"><span>biird.co</span></a></p>
+          </div>
+        </section>
+        <section class="role-block">
+          <h2 class="role-block__title" data-enter>About the role</h2>
+          <div class="role-block__body" data-enter="rise">
+            <p class="body" data-role-mission></p>
+          </div>
+        </section>
+        <section class="role-block">
+          <h2 class="role-block__title" data-enter>Responsibilities</h2>
+          <div class="role-block__body" data-enter="rise">
+            <ul class="body petal-list" data-role-responsibilities></ul>
+          </div>
+        </section>
+        <section class="role-block">
+          <h2 class="role-block__title" data-enter>What we are looking for</h2>
+          <div class="role-block__body" data-enter="rise">
+            <ul class="body petal-list" data-role-requirements></ul>
+          </div>
+        </section>
+        <section class="role-block">
+          <h2 class="role-block__title" data-enter>How to apply</h2>
+          <div class="role-block__body" data-enter="rise">
+            <p class="body">Use the form on this page. To stand out, answer the role questions with direct examples.</p>
+          </div>
+        </section>
+      </article>
+
+      <section class="apply-form" aria-labelledby="apply-form-title">
+        <div class="apply-form__side" data-enter>
+          <h2 class="h2 apply-form__title" id="apply-form-title">Apply for this position</h2>
+          <p class="caption apply-form__note">Required fields are marked with an asterisk.</p>
+        </div>
+
+        <div class="apply-form__main" data-form-wrap>
+          <form class="f" id="application-form" aria-label="Apply for this position" novalidate data-enter="rise">
+            <input type="hidden" name="role" value="" />
+
+            <div class="preview-note" data-preview-note hidden>
+              <span class="chip chip--sun preview-note__chip">Preview</span>
+              <p class="preview-note__text">Preview only: this form does not send applications. To apply, use <a class="preview-note__link" data-live-link href="https://carenbloom.com/careers">carenbloom.com</a>.</p>
             </div>
-            <div>
-              <dt>Type</dt>
-              <dd>Full Time</dd>
+
+            <div class="f-summary" data-error-summary>
+              <div class="f-summary__clip">
+                <div class="f-summary__box" tabindex="-1" data-error-summary-box>
+                  <p class="f-summary__text" data-error-summary-text></p>
+                </div>
+              </div>
             </div>
-            <div>
-              <dt>Level</dt>
-              <dd data-role-level>Varies by role</dd>
+
+            <div class="f-grid">
+              <div class="field" data-field="first_name">
+                <label class="f-label" for="f-first-name"><span class="f-label__text">First name</span><span class="f-req" aria-hidden="true">*</span></label>
+                <input class="f-input" id="f-first-name" type="text" name="first_name" autocomplete="given-name" required />
+                <p class="f-error" id="f-first-name-error"></p>
+              </div>
+              <div class="field" data-field="last_name">
+                <label class="f-label" for="f-last-name"><span class="f-label__text">Last name</span><span class="f-req" aria-hidden="true">*</span></label>
+                <input class="f-input" id="f-last-name" type="text" name="last_name" autocomplete="family-name" required />
+                <p class="f-error" id="f-last-name-error"></p>
+              </div>
             </div>
-          </dl>
+
+            <div class="field" data-field="email">
+              <label class="f-label" for="f-email"><span class="f-label__text">Email</span><span class="f-req" aria-hidden="true">*</span></label>
+              <input class="f-input" id="f-email" type="email" name="email" autocomplete="email" inputmode="email" spellcheck="false" required />
+              <p class="f-error" id="f-email-error"></p>
+            </div>
+
+            <div class="f-grid f-grid--phone">
+              <div class="field" data-field="phone_country_code">
+                <label class="f-label" for="f-code"><span class="f-label__text">Country / area code</span><span class="f-req" aria-hidden="true">*</span></label>
+                <div class="f-select">
+                  <select class="f-input" id="f-code" name="phone_country_code" autocomplete="tel-country-code" required>
+                    <option value="">Choose code</option>
+                  </select>
+                </div>
+                <p class="f-error" id="f-code-error"></p>
+              </div>
+              <div class="field" data-field="phone_number">
+                <label class="f-label" for="f-phone"><span class="f-label__text">Phone number</span><span class="f-req" aria-hidden="true">*</span></label>
+                <input class="f-input" id="f-phone" type="tel" name="phone_number" autocomplete="tel-national" inputmode="tel" required />
+                <p class="f-error" id="f-phone-error"></p>
+              </div>
+            </div>
+
+            <div class="field" data-field="linkedin">
+              <label class="f-label" for="f-linkedin"><span class="f-label__text">LinkedIn (optional)</span></label>
+              <input class="f-input" id="f-linkedin" type="url" name="linkedin" autocomplete="url" inputmode="url" spellcheck="false" placeholder="https://www.linkedin.com/in/..." />
+              <p class="f-error" id="f-linkedin-error"></p>
+            </div>
+
+            <div class="field field--file" data-field="resume">
+              <label class="f-label" for="f-resume"><span class="f-label__text">Resume</span><span class="f-req" aria-hidden="true">*</span></label>
+              <div class="drop" data-drop>
+                <input class="drop__input" id="f-resume" type="file" name="resume" accept=".pdf,.doc,.docx,.odt,.txt,.rtf" required aria-describedby="f-resume-help" />
+                <div class="drop__rows">
+                  <div class="drop__row drop__row--empty"><div class="drop__clip">
+                    <span class="drop__btn" aria-hidden="true">Choose file</span>
+                    <span class="drop__caption" aria-hidden="true">No file chosen</span>
+                  </div></div>
+                  <div class="drop__row drop__row--file" inert><div class="drop__clip">
+                    <span class="drop__name" data-file-name></span>
+                    <span class="drop__actions">
+                      <button class="drop__act" type="button" data-file-replace>Replace</button>
+                      <button class="drop__act" type="button" data-file-remove>Remove</button>
+                    </span>
+                  </div></div>
+                </div>
+              </div>
+              <p class="f-help" id="f-resume-help">PDF, DOC, DOCX, ODT, TXT or RTF, under 4 MB.</p>
+              <p class="f-error" id="f-resume-error"></p>
+            </div>
+
+            <div class="field" data-field="intro_video_url">
+              <div class="f-label-row">
+                <label class="f-label" for="f-intro"><span class="f-label__text" data-intro-video-label>Intro video (optional)</span><span class="f-req" aria-hidden="true" data-intro-video-req hidden>*</span></label>
+                <span class="tip" data-tip>
+                  <button class="tip__btn" type="button" aria-label="About intro videos" aria-describedby="f-intro-tip" data-tip-btn>?</button>
+                  <span class="tip__panel" id="f-intro-tip" role="tooltip" data-tip-panel>We encourage applicants to share a two-minute Loom video so we can get to know you sooner. Applicants' Loom videos will be prioritized in their review.</span>
+                </span>
+              </div>
+              <input class="f-input" id="f-intro" type="url" name="intro_video_url" inputmode="url" spellcheck="false" placeholder="https://www.loom.com/share/..." aria-describedby="f-intro-help" />
+              <p class="f-help" id="f-intro-help" data-intro-video-help>Attach a short video (1-2 min) introducing yourself and why you are a great fit. <a class="f-help__link" href="https://www.loom.com/" target="_blank" rel="noopener">Loom.com</a> works well.</p>
+              <p class="f-error" id="f-intro-error"></p>
+            </div>
+
+            <div class="field" data-field="monthly_income_usd">
+              <label class="f-label" for="f-income"><span class="f-label__text">Most recent all-in monthly income (USD/month)</span><span class="f-req" aria-hidden="true">*</span></label>
+              <input class="f-input tnum" id="f-income" type="text" name="monthly_income_usd" inputmode="numeric" pattern="[0-9]*" placeholder="USD/month, numbers only" autocomplete="off" data-numeric-only required aria-describedby="f-income-help" />
+              <p class="f-help" id="f-income-help">Enter the full monthly amount in USD before taxes, bonuses included.</p>
+              <p class="f-error" id="f-income-error"></p>
+            </div>
+
+            <fieldset class="field field--choice" data-field="open_time_zone" aria-describedby="f-tz-help">
+              <legend class="f-label"><span class="f-label__text">What time zone are you open to work in?</span><span class="f-req" aria-hidden="true">*</span></legend>
+              <p class="f-help f-help--top" id="f-tz-help">Choose one or more.</p>
+              <div class="pills">
+                <label class="pill"><input class="pill__input" type="checkbox" name="open_time_zone" value="US" required /><span class="pill__face"><span class="pill__slot" aria-hidden="true"><svg class="pill__check" viewBox="0 0 12 12" focusable="false"><path d="M2.4 6.3 4.9 8.7 9.6 3.5" /></svg></span><span>US</span></span></label>
+                <label class="pill"><input class="pill__input" type="checkbox" name="open_time_zone" value="Europe" /><span class="pill__face"><span class="pill__slot" aria-hidden="true"><svg class="pill__check" viewBox="0 0 12 12" focusable="false"><path d="M2.4 6.3 4.9 8.7 9.6 3.5" /></svg></span><span>Europe</span></span></label>
+                <label class="pill"><input class="pill__input" type="checkbox" name="open_time_zone" value="Asia" /><span class="pill__face"><span class="pill__slot" aria-hidden="true"><svg class="pill__check" viewBox="0 0 12 12" focusable="false"><path d="M2.4 6.3 4.9 8.7 9.6 3.5" /></svg></span><span>Asia</span></span></label>
+              </div>
+              <p class="f-error" id="f-tz-error"></p>
+            </fieldset>
+
+            <div class="field" data-field="location">
+              <label class="f-label" for="f-location"><span class="f-label__text">Where are you based?</span><span class="f-req" aria-hidden="true">*</span></label>
+              <div class="f-select">
+                <select class="f-input" id="f-location" name="location" autocomplete="country-name" required>
+                  <option value="">Choose country</option>
+                </select>
+              </div>
+              <p class="f-error" id="f-location-error"></p>
+            </div>
+
+            <div class="f-part">
+              <h2 class="f-part__title">A few questions for you</h2>
+            </div>
+            <div class="f-questions" data-role-questions></div>
+
+            <div class="field field--file" data-field="additional_attachment">
+              <label class="f-label" for="f-attachment"><span class="f-label__text" data-attachment-label>Additional attachment (optional)</span><span class="f-req" aria-hidden="true" data-attachment-req hidden>*</span></label>
+              <div class="drop" data-drop>
+                <input class="drop__input" id="f-attachment" type="file" name="additional_attachment" aria-describedby="f-attachment-help" />
+                <div class="drop__rows">
+                  <div class="drop__row drop__row--empty"><div class="drop__clip">
+                    <span class="drop__btn" aria-hidden="true">Choose file</span>
+                    <span class="drop__caption" aria-hidden="true">No file chosen</span>
+                  </div></div>
+                  <div class="drop__row drop__row--file" inert><div class="drop__clip">
+                    <span class="drop__name" data-file-name></span>
+                    <span class="drop__actions">
+                      <button class="drop__act" type="button" data-file-replace>Replace</button>
+                      <button class="drop__act" type="button" data-file-remove>Remove</button>
+                    </span>
+                  </div></div>
+                </div>
+              </div>
+              <p class="f-help" id="f-attachment-help" data-attachment-help>Resume addendum, case study, or any supporting work. Under 4 MB.</p>
+              <p class="f-error" id="f-attachment-error"></p>
+            </div>
+
+            <div class="f-submit">
+              <button class="btn btn--ink btn--lg f-submit__btn" type="submit" data-submit>
+                <span class="f-submit__loader" data-submit-loader aria-hidden="true"></span>
+                <span class="f-swap"><span class="f-swap__a">Submit application</span><span class="f-swap__b" aria-hidden="true">Submitting…</span></span>
+              </button>
+              <div class="preview-note preview-note--inline" data-preview-note hidden>
+                <span class="chip chip--sun preview-note__chip">Preview</span>
+                <p class="preview-note__text">Preview only: this form does not send applications. To apply, use <a class="preview-note__link" data-live-link href="https://carenbloom.com/careers">carenbloom.com</a>.</p>
+              </div>
+            </div>
+          </form>
+          <p class="f-status" aria-live="polite" data-form-status></p>
+
+          <div class="apply-success" data-success hidden>
+            <span class="apply-success__mark" data-success-mark aria-hidden="true"></span>
+            <h2 class="h2 apply-success__title" tabindex="-1" data-success-title>Application received.</h2>
+            <p class="body apply-success__ref" data-success-ref></p>
+            <div class="apply-success__links">
+              <a class="dotlink" href="/careers"><span>See other open roles</span></a>
+              <a class="dotlink" href="/"><span>Back to home</span></a>
+            </div>
+          </div>
         </div>
       </section>
+    </div>
+  </div>
+</section>
 
-      <section class="section role-detail" aria-labelledby="role-description-title" data-role-content hidden>
-        <article class="role-copy">
-          <h3 id="role-description-title">About Care & Bloom</h3>
-          <p>We launch and scale consumer health companies with $100M+ potential each. Built by operators who previously scaled IM8 (NASDAQ, $100M+ in 12 months), Casetify, and Peak21 — our flagship brand crossed 8-figure revenue and 1M+ customers in under 36 months. We're just getting started.</p>
-          <p>We're not hiring for roles — we're recruiting builders. People who've scaled revenue, shipped product, built things, broken things, and want to do it again — faster, with more resources, and alongside people who actually ship.</p>
-          <p>Check out our flagship brands: <a href="https://hellonancy.com" target="_blank" rel="noopener"><strong>hellonancy.com</strong></a> · <a href="https://biird.co" target="_blank" rel="noopener"><strong>biird.co</strong></a></p>
-
-          <h3>About the role</h3>
-          <p data-role-mission>Every open role builds the engine that launches and scales our consumer health companies.</p>
-
-          <h3>Responsibilities</h3>
-          <ul data-role-responsibilities>
-            <li>Responsibilities are specific to each open role.</li>
-            <li>Own the work end to end alongside operators who ship.</li>
-            <li>Move high-leverage projects from idea to launch.</li>
-          </ul>
-
-          <h3>What we are looking for</h3>
-          <ul data-role-requirements>
-            <li>Requirements are specific to each open role.</li>
-            <li>Proven experience building or scaling in a fast-moving consumer business.</li>
-            <li>High agency, high judgment, and strong taste for what matters.</li>
-          </ul>
-
-          <h3>How to apply</h3>
-          <p>Use the application form on this page. To stand out, answer the role-specific prompts with direct examples.</p>
-        </article>
-
-        <form class="application-form" id="application-form" aria-label="Apply for this position">
-          <input type="hidden" name="role" value="">
-          <div class="application-form-head">
-            <h2>Apply for this position</h2>
-            <p>Required fields are marked with an asterisk.</p>
-          </div>
-
-          <label>
-            <span>First Name*</span>
-            <input type="text" name="first_name" autocomplete="given-name" required>
-          </label>
-          <label>
-            <span>Last Name*</span>
-            <input type="text" name="last_name" autocomplete="family-name" required>
-          </label>
-          <label>
-            <span>Email*</span>
-            <input type="email" name="email" autocomplete="email" required>
-          </label>
-          <div class="phone-field">
-            <label>
-              <span>Country / area code*</span>
-              <select name="phone_country_code" autocomplete="tel-country-code" required>
-                <option value="">Choose code</option>
-              </select>
-            </label>
-            <label>
-              <span>Number*</span>
-              <input type="tel" name="phone_number" autocomplete="tel-national" inputmode="tel" required>
-            </label>
-          </div>
-          <label class="application-form-wide">
-            <span>LinkedIn (optional)</span>
-            <input type="url" name="linkedin" autocomplete="url">
-          </label>
-          <label class="application-form-wide">
-            <span>Resume*</span>
-            <input type="file" name="resume" accept=".pdf,.doc,.docx,.odt,.txt,.rtf" required>
-          </label>
-          <label class="application-form-wide">
-            <span class="application-label-row">
-              <span data-intro-video-label>Intro video (optional)</span>
-              <i class="application-tooltip" tabindex="0" aria-describedby="intro-video-tooltip">?</i>
-              <em class="application-tooltip-panel" id="intro-video-tooltip" role="tooltip">We encourage applicants to share a two-minute Loom video so we can get to know you sooner. Applicants' Loom videos will be prioritized in their review.</em>
-            </span>
-            <input type="url" name="intro_video_url" placeholder="https://www.loom.com/share/...">
-            <small>Attach a short video (1-2 min) introducing yourself and why you are a great fit. <a href="https://www.loom.com/" target="_blank" rel="noopener">Loom.com</a> works well.</small>
-          </label>
-          <label class="application-form-wide">
-            <span>Most recent all-in monthly income (USD/month)*</span>
-            <input type="text" name="monthly_income_usd" inputmode="numeric" pattern="[0-9]*" placeholder="USD/month, numbers only" data-numeric-only required>
-            <small>Enter the full monthly amount in USD before taxes, bonuses included.</small>
-          </label>
-          <fieldset class="application-choice-field">
-            <legend>What time zone are you open to work in?*</legend>
-            <div class="application-choice-group">
-              <label class="application-choice">
-                <input type="checkbox" name="open_time_zone" value="US" required>
-                <span>US</span>
-              </label>
-              <label class="application-choice">
-                <input type="checkbox" name="open_time_zone" value="Europe">
-                <span>Europe</span>
-              </label>
-              <label class="application-choice">
-                <input type="checkbox" name="open_time_zone" value="Asia">
-                <span>Asia</span>
-              </label>
-            </div>
-          </fieldset>
-          <label>
-            <span>Location (where are you based)*</span>
-            <select name="location" autocomplete="country-name" required>
-              <option value="">Choose country</option>
-            </select>
-          </label>
-
-          <div class="application-form-head application-role-head">
-            <h2>A few questions for you</h2>
-          </div>
-          <div class="application-form-fields" data-role-questions>
-            <label class="application-form-wide">
-              <span>Role-specific question 1</span>
-              <textarea name="role_question_1" rows="4" required placeholder="Answer the first role-specific question."></textarea>
-            </label>
-            <label class="application-form-wide">
-              <span>Role-specific question 2</span>
-              <textarea name="role_question_2" rows="4" required placeholder="Answer the second role-specific question."></textarea>
-            </label>
-            <label class="application-form-wide">
-              <span>Role-specific question 3</span>
-              <textarea name="role_question_3" rows="4" required placeholder="Answer the third role-specific question."></textarea>
-            </label>
-          </div>
-          <label class="application-form-wide">
-            <span>Additional attachment (optional)</span>
-            <input type="file" name="additional_attachment">
-          </label>
-          <button type="submit">Submit application</button>
-          <p class="application-form-status" aria-live="polite"></p>
-        </form>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <div>
-        <a class="brand-mark" href="/" aria-label="Care and Bloom home">Care &amp; Bloom</a>
-        <nav class="footer-links mono" aria-label="Footer"><a href="/#careers">Open roles</a><a href="mailto:hello@carenbloom.com">hello@carenbloom.com</a></nav>
+  </main>
+  <footer id="careers" class="footer" data-footer data-spy="careers">
+  <div class="wrap">
+    <div class="footer__statements">
+      <div class="statement statement--careers">
+        <p class="label">Careers</p>
+        <h2 class="h1 statement__title" data-lines>Join the <span class="wink">spaceship</span>.</h2>
+        <div class="statement__meta" data-reveal data-delay="200">
+          <span class="statement__count"><span class="live-dot" aria-hidden="true"></span><span class="slot" data-role-slot><span data-slot-item="loading" data-on>Checking current openings…</span><span data-slot-item="ready" aria-hidden="true"><span class="tnum" data-role-count></span> <span data-role-noun>open roles</span></span><span data-slot-item="zero" aria-hidden="true">No current openings</span><span data-slot-item="error" aria-hidden="true">Openings unavailable</span></span></span>
+          <a class="dotlink statement__link" href="/careers"><span>See open roles</span></a>
+        </div>
       </div>
-    </footer>
-    <script src="/scripts/header-scroll.js"></script>
-    <script type="module" src="/scripts/careers-apply.js"></script>
-  </body>
+      <div class="statement">
+        <p class="label">Contact</p>
+        <h2 class="h1 statement__title" data-lines>Start a conversation.</h2>
+        <div class="statement__meta" data-reveal data-delay="200">
+          <a class="dotlink statement__link statement__email" href="mailto:hello@carenbloom.com"><span>hello@carenbloom.com</span></a>
+          <button class="btn btn--ghost btn--sm statement__copy" type="button" data-copy="hello@carenbloom.com" aria-label="Copy email address"><span class="swap"><span class="swap__a">Copy</span><span class="swap__b" aria-hidden="true">Copied</span></span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__bloom">
+      <button class="footer__top" type="button" data-back-to-top>
+        <span class="footer__turn"><svg class="footer__mark" viewBox="0 0 42 42" aria-hidden="true" focusable="false"><path d="M12.5798 12.6486C12.5798 11.9426 12.5445 11.2752 12.5798 10.6142C12.6729 9.14911 13.1898 7.81912 14.2076 6.77539C16.4391 4.49013 18.7332 2.2724 21.0193 0C21.061 0.0369888 21.1445 0.101317 21.2167 0.175294C23.2877 2.24506 25.365 4.30679 27.4248 6.38781C29.0301 8.01693 29.6611 9.98699 29.3512 12.2562C29.3352 12.3736 29.3239 12.491 29.3079 12.6502C29.4588 12.6389 29.5856 12.6357 29.7124 12.618C31.9295 12.3157 33.8864 12.893 35.4918 14.4626C37.651 16.5758 39.7702 18.7308 41.9133 20.8665C41.9406 20.8955 41.9615 20.9309 42.0016 20.9823C41.9374 21.0595 41.8764 21.1431 41.8042 21.2155C39.7445 23.2789 37.6912 25.3454 35.6234 27.3991C33.9876 29.0218 32.0129 29.6634 29.7317 29.3547C29.6145 29.3386 29.4957 29.3289 29.3319 29.3112C29.3448 29.4608 29.348 29.5879 29.3657 29.7133C29.6675 31.9342 29.0863 33.8946 27.5179 35.4932C25.4148 37.6466 23.27 39.755 21.1477 41.881C21.1108 41.918 21.0658 41.947 21 42.0016C20.8925 41.9003 20.7849 41.807 20.6789 41.7057C18.6754 39.7019 16.6714 37.6986 14.6668 35.6958C12.9587 33.9992 12.2924 31.9664 12.6488 29.5846C12.66 29.5074 12.6617 29.4238 12.6713 29.3016L12.1495 29.3659C10.0256 29.6248 8.12805 29.0861 6.58689 27.5889C4.39072 25.4564 2.25235 23.2676 0.0850851 21.1029C0.0538881 21.066 0.0254498 21.0267 0 20.9855C0.054583 20.9196 0.10435 20.844 0.160538 20.7813C2.23362 18.7099 4.30617 16.6402 6.37819 14.572C8.02691 12.9332 10.0144 12.3012 12.3181 12.6261C12.4128 12.6405 12.5172 12.6438 12.5798 12.6486ZM24.5046 16.0483C24.999 15.5369 25.3907 15.0834 25.8306 14.6862C27.8004 12.8962 27.969 9.71842 25.8033 7.67277C24.6185 6.55507 23.49 5.37786 22.3437 4.21994C21.9038 3.77769 21.4864 3.31291 21.0594 2.86422C19.3818 4.34538 19.096 7.18548 20.4349 9.02045C20.9583 9.73772 21.6213 10.3569 22.2554 10.9841C23.4338 12.15 24.1963 13.5202 24.4195 15.1751C24.4532 15.4131 24.4676 15.6608 24.5046 16.0483ZM17.4312 25.9678C16.9593 26.4502 16.5338 26.915 16.0924 27.3573C14.1274 29.3322 14.1129 32.1899 16.0699 34.16C17.6036 35.7039 19.1421 37.2413 20.6854 38.7724C20.7849 38.8721 20.8925 38.9637 20.9936 39.057C22.5669 37.5565 22.8928 34.8966 21.6566 33.1066C21.1317 32.3459 20.4429 31.6898 19.7831 31.0336C18.8954 30.1491 18.189 29.1585 17.8342 27.9523C17.656 27.354 17.5773 26.7108 17.4312 25.9678ZM39.0927 20.9823C37.5178 19.4047 35.9895 17.872 34.4579 16.341C34.2589 16.1432 34.0646 15.9406 33.8511 15.7589C33.3725 15.3387 32.8131 15.0211 32.2073 14.8255C31.6016 14.63 30.9624 14.5607 30.3289 14.6218C28.3784 14.7827 27.253 16.1625 25.9944 17.4877C26.1693 17.5038 26.2705 17.515 26.3716 17.5215C27.989 17.6131 29.519 18.2864 30.6805 19.4175C31.2054 19.9129 31.7079 20.4323 32.2184 20.9437C33.0748 21.8306 34.2415 22.3495 35.4725 22.3911C36.8516 22.4442 38.0492 21.9714 39.0927 20.9855V20.9823ZM16.0314 24.4882C15.8516 24.4673 15.7889 24.4545 15.7247 24.4528C14.0134 24.3745 12.395 23.6506 11.1943 22.4265C10.679 21.9199 10.1894 21.3876 9.65638 20.9035C8.38331 19.7424 6.8903 19.3291 5.20626 19.7118C4.34186 19.8942 3.55277 20.3343 2.94267 20.9743C2.966 21.0186 2.99341 21.0606 3.02454 21.0997C4.70538 22.7819 6.35089 24.5011 8.0815 26.1318C9.38828 27.3605 10.9712 27.6516 12.7002 27.1209C14.1193 26.6834 14.9397 25.503 16.0314 24.4882ZM17.2242 21.0032C17.2267 21.751 17.4505 22.4811 17.8673 23.1014C18.284 23.7217 18.875 24.2043 19.5656 24.4882C20.2561 24.7721 21.0151 24.8444 21.7467 24.6962C22.4783 24.5479 23.1496 24.1857 23.6757 23.6553C24.2018 23.1249 24.5591 22.4501 24.7024 21.7163C24.8457 20.9825 24.7686 20.2226 24.4809 19.5327C24.1931 18.8428 23.7076 18.2538 23.0857 17.8403C22.4639 17.4268 21.7336 17.2072 20.9872 17.2095C19.9866 17.2146 19.0287 17.6167 18.3234 18.3277C17.6181 19.0388 17.2229 20.0008 17.2242 21.0032ZM15.2848 22.3171C14.9525 20.598 15.2495 19.0637 16.1325 17.7225C15.4598 17.0149 14.8755 16.2751 14.1643 15.6768C13.2911 14.9416 12.1767 14.5569 11.0368 14.5973C9.8968 14.6378 8.81233 15.1003 7.9932 15.8956C7.53246 16.341 7.08616 16.801 6.63505 17.2561C6.57042 17.3319 6.51089 17.412 6.45685 17.4957C6.56923 17.5086 6.63184 17.5198 6.69445 17.5231C8.46418 17.6016 10.1346 18.3643 11.3549 19.6507C11.814 20.1155 12.2715 20.5851 12.7435 21.037C13.439 21.7154 14.3265 22.1625 15.2848 22.3171ZM22.2715 15.2667C22.2853 15.2184 22.2945 15.1689 22.2988 15.1188C22.2945 15.0525 22.2837 14.9868 22.2667 14.9226C22.0523 14.0731 21.6162 13.2961 21.0032 12.6711C20.5505 12.216 20.0962 11.7641 19.6403 11.3105C18.3897 10.0642 17.6608 8.57659 17.5404 6.7979C17.5316 6.71192 17.5176 6.62653 17.4987 6.5422C16.879 7.12276 16.1823 7.64543 15.6477 8.30158C14.5849 9.60423 14.3521 11.1031 14.8755 12.7177C15.3651 14.2311 16.6687 15.0673 17.6464 16.1738C18.316 15.7171 19.0712 15.4013 19.8661 15.2454C20.6611 15.0895 21.4794 15.0968 22.2715 15.2667ZM24.3023 25.8166C23.6315 26.2706 22.8759 26.5839 22.081 26.7376C21.2861 26.8913 20.4684 26.8821 19.6772 26.7108C19.8271 27.685 20.2825 28.5862 20.9775 29.2839C21.4592 29.7664 21.9408 30.2488 22.4224 30.7313C23.5259 31.8192 24.2307 33.2482 24.4227 34.7872C24.4548 35.0188 24.4676 35.2536 24.5014 35.6219C25.0616 35.0461 25.5384 34.5508 26.0233 34.0619C26.8474 33.2347 27.33 32.1265 27.3746 30.9586C27.4193 29.7907 27.0227 28.6489 26.2641 27.7609C25.6685 27.0758 24.9765 26.4792 24.3039 25.8166H24.3023ZM25.8274 24.2985C26.4696 24.9594 27.0571 25.6268 27.7137 26.2106C28.6005 26.992 29.7511 27.4057 30.9314 27.3675C32.1118 27.3292 33.2333 26.842 34.0678 26.0048C34.466 25.6075 34.8625 25.2119 35.2574 24.8131C35.3457 24.7246 35.418 24.6281 35.5159 24.5284C34.8641 24.4046 34.2428 24.3322 33.6472 24.1618C32.5041 23.8174 31.4683 23.185 30.6387 22.3252C29.958 21.6497 29.2629 20.9823 28.526 20.3728C28.0236 19.9579 27.3926 19.7665 26.7023 19.6507C26.8794 20.4442 26.8933 21.2656 26.7432 22.0646C26.593 22.8637 26.282 23.6238 25.829 24.2985H25.8274Z" fill="currentColor"/></svg></span>
+        <span class="footer__top-label label">Back to top</span>
+      </button>
+    </div>
+
+    <div class="footer__bottom">
+      <a class="footer__brand" href="/" aria-label="Care &amp; Bloom home">
+        <svg class="mark" viewBox="0 0 42 42" aria-hidden="true" focusable="false"><path d="M12.5798 12.6486C12.5798 11.9426 12.5445 11.2752 12.5798 10.6142C12.6729 9.14911 13.1898 7.81912 14.2076 6.77539C16.4391 4.49013 18.7332 2.2724 21.0193 0C21.061 0.0369888 21.1445 0.101317 21.2167 0.175294C23.2877 2.24506 25.365 4.30679 27.4248 6.38781C29.0301 8.01693 29.6611 9.98699 29.3512 12.2562C29.3352 12.3736 29.3239 12.491 29.3079 12.6502C29.4588 12.6389 29.5856 12.6357 29.7124 12.618C31.9295 12.3157 33.8864 12.893 35.4918 14.4626C37.651 16.5758 39.7702 18.7308 41.9133 20.8665C41.9406 20.8955 41.9615 20.9309 42.0016 20.9823C41.9374 21.0595 41.8764 21.1431 41.8042 21.2155C39.7445 23.2789 37.6912 25.3454 35.6234 27.3991C33.9876 29.0218 32.0129 29.6634 29.7317 29.3547C29.6145 29.3386 29.4957 29.3289 29.3319 29.3112C29.3448 29.4608 29.348 29.5879 29.3657 29.7133C29.6675 31.9342 29.0863 33.8946 27.5179 35.4932C25.4148 37.6466 23.27 39.755 21.1477 41.881C21.1108 41.918 21.0658 41.947 21 42.0016C20.8925 41.9003 20.7849 41.807 20.6789 41.7057C18.6754 39.7019 16.6714 37.6986 14.6668 35.6958C12.9587 33.9992 12.2924 31.9664 12.6488 29.5846C12.66 29.5074 12.6617 29.4238 12.6713 29.3016L12.1495 29.3659C10.0256 29.6248 8.12805 29.0861 6.58689 27.5889C4.39072 25.4564 2.25235 23.2676 0.0850851 21.1029C0.0538881 21.066 0.0254498 21.0267 0 20.9855C0.054583 20.9196 0.10435 20.844 0.160538 20.7813C2.23362 18.7099 4.30617 16.6402 6.37819 14.572C8.02691 12.9332 10.0144 12.3012 12.3181 12.6261C12.4128 12.6405 12.5172 12.6438 12.5798 12.6486ZM24.5046 16.0483C24.999 15.5369 25.3907 15.0834 25.8306 14.6862C27.8004 12.8962 27.969 9.71842 25.8033 7.67277C24.6185 6.55507 23.49 5.37786 22.3437 4.21994C21.9038 3.77769 21.4864 3.31291 21.0594 2.86422C19.3818 4.34538 19.096 7.18548 20.4349 9.02045C20.9583 9.73772 21.6213 10.3569 22.2554 10.9841C23.4338 12.15 24.1963 13.5202 24.4195 15.1751C24.4532 15.4131 24.4676 15.6608 24.5046 16.0483ZM17.4312 25.9678C16.9593 26.4502 16.5338 26.915 16.0924 27.3573C14.1274 29.3322 14.1129 32.1899 16.0699 34.16C17.6036 35.7039 19.1421 37.2413 20.6854 38.7724C20.7849 38.8721 20.8925 38.9637 20.9936 39.057C22.5669 37.5565 22.8928 34.8966 21.6566 33.1066C21.1317 32.3459 20.4429 31.6898 19.7831 31.0336C18.8954 30.1491 18.189 29.1585 17.8342 27.9523C17.656 27.354 17.5773 26.7108 17.4312 25.9678ZM39.0927 20.9823C37.5178 19.4047 35.9895 17.872 34.4579 16.341C34.2589 16.1432 34.0646 15.9406 33.8511 15.7589C33.3725 15.3387 32.8131 15.0211 32.2073 14.8255C31.6016 14.63 30.9624 14.5607 30.3289 14.6218C28.3784 14.7827 27.253 16.1625 25.9944 17.4877C26.1693 17.5038 26.2705 17.515 26.3716 17.5215C27.989 17.6131 29.519 18.2864 30.6805 19.4175C31.2054 19.9129 31.7079 20.4323 32.2184 20.9437C33.0748 21.8306 34.2415 22.3495 35.4725 22.3911C36.8516 22.4442 38.0492 21.9714 39.0927 20.9855V20.9823ZM16.0314 24.4882C15.8516 24.4673 15.7889 24.4545 15.7247 24.4528C14.0134 24.3745 12.395 23.6506 11.1943 22.4265C10.679 21.9199 10.1894 21.3876 9.65638 20.9035C8.38331 19.7424 6.8903 19.3291 5.20626 19.7118C4.34186 19.8942 3.55277 20.3343 2.94267 20.9743C2.966 21.0186 2.99341 21.0606 3.02454 21.0997C4.70538 22.7819 6.35089 24.5011 8.0815 26.1318C9.38828 27.3605 10.9712 27.6516 12.7002 27.1209C14.1193 26.6834 14.9397 25.503 16.0314 24.4882ZM17.2242 21.0032C17.2267 21.751 17.4505 22.4811 17.8673 23.1014C18.284 23.7217 18.875 24.2043 19.5656 24.4882C20.2561 24.7721 21.0151 24.8444 21.7467 24.6962C22.4783 24.5479 23.1496 24.1857 23.6757 23.6553C24.2018 23.1249 24.5591 22.4501 24.7024 21.7163C24.8457 20.9825 24.7686 20.2226 24.4809 19.5327C24.1931 18.8428 23.7076 18.2538 23.0857 17.8403C22.4639 17.4268 21.7336 17.2072 20.9872 17.2095C19.9866 17.2146 19.0287 17.6167 18.3234 18.3277C17.6181 19.0388 17.2229 20.0008 17.2242 21.0032ZM15.2848 22.3171C14.9525 20.598 15.2495 19.0637 16.1325 17.7225C15.4598 17.0149 14.8755 16.2751 14.1643 15.6768C13.2911 14.9416 12.1767 14.5569 11.0368 14.5973C9.8968 14.6378 8.81233 15.1003 7.9932 15.8956C7.53246 16.341 7.08616 16.801 6.63505 17.2561C6.57042 17.3319 6.51089 17.412 6.45685 17.4957C6.56923 17.5086 6.63184 17.5198 6.69445 17.5231C8.46418 17.6016 10.1346 18.3643 11.3549 19.6507C11.814 20.1155 12.2715 20.5851 12.7435 21.037C13.439 21.7154 14.3265 22.1625 15.2848 22.3171ZM22.2715 15.2667C22.2853 15.2184 22.2945 15.1689 22.2988 15.1188C22.2945 15.0525 22.2837 14.9868 22.2667 14.9226C22.0523 14.0731 21.6162 13.2961 21.0032 12.6711C20.5505 12.216 20.0962 11.7641 19.6403 11.3105C18.3897 10.0642 17.6608 8.57659 17.5404 6.7979C17.5316 6.71192 17.5176 6.62653 17.4987 6.5422C16.879 7.12276 16.1823 7.64543 15.6477 8.30158C14.5849 9.60423 14.3521 11.1031 14.8755 12.7177C15.3651 14.2311 16.6687 15.0673 17.6464 16.1738C18.316 15.7171 19.0712 15.4013 19.8661 15.2454C20.6611 15.0895 21.4794 15.0968 22.2715 15.2667ZM24.3023 25.8166C23.6315 26.2706 22.8759 26.5839 22.081 26.7376C21.2861 26.8913 20.4684 26.8821 19.6772 26.7108C19.8271 27.685 20.2825 28.5862 20.9775 29.2839C21.4592 29.7664 21.9408 30.2488 22.4224 30.7313C23.5259 31.8192 24.2307 33.2482 24.4227 34.7872C24.4548 35.0188 24.4676 35.2536 24.5014 35.6219C25.0616 35.0461 25.5384 34.5508 26.0233 34.0619C26.8474 33.2347 27.33 32.1265 27.3746 30.9586C27.4193 29.7907 27.0227 28.6489 26.2641 27.7609C25.6685 27.0758 24.9765 26.4792 24.3039 25.8166H24.3023ZM25.8274 24.2985C26.4696 24.9594 27.0571 25.6268 27.7137 26.2106C28.6005 26.992 29.7511 27.4057 30.9314 27.3675C32.1118 27.3292 33.2333 26.842 34.0678 26.0048C34.466 25.6075 34.8625 25.2119 35.2574 24.8131C35.3457 24.7246 35.418 24.6281 35.5159 24.5284C34.8641 24.4046 34.2428 24.3322 33.6472 24.1618C32.5041 23.8174 31.4683 23.185 30.6387 22.3252C29.958 21.6497 29.2629 20.9823 28.526 20.3728C28.0236 19.9579 27.3926 19.7665 26.7023 19.6507C26.8794 20.4442 26.8933 21.2656 26.7432 22.0646C26.593 22.8637 26.282 23.6238 25.829 24.2985H25.8274Z" fill="currentColor"/></svg>
+        <span class="wordmark" aria-hidden="true">Care <span class="wink-amp">&amp;</span> Bloom</span>
+      </a>
+      <ul class="footer__cities" aria-label="Offices" data-egg-cities>
+        <li>Hong Kong</li>
+        <li>Shenzhen</li>
+        <li>London</li>
+        <li>San Francisco</li>
+      </ul>
+      <nav class="footer__nav" aria-label="Footer">
+        <a class="dotlink dotlink--quiet" href="/#brands"><span>Brands</span></a>
+        <a class="dotlink dotlink--quiet" href="/#people"><span>People</span></a>
+        <a class="dotlink dotlink--quiet" href="/#work"><span>How we work</span></a>
+        <a class="dotlink dotlink--quiet" href="/careers"><span>Careers</span></a>
+      </nav>
+      <p class="footer__legal">&copy; 2026 Care &amp; Bloom Limited</p>
+    </div>
+  </div>
+</footer>
+
+</body>
 </html>

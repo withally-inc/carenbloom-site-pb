@@ -1,0 +1,413 @@
+{
+ "generated": "2026-10-21",
+ "images": {
+  "hero-start": {
+   "width": 896,
+   "height": 1200,
+   "aspect": 0.7467,
+   "widths": [
+    480,
+    896
+   ],
+   "formats": [
+    "webp"
+   ],
+   "alpha": true,
+   "ground": "#080808",
+   "src": "/img/hero-start-896.webp",
+   "pattern": "/img/hero-start-{w}.{format}",
+   "placeholder": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAAAQBACdASoYACAAPu1or1AppaSiqAqpMB2JZADN/GlfwIhuf1BG5rAIAAD+/BAjuTzwOyUwiXOonE0fDNoWGrfPNKHRy8yIukjZxNAm/VtsrXaoe1E9tYWIjS4xYZSza34HiAAA",
+   "bytes": {
+    "hero-start-480.webp": "14.1KB",
+    "hero-start-896.webp": "38.8KB"
+   }
+  },
+  "hero-end": {
+   "width": 896,
+   "height": 1200,
+   "aspect": 0.7467,
+   "widths": [
+    480,
+    896
+   ],
+   "formats": [
+    "webp"
+   ],
+   "alpha": true,
+   "ground": "#080808",
+   "src": "/img/hero-end-896.webp",
+   "pattern": "/img/hero-end-{w}.{format}",
+   "placeholder": "data:image/webp;base64,UklGRrYAAABXRUJQVlA4IKoAAACwBQCdASoYACAAPuVepU2pJSOiMAwBIByJaADKAywBtASuULi03Zm77Cns9EolnLnVPlsrUAAA/vHMjdt0xHYWCNRi5SQaK4nxCpT13bK2lMUfNwMy11PQD4uLAa5zdHH+kZc6XpkX/kx2Ui8eTZUZ5WOp/SL0X6jE1aK5+TeS4Bw+iP5WbJSBiY07JQ/cxQ5V4wo2IjQ8Xyzo2XUAUkE67typD+cI4gAAAA==",
+   "bytes": {
+    "hero-end-480.webp": "31.4KB",
+    "hero-end-896.webp": "86KB"
+   }
+  },
+  "portrait-rahul-cobalt": {
+   "width": 640,
+   "height": 640,
+   "aspect": 1,
+   "widths": [
+    480,
+    640
+   ],
+   "formats": [
+    "avif",
+    "webp"
+   ],
+   "alpha": false,
+   "ground": "#2838e8",
+   "src": "/img/portrait-rahul-cobalt-640.webp",
+   "pattern": "/img/portrait-rahul-cobalt-{w}.{format}",
+   "placeholder": "data:image/webp;base64,UklGRtoAAABXRUJQVlA4IM4AAACwBQCdASoYABgAPu1mq06ppaQiKA1RMB2JbACdAAyY88N3XOJCusFoEA80ZTNcDU0bbzIqjAAA/u/XSDIF+9Gzu5oVazXinSkHSzgUh7TwcVxwC9N7hmqlvtmdxHOaFfyAgRyw2S7wOd/XXEfS+g4zT37p6IoVLF+5+eJ/+on95Ma7vgKvyP2OEjQUr/UaLJrjPh8FkIqasVwLi8v7nnjgQFbxuPq64wJQ9SbgG6CToycL8yOCisttk6zi+eJhkJeep5bvzi4t6OjbKuhoAA==",
+   "alt": "Portrait of Rahul Ramchand",
+   "bytes": {
+    "portrait-rahul-cobalt-480.avif": "6KB",
+    "portrait-rahul-cobalt-480.webp": "11.4KB",
+    "portrait-rahul-cobalt-640.avif": "8KB",
+    "portrait-rahul-cobalt-640.webp": "16.1KB"
+   }
+  },
+  "portrait-rahul-ink": {
+   "width": 640,
+   "height": 640,
+   "aspect": 1,
+   "widths": [
+    480,
+    640
+   ],
+   "formats": [
+    "avif",
+    "webp"
+   ],
+   "alpha": false,
+   "ground": "#d8e8f8",
+   "src": "/img/portrait-rahul-ink-640.webp",
+   "pattern": "/img/portrait-rahul-ink-{w}.{format}",
+   "placeholder": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAADQBQCdASoYABgAPu1mq06ppaQiKA1RMB2JZwDOOBBX2yUDw6VnJ/kWL0HfJjrfuo1TO81zbeEAAP7qlejuuFJnSowqXOPWpmB5XsqW5M5tS/Q+HxEtpaOdzk3Hq/JiJ5Wv2LkEae8fqdWfwRAK4yfk+OybGvAgUkSTXRsaQxsTQZOk+9bpYrVktfFMD3VqAukHBlnlivcshW+A8BEBEhzNRIH622AAAAA=",
+   "alt": "Portrait of Rahul Ramchand",
+   "bytes": {
+    "portrait-rahul-ink-480.avif": "6.2KB",
+    "portrait-rahul-ink-480.webp": "9.1KB",
+    "portrait-rahul-ink-640.avif": "8KB",
+    "portrait-rahul-ink-640.webp": "12.8KB"
+   }
+  },
+  "portrait-momoko-cobalt": {
+   "width": 640,
+   "height": 640,
+   "aspect": 1,
+   "widths": [
+    480,
+    640
+   ],
+   "formats": [
+    "avif",
+    "webp"
+   ],
+   "alpha": false,
+   "ground": "#2838e8",
+   "src": "/img/portrait-momoko-cobalt-640.webp",
+   "pattern": "/img/portrait-momoko-cobalt-{w}.{format}",
+   "placeholder": "data:image/webp;base64,UklGRuoAAABXRUJQVlA4IN4AAADwBQCdASoYABgAPu1krE4ppaSiKA1RMB2JbACdMxlWkgKt3giel7OehnlA0PBtGIZ3CbTGvl/ZQAD+xdqKrrvF1DbWBjmzFYg19lWO+FKvF2sBo9KgKCEMzxyqwd1FauFWS59hc/rQ321onqfEJ9XVN/SV0eniLgXdT5v3yzTS1BKDPeTgqppsF6LLdJ2aGhuKm/JuQM0828VMx+6hQDZftU9JbO1AYin+NJBTjEsLzMve6iyt0OnnZAa8wWZSG+6Ot1ZMYKgkIIEmD/BS1YyRHKXxggQJFpiIukAAAAA=",
+   "alt": "Portrait of Momoko Kashiwabara",
+   "bytes": {
+    "portrait-momoko-cobalt-480.avif": "16.6KB",
+    "portrait-momoko-cobalt-480.webp": "27.2KB",
+    "portrait-momoko-cobalt-640.avif": "21.2KB",
+    "portrait-momoko-cobalt-640.webp": "38.1KB"
+   }
+  },
+  "portrait-momoko-ink": {
+   "width": 640,
+   "height": 640,
+   "aspect": 1,
+   "widths": [
+    480,
+    640
+   ],
+   "formats": [
+    "avif",
+    "webp"
+   ],
+   "alpha": false,
+   "ground": "#081818",
+   "src": "/img/portrait-momoko-ink-640.webp",
+   "pattern": "/img/portrait-momoko-ink-{w}.{format}",
+   "placeholder": "data:image/webp;base64,UklGRsYAAABXRUJQVlA4ILoAAADQBQCdASoYABgAPu1mq08ppaOiKA1RMB2JZwDOPp/4PIpIfc+XFo+tRl22ihldrk/+MmFgaeyAAP5b0pn4fJPN43nzVlLOg3HDfMjCqMYeSQ3ax/h/l+zhVS/58w7B5/c6WkpGQZNszEHnFQBj0/MH/dXos7iLOnIwrm4EUBgO/07W+yZ+fbCAiRO2IdRp0j6uMNZZrN6XirgQQMfywjvppm8/JORG+hx983E+9drWUaaHiDLjWgAAAAA=",
+   "alt": "Portrait of Momoko Kashiwabara",
+   "bytes": {
+    "portrait-momoko-ink-480.avif": "17.9KB",
+    "portrait-momoko-ink-480.webp": "22.3KB",
+    "portrait-momoko-ink-640.avif": "22.7KB",
+    "portrait-momoko-ink-640.webp": "30.9KB"
+   }
+  },
+  "nancy-avocado": {
+   "width": 1080,
+   "height": 1080,
+   "aspect": 1,
+   "widths": [
+    480,
+    960,
+    1080
+   ],
+   "formats": [
+    "avif",
+    "webp"
+   ],
+   "alpha": false,
+   "ground": "#c8d888",
+   "src": "/img/nancy-avocado-1080.webp",
+   "pattern": "/img/nancy-avocado-{w}.{format}",
+   "placeholder": "data:image/webp;base64,UklGRqIAAABXRUJQVlA4IJYAAACQBQCdASoYABgAPu1mqk8ppaOiKA1RMB2JYgC/7A+D9HEh0kb7cstdbzPOv5Clxy2gbK9kwADicr1swawgPaIw1CuvoN53jqfkCTQsv166e31K7RxKDne7AJe4fwS7bwL+XeJSTeCaqSlKcR9ESE1MVnijsE2ZDYrU2/oZnJbFTvPvhodJWBTRP2oIjsGEPzhJvHwAAAA=",
+   "alt": "Hello Nancy avocado product among halved avocados",
+   "bytes": {
+    "nancy-avocado-480.avif": "11KB",
+    "nancy-avocado-480.webp": "14KB",
+    "nancy-avocado-960.avif": "26.5KB",
+    "nancy-avocado-960.webp": "37.6KB",
+    "nancy-avocado-1080.avif": "29.9KB",
+    "nancy-avocado-1080.webp": "43.7KB"
+   }
+  },
+  "nancy-lem": {
+   "width": 1080,
+   "height": 1080,
+   "aspect": 1,
+   "widths": [
+    480,
+    960,
+    1080
+   ],
+   "formats": [
+    "avif",
+    "webp"
+   ],
+   "alpha": false,
+   "ground": "#f8b808",
+   "src": "/img/nancy-lem-1080.webp",
+   "pattern": "/img/nancy-lem-{w}.{format}",
+   "placeholder": "data:image/webp;base64,UklGRrYAAABXRUJQVlA4IKoAAACwBQCdASoYABgAPu1mqk8ppaOiKA1RMB2JbACdMoR1ALyBN3URpjWzsnUYX4CTWgKjvzbQ5MAA/t6ZVMDOx7qwTUTezEyn/LUE4nviQDYIuwz4A1Q51rHgqjwcljLDCtbC4BeLmAu8Jd+99GXOZ3AkFlYdegF06VJrB+nwjl1Ty8wBFbv16LuyoViiRXxWVCUigAxp+lmUa/chIqG2+vBfJm1mePFL+qwAAA==",
+   "alt": "Hello Nancy lemon product in a ring of lemon slices",
+   "bytes": {
+    "nancy-lem-480.avif": "19.5KB",
+    "nancy-lem-480.webp": "19.6KB",
+    "nancy-lem-960.avif": "41KB",
+    "nancy-lem-960.webp": "48.9KB",
+    "nancy-lem-1080.avif": "49KB",
+    "nancy-lem-1080.webp": "58.4KB"
+   }
+  },
+  "nancy-raspberry": {
+   "width": 800,
+   "height": 800,
+   "aspect": 1,
+   "widths": [
+    480,
+    800
+   ],
+   "formats": [
+    "avif",
+    "webp"
+   ],
+   "alpha": false,
+   "ground": "#f8e8f8",
+   "src": "/img/nancy-raspberry-800.webp",
+   "pattern": "/img/nancy-raspberry-{w}.{format}",
+   "placeholder": "data:image/webp;base64,UklGRqQAAABXRUJQVlA4IJgAAACQBQCdASoYABgAPu1qrlCppaQiqAqpMB2JZgCdMt7CmBTj/Sna0Bhxkjqstn+7fXvmjVYugAD+77W9OK9zMvEGMBH8+nITdqxmSK5DllfBD3mMupCQqXq6TLwq7TdbKxGptZkm+KLWYQA81meguRSQPt5ICRux3ByaCwtJNMgR6DTJgtD0jGSDLjrtqEbe2eb8p7SAvxAAAA==",
+   "alt": "Hello Nancy raspberry product held in an open hand",
+   "bytes": {
+    "nancy-raspberry-480.avif": "6KB",
+    "nancy-raspberry-480.webp": "8.8KB",
+    "nancy-raspberry-800.avif": "11KB",
+    "nancy-raspberry-800.webp": "18.9KB"
+   }
+  },
+  "biird-glass-sky": {
+   "width": 1080,
+   "height": 1080,
+   "aspect": 1,
+   "widths": [
+    480,
+    960,
+    1080
+   ],
+   "formats": [
+    "avif",
+    "webp"
+   ],
+   "alpha": false,
+   "ground": "#3898b8",
+   "src": "/img/biird-glass-sky-1080.webp",
+   "pattern": "/img/biird-glass-sky-{w}.{format}",
+   "placeholder": "data:image/webp;base64,UklGRrwAAABXRUJQVlA4ILAAAACwBQCdASoYABgAPu1gqk2ppSQiMBgMATAdiWwAnTKEgCiuwS/DnijJyn2m0qn1iJvtrsXFMLgA/tMgGSHMpLBDVj9bkZMGBTN0oG/vxijlNPYOaG8boUqBUX6MFiyar53RlqfLhm1h7yw1gia8ebNhdoQ4kHKlrHO7+k4PtjZXlvYe05k7T9X8mzC4FEStt9vDbuIoRmWxnjwG7JiKnOSuJrOsBZfJkLSfMJQ2UYUAAA==",
+   "alt": "Biird glass product held up against a blue sky",
+   "bytes": {
+    "biird-glass-sky-480.avif": "12.1KB",
+    "biird-glass-sky-480.webp": "16.9KB",
+    "biird-glass-sky-960.avif": "27.7KB",
+    "biird-glass-sky-960.webp": "40.8KB",
+    "biird-glass-sky-1080.avif": "32.2KB",
+    "biird-glass-sky-1080.webp": "50KB"
+   }
+  },
+  "biird-lilac-first-timer": {
+   "width": 800,
+   "height": 800,
+   "aspect": 1,
+   "widths": [
+    480,
+    800
+   ],
+   "formats": [
+    "avif",
+    "webp"
+   ],
+   "alpha": false,
+   "ground": "#784838",
+   "src": "/img/biird-lilac-first-timer-800.webp",
+   "pattern": "/img/biird-lilac-first-timer-{w}.{format}",
+   "placeholder": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAAAwBQCdASoYABgAPu1aqE2ppKOiN/VYATAdiUATpll5EAFOzs1T+n5t9lklJKiNxTKwAAD+50CPRIJtwXvwViMOG29/ccaZHGa+1ONiKZsunSrWQuzLFwEciY2/cETwCw6EQSBXsn6Pd8r+0YiNDnCRzXDdGkIBBuF2uGdM6wTFnbUMaXu2c8rAAAA=",
+   "alt": "Biird lilac product resting on skin",
+   "bytes": {
+    "biird-lilac-first-timer-480.avif": "12.3KB",
+    "biird-lilac-first-timer-480.webp": "20.6KB",
+    "biird-lilac-first-timer-800.avif": "73.5KB",
+    "biird-lilac-first-timer-800.webp": "114.2KB"
+   }
+  },
+  "biird-ohwii-branch": {
+   "width": 1080,
+   "height": 1080,
+   "aspect": 1,
+   "widths": [
+    480,
+    960,
+    1080
+   ],
+   "formats": [
+    "avif",
+    "webp"
+   ],
+   "alpha": false,
+   "ground": "#6898a8",
+   "src": "/img/biird-ohwii-branch-1080.webp",
+   "pattern": "/img/biird-ohwii-branch-{w}.{format}",
+   "placeholder": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAAAQBgCdASoYABgAPu1kq1AppSOisBgIATAdiUAXZmX4Nqa/JSCTGwBQhzc2vpc7M7Kvj1SknZAihAAA9g0fklBb7uhVkcO80s+DAbVUKZ2pIdNgseuKJKpoUa8a6jqJqX9QhCfUJubqd7dI0qRRJ+WV3FvqaHjagYTPXJDA4RRgSfgnDEjd8Ggy+RuUhs6JCGbaw2cEaDHU5xQAAAA=",
+   "alt": "Biird Ohwii glass product balanced on a branch",
+   "bytes": {
+    "biird-ohwii-branch-480.avif": "19.6KB",
+    "biird-ohwii-branch-480.webp": "22.6KB",
+    "biird-ohwii-branch-960.avif": "48KB",
+    "biird-ohwii-branch-960.webp": "60.9KB",
+    "biird-ohwii-branch-1080.avif": "59.8KB",
+    "biird-ohwii-branch-1080.webp": "73.3KB"
+   }
+  }
+ },
+ "bloom": {
+  "sequence": {
+   "pattern": "/img/bloom-seq/bloom-{nn}.webp",
+   "count": 49,
+   "pad": 2,
+   "width": 538,
+   "height": 720,
+   "alpha": true,
+   "sourceFrames": [
+    0,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    20,
+    22,
+    24,
+    26,
+    28,
+    30,
+    32,
+    34,
+    36,
+    38,
+    40,
+    42,
+    44,
+    46,
+    48,
+    50,
+    52,
+    54,
+    56,
+    58,
+    60,
+    62,
+    64,
+    66,
+    68,
+    70,
+    72,
+    74,
+    76,
+    78,
+    80,
+    82,
+    84,
+    86,
+    88,
+    90,
+    92,
+    94,
+    96
+   ],
+   "maxKB": 38,
+   "totalKB": 1194.8
+  }
+ },
+ "lemon": {
+  "180": {
+   "webp": "/img/lemon-sprite-180.webp",
+   "frameSize": 180,
+   "frames": 10,
+   "width": 1800,
+   "height": 180,
+   "bytes": {
+    "webp": "35.6KB"
+   }
+  },
+  "360": {
+   "webp": "/img/lemon-sprite-360.webp",
+   "frameSize": 360,
+   "frames": 10,
+   "width": 3600,
+   "height": 360,
+   "bytes": {
+    "webp": "30.9KB"
+   }
+  },
+  "note": "10 frames in one row, frame N at background-position-x = -N * frameSize. Source frame 360px."
+ },
+ "logos": {
+  "im8": {
+   "src": "/img/logos/im8.svg",
+   "aspect": 3.338,
+   "bytes": "2.8KB"
+  },
+  "peak21": {
+   "src": "/img/logos/peak21.svg",
+   "aspect": 3.6364,
+   "bytes": "3KB"
+  },
+  "casetify": {
+   "src": "/img/logos/casetify.svg",
+   "aspect": 2.396,
+   "bytes": "19.2KB"
+  },
+  "note": "Same CSS height for all three (viewBoxes are optically padded). Recolour with CSS mask or use opacity .6 on ink."
+ }
+}

@@ -1,0 +1,76 @@
+<!-- build: "Build with us", for founders and brand owners. No backend: a valid submit
+     composes an email to hello@carenbloom.com (mailto) and shows an inline confirmation
+     with the address and copy buttons. Without JS the form posts to the same mailto.
+     The category tiles carry the spaces icons ("Something else" the mark), drawn by build.ts. -->
+<section id="build" class="section build" data-section="build" aria-labelledby="build-title">
+  <div class="wrap build__wrap">
+    <header class="build__head">
+      <p class="label" data-reveal>Build with us</p>
+      <h2 class="h1 build__title" id="build-title" data-lines>Have a brand that <span class="wink">belongs</span> here?</h2>
+      <p class="lede build__lede" data-reveal data-delay="160">We focus on health categories where people need more than content or commerce, and where trust is hardest to earn. Launch a brand with us, or bring yours into the group.</p>
+    </header>
+
+    <div class="build__card" data-reveal="rise" data-delay="120" data-build-card>
+      <form class="bw" action="mailto:hello@carenbloom.com" method="post" enctype="text/plain" novalidate aria-label="Build with us" data-build-form>
+        <fieldset class="bw-field" data-field="category">
+          <legend class="bw-label"><span class="bw-label__text">Category</span></legend>
+          <div class="bw-tiles">
+            <label class="bw-tile"><input class="bw-tile__input" type="radio" name="category" value="Sexual health" required /><span class="bw-tile__face"><svg class="bw-tile__icon" viewBox="0 0 42 42" aria-hidden="true" focusable="false" data-petal="0"></svg><span>Sexual health</span></span></label>
+            <label class="bw-tile"><input class="bw-tile__input" type="radio" name="category" value="Longevity" /><span class="bw-tile__face"><svg class="bw-tile__icon" viewBox="0 0 42 42" aria-hidden="true" focusable="false" data-petal="1"></svg><span>Longevity</span></span></label>
+            <label class="bw-tile"><input class="bw-tile__input" type="radio" name="category" value="Mental health" /><span class="bw-tile__face"><svg class="bw-tile__icon" viewBox="0 0 42 42" aria-hidden="true" focusable="false" data-petal="2"></svg><span>Mental health</span></span></label>
+            <label class="bw-tile"><input class="bw-tile__input" type="radio" name="category" value="Education" /><span class="bw-tile__face"><svg class="bw-tile__icon" viewBox="0 0 42 42" aria-hidden="true" focusable="false" data-petal="3"></svg><span>Education</span></span></label>
+            <label class="bw-tile bw-tile--wide"><input class="bw-tile__input" type="radio" name="category" value="Something else" /><span class="bw-tile__face"><svg class="bw-tile__icon" viewBox="0 0 42 42" aria-hidden="true" focusable="false" data-petal="all"></svg><span>Something else</span></span></label>
+          </div>
+          <p class="bw-error" id="bw-category-error"></p>
+        </fieldset>
+
+        <div class="bw-grid">
+          <div class="bw-field" data-field="brand">
+            <label class="bw-label" for="bw-brand"><span class="bw-label__text">Brand or project</span></label>
+            <input class="bw-input" id="bw-brand" type="text" name="brand" autocomplete="organization" required />
+            <p class="bw-error" id="bw-brand-error"></p>
+          </div>
+          <div class="bw-field" data-field="link">
+            <label class="bw-label" for="bw-link"><span class="bw-label__text">Link (optional)</span></label>
+            <input class="bw-input" id="bw-link" type="url" name="link" autocomplete="url" inputmode="url" spellcheck="false" placeholder="https://yourbrand.com" />
+            <p class="bw-error" id="bw-link-error"></p>
+          </div>
+        </div>
+
+        <div class="bw-grid">
+          <div class="bw-field" data-field="name">
+            <label class="bw-label" for="bw-name"><span class="bw-label__text">Your name</span></label>
+            <input class="bw-input" id="bw-name" type="text" name="name" autocomplete="name" required />
+            <p class="bw-error" id="bw-name-error"></p>
+          </div>
+          <div class="bw-field" data-field="email">
+            <label class="bw-label" for="bw-email"><span class="bw-label__text">Email</span></label>
+            <input class="bw-input" id="bw-email" type="email" name="email" autocomplete="email" inputmode="email" spellcheck="false" required />
+            <p class="bw-error" id="bw-email-error"></p>
+          </div>
+        </div>
+
+        <div class="bw-submit">
+          <button class="btn btn--ink btn--lg bw-submit__btn" type="submit" aria-describedby="bw-submit-help">Write to us</button>
+          <p class="bw-help" id="bw-submit-help">Opens your email app with your answers, addressed to hello@carenbloom.com.</p>
+        </div>
+        <p class="bw-status" aria-live="polite" data-build-status></p>
+      </form>
+
+      <div class="bw-done" data-build-done hidden>
+        <svg class="bw-done__mark" viewBox="0 0 42 42" aria-hidden="true" focusable="false" data-build-mark></svg>
+        <h3 class="bw-done__title" tabindex="-1" data-build-done-title>Your email app should be open.</h3>
+        <p class="bw-done__text">Your message is drafted there. Send it when you are ready.</p>
+        <div class="bw-done__block">
+          <p class="bw-done__caption">No email app opened? Write to us at</p>
+          <div class="bw-done__row">
+            <a class="dotlink bw-done__email" href="mailto:hello@carenbloom.com" data-build-email><span>hello@carenbloom.com</span></a>
+            <button class="btn btn--ghost btn--sm" type="button" data-copy="hello@carenbloom.com" aria-label="Copy email address" data-build-copy-address><span class="swap"><span class="swap__a">Copy</span><span class="swap__b" aria-hidden="true">Copied</span></span></button>
+            <button class="btn btn--ghost btn--sm" type="button" aria-label="Copy your message" data-build-copy-message><span class="swap"><span class="swap__a">Copy message</span><span class="swap__b" aria-hidden="true">Copied</span></span></button>
+          </div>
+        </div>
+        <button class="bw-done__edit" type="button" data-build-edit>Edit your answers</button>
+      </div>
+    </div>
+  </div>
+</section>

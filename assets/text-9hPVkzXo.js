@@ -1,0 +1,1 @@
+function e(e){return typeof e==`string`?e.replace(/\s*[\u2013\u2014]\s*/g,`, `).replace(/,\s*,/g,`,`).replace(/^,\s*/,``).trim():``}export{e as t};

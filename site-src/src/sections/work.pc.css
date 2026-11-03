@@ -1,0 +1,413 @@
+/* Player-coach: one object. Left, the title and the pod diagram (sticky beside the
+   text on wide screens); right, the two role texts, then "What player-coach means"
+   with the Coach / Player switch over two paired lists that share their rows.
+   Colors are tokens only (themes remap them). */
+
+.pc {
+  --pc-gap: clamp(40px, 5vw, 96px);
+  margin-top: clamp(96px, 10vw, 168px);
+  display: grid;
+  gap: 48px;
+}
+.pc__left,
+.pc__right {
+  min-width: 0;
+}
+.pc__title {
+  font-size: clamp(32px, 3.2vw, 48px);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+
+/* ───────── the pod ───────── */
+.pod {
+  margin: 32px 0 0;
+  padding: clamp(16px, 2vw, 28px);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+  box-shadow:
+    0 0 0 1px var(--rule),
+    0 1px 2px rgba(var(--shadow-rgb), 0.04),
+    0 32px 64px -40px rgba(var(--shadow-rgb), 0.2);
+}
+.pod__stage {
+  position: relative;
+  aspect-ratio: 400 / 380;
+  max-width: 440px;
+  margin: 0 auto;
+  container-type: inline-size;
+}
+.pod__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pod__ring {
+  stroke: var(--rule);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 6;
+}
+.pod__role {
+  color: var(--fg);
+  stroke: currentColor;
+  stroke-width: 2.2;
+  transition:
+    color var(--dur-micro) var(--ease),
+    opacity var(--dur-micro) var(--ease);
+}
+.pod__role path:first-child {
+  fill: currentColor;
+  fill-opacity: 0;
+  transition: fill-opacity var(--dur-micro) var(--ease);
+}
+.pod__vein {
+  stroke-width: 2;
+}
+/* the player coach: at the pod's edge to coach, inside it to play (SPRING.touch) */
+.pod__coach {
+  transform-box: view-box;
+  transform: translateY(70px);
+  transition:
+    transform var(--dur-spring) var(--spring),
+    color var(--dur-micro) var(--ease),
+    opacity var(--dur-micro) var(--ease);
+}
+.pc[data-state="player"] .pod__coach {
+  transform: none;
+}
+
+/* labels: real text over the drawing, positions in the drawing (viewBox 0 24 400 380) */
+.pod__name,
+.pod__tag,
+.pod__kpi {
+  position: absolute;
+  translate: -50% -50%;
+  white-space: nowrap;
+  font-weight: 600;
+  line-height: 1;
+}
+.pod__name {
+  left: 50%;
+  top: calc((50 - 24) / 380 * 100%);
+  padding: 4px 10px;
+  background: var(--paper-2);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.pod__kpi {
+  left: 50%;
+  top: calc((200 - 24) / 380 * 100%);
+  padding: 7px 11px 6px;
+  border-radius: 999px;
+  background: var(--sun);
+  color: var(--on-sun);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+.pod__tag {
+  font-size: clamp(13px, 3.6cqi, 15px);
+  letter-spacing: -0.005em;
+  color: var(--fg);
+  transition:
+    color var(--dur-micro) var(--ease),
+    opacity var(--dur-micro) var(--ease),
+    top var(--dur-spring) var(--spring);
+}
+.pod__tag[data-role="pilot"] {
+  left: calc(124 / 400 * 100%);
+  top: calc((146 - 24) / 380 * 100%);
+}
+.pod__tag[data-role="copilot"] {
+  left: calc(276 / 400 * 100%);
+  top: calc((146 - 24) / 380 * 100%);
+}
+.pod__tag--coach {
+  left: calc(254 / 400 * 100%);
+  top: calc((350 - 24) / 380 * 100%);
+  translate: 0 -50%;
+}
+.pc[data-state="player"] .pod__tag--coach {
+  top: calc((280 - 24) / 380 * 100%);
+}
+
+/* lighting: the roles a hovered text names turn cobalt, the others step back */
+.pc[data-lit] .pod__role,
+.pc[data-lit] .pod__tag {
+  opacity: 0.32;
+}
+.pc[data-lit~="pilot"] [data-role="pilot"],
+.pc[data-lit~="copilot"] [data-role="copilot"],
+.pc[data-lit~="coach"] [data-role="coach"] {
+  opacity: 1;
+  color: var(--accent);
+}
+.pc[data-lit~="pilot"] .pod__role[data-role="pilot"] path:first-child,
+.pc[data-lit~="copilot"] .pod__role[data-role="copilot"] path:first-child,
+.pc[data-lit~="coach"] .pod__role[data-role="coach"] path:first-child {
+  fill-opacity: 0.08;
+}
+
+/* ───────── the role texts ───────── */
+.pc__roles {
+  display: grid;
+  gap: 0;
+}
+.pc__role {
+  display: grid;
+  gap: 10px;
+  padding: 22px 0 26px;
+  border-top: 1px solid var(--rule);
+}
+.pc__role-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+  color: var(--fg);
+}
+.pc__key {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  color: var(--fg);
+  transition: color var(--dur-micro) var(--ease);
+}
+.pc__role-body {
+  max-width: 46ch;
+  padding-left: 34px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--fg-2);
+}
+.pc[data-lit="pilot copilot"] .pc__role[data-lights="pilot copilot"] .pc__key,
+.pc[data-lit="coach"] .pc__role[data-lights="coach"] .pc__key {
+  color: var(--accent);
+}
+
+/* ───────── what player-coach means ───────── */
+.pc__means {
+  margin-top: clamp(40px, 4vw, 64px);
+}
+.pc__means-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+}
+.pc__means-title {
+  font-size: var(--fs-h3);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--fg);
+}
+
+/* the switch: a real tablist, the thumb travels on SPRING.touch */
+.seg {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--mist);
+}
+.seg__thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  border-radius: 999px;
+  background: var(--paper-2);
+  box-shadow:
+    0 0 0 1px var(--rule),
+    0 2px 6px -2px rgba(var(--shadow-rgb), 0.18);
+  transition: transform var(--dur-spring) var(--spring);
+}
+.pc[data-state="player"] .seg__thumb {
+  transform: translateX(100%);
+}
+.seg__tab {
+  position: relative;
+  z-index: 1;
+  min-width: 104px;
+  height: 40px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--fg-2);
+  cursor: pointer;
+  transition:
+    color var(--dur-micro) var(--ease),
+    scale var(--dur-press) ease-out;
+}
+.seg__tab[aria-selected="true"] {
+  color: var(--fg);
+}
+.seg__tab:active {
+  scale: 0.97;
+}
+.seg__tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .seg__tab:hover {
+    color: var(--fg);
+  }
+}
+
+/* the two lists share one grid: row n of Coach and row n of Player are one row,
+   as tall as the taller of the pair, so switching never moves the page */
+.pc__panels {
+  display: grid;
+  grid-template-rows: auto repeat(3, auto);
+  margin-top: 28px;
+}
+.pc__panel {
+  grid-column: 1;
+  grid-row: 1 / span 4;
+  display: grid;
+  grid-template-rows: subgrid;
+}
+.pc__panel ul {
+  grid-row: 2 / span 3;
+  display: grid;
+  grid-template-rows: subgrid;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.pc__panel-label {
+  color: var(--fg-muted);
+}
+.pc__item {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: start;
+  padding: 18px 0 20px;
+  border-top: 1px solid var(--rule);
+}
+.pc__item p {
+  max-width: 46ch;
+}
+.pc__item strong {
+  display: block;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: -0.008em;
+  color: var(--fg);
+}
+.pc__item span {
+  display: block;
+  margin-top: 4px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--fg-2);
+}
+/* the brand's petal bullet: one petal, turned 45 degrees (drawn that way) */
+.pc__petal {
+  width: 11px;
+  height: 11px;
+  margin-top: 0.42em;
+  fill: currentColor;
+  color: var(--fg);
+}
+/* only the selected panel is shown (visibility keeps both in the row heights) */
+html.js .pc__panel[aria-hidden="true"] {
+  visibility: hidden;
+}
+
+/* without scripts: no switch, the two lists side by side */
+html:not(.js) .seg {
+  display: none;
+}
+html:not(.js) .pc__panels {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 24px;
+}
+html:not(.js) .pc__panel[data-panel="player"] {
+  grid-column: 2;
+}
+
+/* ───────── layout ───────── */
+@media (min-width: 900px) {
+  .pc {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    column-gap: var(--pc-gap);
+    align-items: start;
+  }
+  .pc__left {
+    position: sticky;
+    top: calc(var(--nav-offset) + 8px);
+  }
+  .pc__right {
+    padding-top: 8px;
+  }
+}
+
+/* phones: the pod sits as a wide band under the title, its labels stay legible */
+@media (max-width: 899px) {
+  .pc {
+    gap: 40px;
+  }
+  .pod {
+    margin-top: 24px;
+    padding: 12px;
+  }
+  .pod__stage {
+    max-width: 360px;
+  }
+}
+@media (max-width: 479px) {
+  .pc__means-head {
+    display: grid;
+  }
+  .seg {
+    display: grid;
+    width: 100%;
+  }
+  html:not(.js) .seg {
+    display: none;
+  }
+  .seg__tab {
+    min-width: 0;
+  }
+  .pc__role-body {
+    padding-left: 0;
+  }
+  .pc__item strong {
+    font-size: 17px;
+  }
+  .pc__item span {
+    font-size: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pod__coach,
+  .pod__tag,
+  .seg__thumb {
+    transition-property: color, opacity;
+  }
+}

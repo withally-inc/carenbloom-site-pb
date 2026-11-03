@@ -1,0 +1,378 @@
+/* careers: hero, live status, grouped role rows, skeleton, states.
+   Unlayered, so it wins over components. Hover only on fine pointers. */
+
+/* ───────── hero ───────── */
+.careers__title {
+  margin-top: 20px;
+}
+.careers__intro-row {
+  display: grid;
+  gap: 40px;
+  margin-top: clamp(32px, 3vw, 48px);
+}
+.careers__intro {
+  max-width: 44ch;
+}
+.careers__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  min-height: 26px;
+}
+.careers__summary {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0;
+}
+.careers__count {
+  font-family: var(--ff-sans);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.careers__count[hidden],
+.careers__summary-text[hidden] {
+  display: none;
+}
+/* outline dot: not live (zero and error states) */
+.careers__chip--off::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.25px currentColor;
+}
+
+@media (min-width: 960px) {
+  .careers__intro-row {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: end;
+  }
+  .careers__status {
+    flex-direction: column;
+    align-items: flex-end;
+    justify-self: end;
+    gap: 14px;
+    text-align: right;
+  }
+  .careers__summary {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+  /* the live count, set as a record number */
+  .careers__count {
+    font-size: clamp(64px, 6.4vw, 104px);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+  }
+}
+
+/* ───────── list ───────── */
+.careers__body {
+  margin-top: clamp(72px, 7vw, 128px);
+}
+.careers__announce {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+.careers__list {
+  display: grid;
+  gap: clamp(56px, 5vw, 88px);
+}
+
+.cgroup {
+  display: grid;
+  gap: 18px;
+}
+.cgroup__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 26px;
+}
+.cgroup__title {
+  margin: 0;
+  font-size: var(--fs-h3);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.cgroup__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: rgba(var(--ink-rgb), 0.06);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.cgroup__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.crow-item {
+  border-bottom: 1px solid var(--line);
+}
+
+/* one row = one link: title, location, close label, arrow */
+.crow {
+  --pad: 22px;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: 20px;
+  padding: var(--pad) 0;
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+}
+.crow__main {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.crow__title {
+  position: relative;
+  margin: 0;
+  font-size: clamp(20px, 1.5vw + 0.4rem, 26px);
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+  color: inherit;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.crow__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--fs-small);
+  line-height: 1.4;
+  color: var(--muted);
+}
+.crow__arrow {
+  font-size: 20px;
+  line-height: 1.2;
+  color: var(--ink-2);
+  transition: color 300ms var(--ease);
+}
+
+/* the dot link at row scale: dot on the left of the title, title pushed 14px,
+   a cobalt hairline drawn from the left over the resting line. The arrow only
+   takes the cobalt (MOTION-CHALLENGE 1.28: one gesture per link). */
+.crow__title::before {
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: calc(0.59em - 3px);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cobalt);
+  transform: scale(0);
+  transition: transform 450ms var(--ease);
+}
+.crow__title,
+.crow__meta {
+  transition: transform 550ms var(--ease);
+}
+a.crow::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--cobalt);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 550ms var(--ease);
+}
+.crow:focus-visible {
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+.crow:focus-visible .crow__title::before {
+  transform: scale(1);
+}
+.crow:focus-visible :is(.crow__title, .crow__meta) {
+  transform: translateX(14px);
+}
+.crow:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+.crow:focus-visible .crow__arrow {
+  color: var(--cobalt);
+}
+@media (hover: hover) and (pointer: fine) {
+  a.crow:hover .crow__title::before {
+    transform: scale(1);
+    transition: transform var(--dur-spring, 430ms) var(--spring);
+  }
+  a.crow:hover :is(.crow__title, .crow__meta) {
+    transform: translateX(14px);
+  }
+  a.crow:hover::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+  a.crow:hover .crow__arrow {
+    color: var(--cobalt);
+  }
+}
+/* touch: the same gesture during the press (MOTION-CHALLENGE 2.2) */
+@media (hover: none) {
+  a.crow:active .crow__title::before {
+    transform: scale(1);
+  }
+  a.crow:active :is(.crow__title, .crow__meta) {
+    transform: translateX(14px);
+  }
+  a.crow:active::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+}
+
+/* closed role: muted, not a link, no hover */
+.crow.is-closed {
+  color: var(--muted);
+}
+.crow.is-closed .crow__close {
+  color: var(--ink-2);
+}
+
+@media (min-width: 960px) {
+  .cgroup {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    gap: 0 24px;
+    align-items: start;
+  }
+  /* a short natural sticky: the group name stays beside its rows */
+  .cgroup__head {
+    position: sticky;
+    top: calc(var(--nav-offset) + 8px);
+    padding-top: 27px;
+  }
+  .crow {
+    --pad: 26px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 11.5rem) minmax(0, 11.5rem) 1.5rem;
+    align-items: baseline;
+    column-gap: 24px;
+  }
+  .crow__main,
+  .crow__meta {
+    display: contents;
+  }
+  .crow__loc,
+  .crow__close {
+    font-size: var(--fs-small);
+    line-height: 1.4;
+  }
+  .crow__arrow {
+    justify-self: end;
+  }
+  .careers__msg,
+  .careers__skeleton .cgroup__rows {
+    grid-column: 2;
+  }
+}
+
+/* ───────── loading ───────── */
+.careers__loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+.skel {
+  display: grid;
+  gap: 12px;
+  padding: 26px 0;
+  border-bottom: 1px solid var(--line);
+}
+.skel__bar {
+  display: block;
+  width: var(--w, 50%);
+  border-radius: 6px;
+  background: rgba(var(--ink-rgb), 0.06);
+  animation: cb-skel-breath 1.6s ease-in-out infinite alternate;
+}
+.skel__bar--t {
+  height: 22px;
+}
+.skel__bar--c {
+  height: 12px;
+}
+@keyframes cb-skel-breath {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skel__bar {
+    animation: none;
+  }
+}
+/* without scripts the skeleton would wait forever: hide it */
+html:not(.js) .careers__skeleton {
+  display: none;
+}
+
+/* ───────── empty and error ───────── */
+.careers__msg {
+  display: grid;
+  justify-items: start;
+  gap: 18px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+}
+.careers__msg-text {
+  margin: 0;
+}
+.careers__msg--empty {
+  gap: 8px;
+}
+.careers__msg--empty .dotlink {
+  display: inline-flex;
+  vertical-align: baseline;
+}
+.careers__retry {
+  gap: 9px;
+}
+.careers__retry .petal-loader {
+  width: 12px;
+  height: 12px;
+  color: currentColor;
+}
+.careers__retry[disabled] {
+  opacity: 0.7;
+}
+@media (min-width: 960px) {
+  .careers__list[data-state="error"],
+  .careers__list[data-state="empty"] {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    column-gap: 24px;
+  }
+}

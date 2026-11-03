@@ -30,7 +30,8 @@ const listening = new Promise((resolve, reject) => {
 });
 
 const commands = [
-  ["--test", "tests/repository-contract.test.mjs", "tests/deployment-package.test.mjs", "tests/hero-scroll.test.mjs", "tests/nav-float.test.mjs", "tests/api-endpoints.test.mjs"],
+  ["scripts/build-site.mjs", "--check"],
+  ["--test", "tests/site-contract.test.mjs", "tests/api-endpoints.test.mjs", "tests/redirects.test.mjs"],
   ["tests/careers-deadline.test.mjs"],
   ["tests/role-state-api.test.mjs"],
   ["tests/cloudflare-role-state.test.mjs"],
@@ -39,19 +40,10 @@ const commands = [
   ["tests/applications-api.test.mjs"],
   ["tests/health-check.test.mjs"],
   ["tests/server-runtime.test.mjs"],
-  ["tests/role-location-metadata.test.mjs"],
-  ["tests/careers-apply-submit.test.mjs"],
-  ["tests/careers-upload-limits.test.mjs"],
-  ["tests/pb-role-apply.test.mjs"],
+  ["tests/site-browser.test.mjs"],
   ["tests/role-state-browser.test.mjs"],
-  ["tests/pb-integration.test.mjs"],
-  ["tests/hero-performance-browser.test.mjs"],
-  ["tests/lemon-band.test.mjs"],
-  ["tests/nav-float-browser.test.mjs"],
-  ["tests/hero-reveal-browser.test.mjs"],
-  ["tests/footer-wordmark.test.mjs"],
-  ["tests/values-heading.test.mjs"],
-  ["tests/people-grid-browser.test.mjs"],
+  ["tests/odometer-browser.test.mjs"],
+  ["tests/application-flow-browser.test.mjs"],
 ];
 
 async function waitForServer(baseUrl) {

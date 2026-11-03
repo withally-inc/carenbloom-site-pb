@@ -1,0 +1,29 @@
+/* notfound: the bud and the two ways out. */
+.notfound__wrap {
+  min-height: 52vh;
+}
+.notfound__bud {
+  display: block;
+  width: clamp(56px, 6vw, 80px);
+  height: clamp(56px, 6vw, 80px);
+  margin-bottom: clamp(32px, 4vw, 56px);
+  color: var(--ink);
+}
+.notfound__bud svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.notfound__title {
+  margin-top: 20px;
+  max-width: 14ch;
+}
+.notfound__body {
+  margin-top: 28px;
+}
+.notfound__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 32px;
+  margin-top: 40px;
+}

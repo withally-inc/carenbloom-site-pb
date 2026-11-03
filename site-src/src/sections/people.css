@@ -1,0 +1,174 @@
+/* People: the one ink section. Ink ground, mist type, two leaders as editorial
+   prints. The ink print rests; the cobalt print "develops" from where the
+   pointer enters (people.ts). Unlayered: wins over components. */
+
+.people {
+  --print-radius: var(--radius); /* one card radius site-wide */
+  overflow: clip;
+}
+
+/* ───────── head: label + headline left, the lede on the right ───────── */
+.people__head {
+  display: grid;
+  gap: 20px;
+}
+.people__label {
+  color: var(--on-ink-2);
+}
+.people__title {
+  max-width: 14ch;
+}
+.people__lede {
+  color: var(--on-ink);
+  max-width: 34ch;
+  font-size: clamp(21px, 1.1vw + 0.7rem, 26px);
+  line-height: 1.42;
+}
+
+/* ───────── the two leaders ───────── */
+.people__grid {
+  list-style: none;
+  margin: clamp(56px, 6vw, 112px) 0 0;
+  padding: 0;
+  display: grid;
+  gap: 64px;
+}
+.person {
+  position: relative;
+  display: grid;
+  gap: 24px;
+  align-content: start;
+  align-self: start;
+}
+.person__media {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--print-radius);
+  overflow: hidden;
+  /* the print's own paper while it loads */
+  background-color: color-mix(in srgb, var(--night) 90%, var(--on-ink));
+  isolation: isolate;
+}
+.person__media > picture {
+  position: absolute;
+  inset: 0;
+}
+.person__media img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  /* eyes sit at 54% across in both portraits: keep them on the crop's centre */
+  object-position: 54% 50%;
+}
+/* a hairline plate edge, like a print laid on the page */
+.person__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--on-ink) 8%, transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+/* the cobalt print sits on top, hidden by a zero circle until it develops */
+.person__dev {
+  clip-path: circle(0 at 50% 50%);
+  z-index: 1;
+}
+.person__text {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  max-width: 36ch;
+}
+.person__name {
+  color: var(--on-ink);
+}
+.person__bio {
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--on-ink-2);
+  margin-bottom: 8px;
+}
+
+/* the whole block is one link to LinkedIn (.dotlink--stretch); the hit area
+   and the focus ring reach a little past the print */
+.person__link::after {
+  inset: -12px;
+  border-radius: calc(var(--print-radius) + 10px);
+  z-index: 3;
+  cursor: pointer;
+}
+.person__link:focus-visible {
+  outline: none;
+}
+.person__link:focus-visible::after {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* hovering or pressing the block shows the link gesture: .link-block (components.css) */
+/* touch: the press dims the print */
+@media (hover: none) {
+  .person__media > picture {
+    transition: opacity 300ms var(--ease);
+  }
+  .person:active .person__media > picture {
+    opacity: 0.92;
+  }
+}
+
+/* ───────── layout ───────── */
+@media (min-width: 768px) {
+  .people__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
+  }
+  /* the second print sits lower: an editorial spread, not a row of cards */
+  .person:nth-child(2) {
+    margin-top: clamp(48px, 9vw, 152px);
+  }
+}
+@media (min-width: 1024px) {
+  .people__head {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 24px;
+    row-gap: 20px;
+    align-items: end;
+  }
+  .people__label {
+    grid-column: 1 / -1;
+  }
+  .people__title {
+    grid-column: 1 / span 6;
+  }
+  .people__lede {
+    grid-column: 8 / span 5;
+    padding-bottom: 0.3em;
+  }
+  .people__grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 24px;
+  }
+  .person:nth-child(1) {
+    grid-column: 2 / span 4;
+  }
+  .person:nth-child(2) {
+    grid-column: 8 / span 4;
+  }
+}
+
+/* reduced motion: a plain crossfade instead of the develop */
+@media (prefers-reduced-motion: reduce) {
+  .person__dev {
+    clip-path: none;
+    opacity: 0;
+    transition: opacity 300ms var(--ease);
+  }
+  .person.is-dev .person__dev {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,1071 @@
+/* apply: role page states, role hero, description, the form, success.
+   Unlayered, so it wins over components. Hover only on fine pointers. */
+
+.apply {
+  --field-h: 56px;
+  --field-r: 12px;
+  --field-line: rgba(var(--ink-rgb), 0.14);
+  --ring: 0 0 0 3px rgba(var(--cobalt-rgb), 0.22);
+}
+
+/* ───────── page states ───────── */
+.apply-state {
+  max-width: 920px;
+  /* a screen tall: the footer starts below the fold, so the role arriving (or a
+     state message) never shifts what is in view (CLS) */
+  min-height: calc(100svh - var(--page-top));
+}
+/* While the role is being confirmed the panel stays out of sight: most answers arrive
+   in a few hundred ms, and the role header then makes the page's only entrance.
+   Only a slow answer (apply.ts adds .is-slow after 600ms) shows "Checking role availability". */
+html.js .apply-state[data-state="checking"]:not(.is-slow) {
+  opacity: 0;
+  visibility: hidden;
+}
+html.js .apply-state[data-state="checking"].is-slow {
+  animation: apply-state-in 0.5s var(--ease) both;
+}
+@keyframes apply-state-in {
+  from { opacity: 0; transform: translateY(8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js .apply-state[data-state="checking"].is-slow { animation-name: apply-state-fade; }
+  @keyframes apply-state-fade { from { opacity: 0; } }
+}
+.apply-state[hidden] {
+  display: none;
+}
+.apply-state__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.apply-state__loader {
+  display: none;
+}
+.apply-state[data-state="checking"] .apply-state__loader {
+  display: inline-flex;
+}
+.apply-state__title {
+  margin-top: 20px;
+}
+.apply-state__msg {
+  margin-top: 28px;
+  max-width: 44ch;
+}
+.apply-state__receipt:empty {
+  display: none;
+}
+.apply-state__receipt {
+  margin-top: 20px;
+}
+.apply-state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+  margin-top: 40px;
+}
+.apply-state__retry {
+  gap: 9px;
+}
+.apply-state__retry .petal-loader {
+  width: 12px;
+  height: 12px;
+  color: currentColor;
+}
+
+/* ───────── role hero ───────── */
+.role-hero__back {
+  font-size: var(--fs-small);
+}
+.role-hero__loc {
+  display: block;
+  margin-top: clamp(40px, 4vw, 64px);
+}
+.role-hero__title {
+  margin-top: 18px;
+  max-width: 18ch;
+}
+.role-hero__grid {
+  display: grid;
+  gap: 32px;
+  margin-top: clamp(32px, 3vw, 48px);
+  align-items: end;
+}
+.role-hero__summary {
+  margin: 0;
+  max-width: 40ch;
+}
+
+.role-close {
+  display: grid;
+  gap: 6px;
+  padding: 24px;
+  border-radius: var(--radius);
+  background: var(--paper-2);
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 1px 2px rgba(var(--shadow-rgb), 0.04),
+    0 24px 48px -32px rgba(var(--shadow-rgb), 0.18);
+}
+.role-close__label {
+  margin: 0;
+  font-size: var(--fs-small);
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+.role-close__timer {
+  margin: 4px 0 0;
+  font-size: clamp(28px, 2.4vw, 36px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.role-close__timer [data-cd] {
+  color: var(--ink);
+}
+.role-close__timer time {
+  display: inline-flex;
+  gap: 0.32em;
+}
+.cd-part {
+  display: inline-flex;
+  align-items: baseline;
+}
+/* seconds swap every second: a fixed slot so nothing after them jitters */
+.cd-part--s {
+  min-width: calc(2ch + 0.6em);
+}
+.role-close__effort {
+  margin: 0;
+}
+.role-close__apply {
+  margin-top: 18px;
+  width: 100%;
+}
+
+.role-meta {
+  display: grid;
+  margin: clamp(48px, 5vw, 72px) 0 0;
+}
+.role-meta__item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+.role-meta__item:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.role-meta dt {
+  padding-top: 4px;
+}
+.role-meta dd {
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--ink);
+  text-align: right;
+}
+
+@media (min-width: 960px) {
+  /* two columns: the role on the left, the close card on the right, its foot
+     on the summary's baseline */
+  .role-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    column-gap: 24px;
+  }
+  .role-hero > * {
+    grid-column: 1;
+  }
+  .role-hero > .role-meta {
+    grid-column: 1 / -1;
+  }
+  .role-hero__grid {
+    display: contents;
+  }
+  .role-hero__summary {
+    grid-column: 1;
+    margin-top: clamp(28px, 2.6vw, 40px);
+  }
+  .role-close {
+    grid-column: 2;
+    grid-row: 2 / span 3;
+    align-self: end;
+    justify-self: end;
+    width: min(100%, 380px);
+    padding: 28px;
+  }
+  .role-meta {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 24px;
+  }
+  .role-meta__item,
+  .role-meta__item:last-child {
+    display: grid;
+    gap: 10px;
+    padding: 18px 0 0;
+    border-bottom: 0;
+  }
+  .role-meta dd {
+    font-size: var(--fs-body);
+    text-align: left;
+  }
+}
+
+/* ───────── role description ───────── */
+.role-copy {
+  margin-top: clamp(88px, 8vw, 144px);
+}
+.role-block {
+  display: grid;
+  gap: 16px;
+  padding: 32px 0 36px;
+  border-top: 1px solid var(--line);
+}
+.role-block__title {
+  margin: 0;
+  font-size: var(--fs-h3);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.role-block__body {
+  display: grid;
+  gap: 16px;
+}
+.role-block__body .body {
+  margin: 0;
+}
+.dotlink--inline {
+  display: inline-flex;
+  vertical-align: baseline;
+}
+/* petal bullets (BRAND 9): one petal, 0.5em, turned 45 degrees */
+.petal-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.petal-list li {
+  position: relative;
+  padding-left: 1.5em;
+}
+.petal-list li::before {
+  content: "";
+  position: absolute;
+  left: 0.2em;
+  top: 0.58em;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 0 60% 0 60%;
+  background: var(--ink);
+  transform: rotate(45deg) scale(0.86);
+}
+@media (min-width: 960px) {
+  .role-block {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    column-gap: 24px;
+    padding: 40px 0 48px;
+  }
+}
+
+/* ───────── form section ───────── */
+.apply-form {
+  display: grid;
+  gap: 32px;
+  margin-top: clamp(72px, 7vw, 120px);
+  padding-top: clamp(40px, 4vw, 56px);
+  border-top: 1px solid var(--line);
+}
+.apply-form__title {
+  margin: 0;
+  font-size: clamp(32px, 2.8vw, 44px);
+}
+.apply-form__note {
+  margin: 14px 0 0;
+}
+.apply-form__main {
+  min-width: 0;
+}
+@media (min-width: 960px) {
+  .apply-form {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    column-gap: 24px;
+    align-items: start;
+  }
+  .apply-form__side {
+    position: sticky;
+    top: calc(var(--nav-offset) + 24px);
+    max-width: 420px;
+  }
+  .apply-form__main {
+    max-width: 720px;
+  }
+}
+
+/* ───────── the form ───────── */
+.f {
+  display: grid;
+  gap: 28px;
+}
+.f[hidden] {
+  display: none;
+}
+.f-grid {
+  display: grid;
+  gap: 28px;
+}
+@media (min-width: 640px) {
+  .f-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .f-grid--phone {
+    grid-template-columns: minmax(0, 0.42fr) minmax(0, 1fr);
+  }
+}
+.field {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* labels: static, above the field (no floating labels) */
+.f-label {
+  display: block;
+  margin-bottom: 10px;
+  padding: 0;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+}
+.f-label--question {
+  font-size: 16.5px;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+.f-req {
+  margin-left: 0.12em;
+  color: var(--ink-2);
+}
+.f-req[hidden] {
+  display: none;
+}
+/* the sun highlighter on an invalid label: drawn left to right (700ms, 60ms
+   apart down the form), retracts to the right when the field is fixed */
+.f-label__text {
+  background: linear-gradient(var(--sun), var(--sun)) no-repeat 0 88% / 0% 0.46em;
+  transition: background-size 300ms var(--ease);
+  padding: 0 0.08em;
+  margin: 0 -0.08em;
+}
+.field[data-invalid] .f-label__text {
+  background-size: 100% 0.46em;
+  transition: background-size 700ms var(--ease) var(--hl-d, 0ms);
+}
+.field[data-was-invalid]:not([data-invalid]) .f-label__text {
+  background-position: 100% 88%;
+}
+/* violet mode: the band covers the label and its type turns dark (BRAND, Violet mode) */
+[data-theme="violet"] .f-label__text {
+  background-position: 0 var(--hl-y);
+  background-size: 0% var(--hl-h);
+  transition:
+    background-size 300ms var(--ease),
+    color 200ms var(--ease);
+}
+[data-theme="violet"] .field[data-invalid] .f-label__text {
+  background-size: 100% var(--hl-h);
+  color: var(--hl-fg);
+  transition:
+    background-size 700ms var(--ease) var(--hl-d, 0ms),
+    color 300ms var(--ease) calc(var(--hl-d, 0ms) + 120ms);
+}
+[data-theme="violet"] .field[data-was-invalid]:not([data-invalid]) .f-label__text {
+  background-position: 100% var(--hl-y);
+}
+
+.f-help {
+  margin: 8px 0 0;
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 60ch;
+}
+.f-help--top {
+  margin: -2px 0 14px;
+}
+.f-help__link {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--ink-rgb), 0.3);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 300ms var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .f-help__link:hover {
+    text-decoration-color: currentColor;
+  }
+}
+
+/* the message opens under the field: fade + 4px rise, height by grid rows */
+.f-error {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin: 0;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ink);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    grid-template-rows 300ms var(--ease),
+    opacity 300ms var(--ease),
+    transform 300ms var(--ease);
+}
+.f-error > span {
+  min-height: 0;
+  overflow: hidden;
+}
+.f-error > span::before {
+  content: "";
+  display: block;
+  height: 8px;
+}
+.field[data-invalid] .f-error {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: none;
+}
+
+/* inputs: white on paper, focus = ink-2 border + a cobalt ring outside it */
+.f-input {
+  width: 100%;
+  min-width: 0;
+  height: var(--field-h);
+  padding: 0 18px;
+  border: 1px solid var(--field-line);
+  border-radius: var(--field-r);
+  background: var(--paper-2);
+  color: var(--ink);
+  font: inherit;
+  font-size: 17px;
+  line-height: 1.4;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition:
+    border-color 200ms var(--ease),
+    box-shadow 200ms var(--ease);
+}
+.f-input::placeholder {
+  color: var(--muted);
+  opacity: 0.8;
+}
+.f-input:focus,
+.f-input:focus-visible {
+  outline: none;
+  border-color: var(--ink-2);
+  box-shadow: var(--ring);
+}
+@media (hover: hover) and (pointer: fine) {
+  .f-input:hover:not(:focus) {
+    border-color: rgba(var(--ink-rgb), 0.28);
+  }
+}
+.f-textarea {
+  height: auto;
+  min-height: 9.5em;
+  padding: 15px 18px;
+  resize: vertical;
+  field-sizing: content;
+  max-height: 32em;
+}
+
+/* native select, custom chevron */
+.f-select {
+  position: relative;
+}
+.f-select::after {
+  content: "";
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  margin-top: -6px;
+  border-right: 1.5px solid var(--ink-2);
+  border-bottom: 1.5px solid var(--ink-2);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+.f-select select {
+  padding-right: 44px;
+  cursor: pointer;
+  text-overflow: ellipsis;
+}
+.f-select select.is-empty {
+  color: var(--muted);
+}
+.f-select select option {
+  color: var(--ink);
+}
+
+/* label row with the intro video tooltip */
+.f-label-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.f-label-row .f-label {
+  margin: 0;
+}
+.tip {
+  display: inline-flex;
+}
+.tip__btn {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--field-line);
+  border-radius: 50%;
+  background: var(--paper-2);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: help;
+  transition:
+    border-color 300ms var(--ease),
+    color 300ms var(--ease);
+}
+.tip[data-open] .tip__btn {
+  border-color: var(--ink-2);
+  color: var(--ink);
+}
+.tip__panel {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 10px);
+  z-index: 5;
+  width: min(360px, 100%);
+  padding: 14px 16px;
+  border-radius: var(--field-r);
+  background: var(--paper-2);
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.5;
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 2px 4px rgba(var(--shadow-rgb), 0.05),
+    0 18px 40px -16px rgba(var(--shadow-rgb), 0.24);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px) scale(0.98);
+  transform-origin: var(--tip-x, 0) 0;
+  transition:
+    opacity 200ms var(--ease),
+    transform 200ms var(--ease),
+    visibility 0s linear 200ms;
+  pointer-events: none;
+}
+.tip[data-open] .tip__panel {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 200ms var(--ease),
+    transform 200ms var(--ease),
+    visibility 0s;
+  pointer-events: auto;
+}
+
+/* ───────── time zone toggle pills (real checkboxes) ───────── */
+.field--choice legend.f-label {
+  float: left;
+  width: 100%;
+}
+.field--choice legend + * {
+  clear: both;
+}
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.pill {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.pill__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.pill__face {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 46px;
+  padding: 0 20px 0 14px;
+  border: 1px solid var(--field-line);
+  border-radius: 999px;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1;
+  pointer-events: none;
+  transition:
+    background-color 300ms var(--ease),
+    border-color 300ms var(--ease),
+    color 300ms var(--ease),
+    transform var(--dur-spring, 430ms) var(--spring);
+}
+/* the check slot is always reserved, so the pill never changes width */
+.pill__slot {
+  display: inline-grid;
+  place-items: center;
+  width: 12px;
+  height: 12px;
+}
+.pill__check {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 12;
+  stroke-dashoffset: 12;
+  transition: stroke-dashoffset 200ms var(--ease);
+}
+.pill__input:checked + .pill__face {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.pill__input:checked + .pill__face .pill__check {
+  stroke-dashoffset: 0;
+  transition-delay: 60ms;
+}
+.pill__input:active + .pill__face {
+  transform: scale(0.97);
+  transition-duration: 300ms, 300ms, 300ms, var(--dur-press, 100ms);
+  transition-timing-function: var(--ease), var(--ease), var(--ease), ease-out;
+}
+.pill__input:focus-visible + .pill__face {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .pill:hover .pill__input:not(:checked) + .pill__face {
+    border-color: rgba(var(--ink-rgb), 0.32);
+  }
+}
+
+/* ───────── file fields: drop zone (1.32) ───────── */
+.drop {
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: var(--field-r);
+  background: var(--mist);
+  transition:
+    border-color 200ms var(--ease),
+    background-color 200ms var(--ease);
+}
+.drop[data-drag] {
+  border-color: var(--cobalt);
+  background: var(--paper-2);
+}
+.drop:has(.drop__input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+/* the real file input covers the empty zone: click, keyboard and native drop */
+.drop__input {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 0;
+}
+.drop[data-has="true"] .drop__input {
+  pointer-events: none;
+}
+.drop__rows {
+  display: grid;
+}
+.drop__row {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 500ms var(--ease);
+}
+.drop__clip {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 16px;
+  transition: opacity 300ms var(--ease);
+}
+.drop__row--empty .drop__clip {
+  padding-block: 14px;
+}
+.drop__row--file {
+  grid-template-rows: 0fr;
+}
+.drop__row--file .drop__clip {
+  justify-content: space-between;
+  padding-block: 0;
+  opacity: 0;
+}
+.drop[data-has="true"] .drop__row--empty {
+  grid-template-rows: 0fr;
+}
+.drop[data-has="true"] .drop__row--empty .drop__clip {
+  opacity: 0;
+}
+.drop[data-has="true"] .drop__row--file {
+  grid-template-rows: 1fr;
+}
+.drop[data-has="true"] .drop__row--file .drop__clip {
+  opacity: 1;
+  padding-block: 14px;
+}
+/* removing collapses a little faster (360ms) */
+.drop[data-has="false"] .drop__row--file {
+  transition-duration: 360ms;
+}
+.drop__btn {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--field-line);
+  background: var(--paper-2);
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: border-color 300ms var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .drop:hover .drop__btn {
+    border-color: rgba(var(--ink-rgb), 0.32);
+  }
+}
+.drop__caption {
+  min-width: 0;
+  font-size: var(--fs-caption);
+  color: var(--ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.drop__name {
+  min-width: 0;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.drop__actions {
+  display: inline-flex;
+  flex: none;
+  gap: 4px;
+  position: relative;
+  z-index: 3;
+}
+.drop__act {
+  height: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-2);
+  font: inherit;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 300ms var(--ease),
+    color 300ms var(--ease),
+    transform var(--dur-press, 100ms) ease-out;
+}
+.drop__act:active {
+  transform: scale(0.97);
+}
+@media (hover: hover) and (pointer: fine) {
+  .drop__act:hover {
+    background: rgba(var(--ink-rgb), 0.06);
+    color: var(--ink);
+  }
+}
+
+/* ───────── error summary (1.31) ───────── */
+.f-summary {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-bottom: -28px; /* no gap while closed */
+  transition:
+    grid-template-rows 500ms var(--ease),
+    margin-bottom 500ms var(--ease);
+}
+.f-summary[data-open] {
+  grid-template-rows: 1fr;
+  margin-bottom: 0;
+}
+.f-summary__clip {
+  min-height: 0;
+  overflow: hidden;
+  /* room for the focus ring */
+  padding: 4px;
+  margin: -4px;
+}
+.f-summary__box {
+  padding: 16px 20px;
+  border-radius: var(--field-r);
+  background: var(--mist);
+  color: var(--ink);
+  visibility: hidden;
+  transition: visibility 0s linear 500ms;
+}
+.f-summary[data-open] .f-summary__box {
+  visibility: visible;
+  transition: none;
+}
+.f-summary__text {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.f-summary__hl {
+  background: linear-gradient(var(--sun), var(--sun)) no-repeat 0 88% / 100% 0.46em;
+  padding: 0 0.08em;
+  margin: 0 -0.08em;
+}
+[data-theme="violet"] .f-summary__hl {
+  background-position: 0 var(--hl-y);
+  background-size: 100% var(--hl-h);
+  color: var(--on-sun);
+}
+
+/* ───────── questions block ───────── */
+.f-part {
+  margin-top: 20px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+.f-part__title {
+  margin: 0;
+  font-size: var(--fs-h3);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.f-questions {
+  display: grid;
+  gap: 28px;
+}
+.f-questions:empty {
+  display: none;
+}
+
+/* ───────── preview notice ───────── */
+.preview-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--field-r);
+  box-shadow: inset 0 0 0 1px var(--field-line);
+  background: var(--paper-2);
+}
+.preview-note[hidden] {
+  display: none;
+}
+.preview-note__chip {
+  flex: none;
+  margin-top: -1px;
+}
+.preview-note__text {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.preview-note__link {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--ink-rgb), 0.3);
+  text-underline-offset: 3px;
+}
+.preview-note--inline {
+  padding: 0;
+  box-shadow: none;
+  background: none;
+  max-width: 38ch;
+  align-self: center;
+}
+
+/* ───────── submit (1.33) ───────── */
+.f-submit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 24px;
+  margin-top: 12px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+.f-submit__btn {
+  position: relative;
+  min-width: 15.5em;
+  transition:
+    background-color 300ms var(--ease),
+    color 300ms var(--ease),
+    opacity 300ms var(--ease),
+    transform var(--dur-spring, 430ms) var(--spring);
+}
+.f-submit__btn:active {
+  transition-duration: 300ms, 300ms, 300ms, var(--dur-press, 100ms);
+  transition-timing-function: var(--ease), var(--ease), var(--ease), ease-out;
+}
+.f-submit__btn[disabled] {
+  opacity: 0.86;
+}
+.f-submit__loader {
+  display: inline-flex;
+  width: 0;
+  overflow: hidden;
+  transition: width 300ms var(--ease);
+}
+.f-submit__loader .petal-loader {
+  width: 12px;
+  height: 12px;
+  color: currentColor;
+}
+.f-submit__btn[data-busy] .f-submit__loader {
+  width: 12px;
+}
+.f-swap {
+  display: inline-grid;
+  overflow: hidden;
+}
+.f-swap > span {
+  grid-area: 1 / 1;
+  transition:
+    transform 500ms var(--ease),
+    opacity 300ms var(--ease);
+}
+.f-swap__b {
+  transform: translateY(100%);
+  opacity: 0;
+}
+.f-submit__btn[data-busy] .f-swap__a {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+.f-submit__btn[data-busy] .f-swap__b {
+  transform: none;
+  opacity: 1;
+}
+.f-status {
+  margin: 16px 0 0;
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--ink-2);
+  min-height: 1.5em;
+}
+.f-status:empty {
+  min-height: 0;
+  margin: 0;
+}
+.f-status[data-state="error"],
+.f-status[data-state="preview"] {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ───────── success: the one bloom ───────── */
+.apply-success[hidden] {
+  display: none;
+}
+.apply-success {
+  display: grid;
+  justify-items: start;
+  gap: 20px;
+  padding: clamp(8px, 2vw, 24px) 0 8px;
+}
+.apply-success__mark {
+  display: block;
+  width: 40px;
+  height: 40px;
+  color: var(--cobalt);
+  margin-bottom: 8px;
+}
+.apply-success__svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.apply-success__title {
+  margin: 0;
+  outline: none;
+}
+.apply-success__ref {
+  margin: 0;
+}
+.apply-success__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 32px;
+  margin-top: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .f-error,
+  .drop__row,
+  .f-summary,
+  .tip__panel,
+  .pill__face,
+  .pill__check,
+  .f-label__text {
+    transition-duration: 0.01ms !important;
+  }
+}

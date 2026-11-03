@@ -1,0 +1,256 @@
+<!-- apply: role page and application form (docs/COPY.md "Apply", MOTION-CHALLENGE 1.30 to 1.33, 2.9, 2.11).
+     Mirrors the live careers-apply.js flow and payload. The form only posts from carenbloom.com. -->
+<section id="apply" class="section section--first apply" data-section="apply" data-spy="careers" aria-labelledby="apply-title">
+  <div class="wrap">
+
+    <!-- states before the form: checking, not found, unavailable, closed -->
+    <div class="apply-state" data-role-unavailable data-state="checking">
+      <p class="label apply-state__label"><span class="apply-state__loader" data-petal-loader></span><span>Care &amp; Bloom careers</span></p>
+      <h1 class="h1 apply-state__title" id="apply-title" data-role-state-title>Checking role availability</h1>
+      <p class="lede apply-state__msg" data-role-state-message>Confirming that this role is still open.</p>
+      <p class="body apply-state__receipt" data-submission-receipt role="status"></p>
+      <div class="apply-state__actions">
+        <button class="btn btn--ink apply-state__retry" type="button" data-role-retry hidden>Try again</button>
+        <a class="dotlink" href="/careers"><span>← Back to careers</span></a>
+      </div>
+    </div>
+
+    <!-- the open role -->
+    <div class="apply-role" data-role-content hidden>
+      <header class="role-hero">
+        <a class="dotlink role-hero__back" href="/careers" data-enter><span>← Back to open roles</span></a>
+        <p class="label role-hero__loc" data-role-location data-enter>Remote</p>
+        <h1 class="h1 role-hero__title" id="role-title" data-role-title data-enter-lines>Open role</h1>
+        <div class="role-hero__grid">
+          <p class="lede role-hero__summary" data-role-summary data-enter></p>
+          <div class="role-close" data-enter="rise">
+            <p class="role-close__label" data-close-date>Weekly closing window</p>
+            <p class="role-close__timer tnum"><time data-close-countdown>Loading deadline</time></p>
+            <p class="role-close__effort caption">&lt;3 min to apply</p>
+            <a class="btn btn--cobalt btn--lg role-close__apply" href="#application-form" data-close-apply>Apply</a>
+          </div>
+        </div>
+        <dl class="role-meta" aria-label="Role details" data-enter="rise">
+          <div class="role-meta__item"><dt class="label">Location</dt><dd data-role-location-dd>Remote</dd></div>
+          <div class="role-meta__item"><dt class="label">Type</dt><dd>Full time</dd></div>
+          <div class="role-meta__item"><dt class="label">Level</dt><dd data-role-level>Varies by role</dd></div>
+        </dl>
+      </header>
+
+      <article class="role-copy" aria-labelledby="role-about-title">
+        <section class="role-block">
+          <h2 class="role-block__title" id="role-about-title" data-enter>About Care &amp; Bloom</h2>
+          <div class="role-block__body" data-enter="rise">
+            <p class="body">We launch and scale consumer health companies with $100M+ potential each. Our operators previously scaled IM8 (NASDAQ, $100M+ in 12 months), Casetify and Peak21. Our flagship brand crossed 9-figure revenue and 1M+ customers in under 36 months.</p>
+            <p class="body">We recruit builders: people who have scaled revenue, shipped product, built and broken things, and want to do it again alongside people who ship.</p>
+            <p class="body">Our brands: <a class="dotlink dotlink--inline" href="https://hellonancy.com" target="_blank" rel="noopener"><span>hellonancy.com</span></a> · <a class="dotlink dotlink--inline" href="https://biird.co" target="_blank" rel="noopener"><span>biird.co</span></a></p>
+          </div>
+        </section>
+        <section class="role-block">
+          <h2 class="role-block__title" data-enter>About the role</h2>
+          <div class="role-block__body" data-enter="rise">
+            <p class="body" data-role-mission></p>
+          </div>
+        </section>
+        <section class="role-block">
+          <h2 class="role-block__title" data-enter>Responsibilities</h2>
+          <div class="role-block__body" data-enter="rise">
+            <ul class="body petal-list" data-role-responsibilities></ul>
+          </div>
+        </section>
+        <section class="role-block">
+          <h2 class="role-block__title" data-enter>What we are looking for</h2>
+          <div class="role-block__body" data-enter="rise">
+            <ul class="body petal-list" data-role-requirements></ul>
+          </div>
+        </section>
+        <section class="role-block">
+          <h2 class="role-block__title" data-enter>How to apply</h2>
+          <div class="role-block__body" data-enter="rise">
+            <p class="body">Use the form on this page. To stand out, answer the role questions with direct examples.</p>
+          </div>
+        </section>
+      </article>
+
+      <section class="apply-form" aria-labelledby="apply-form-title">
+        <div class="apply-form__side" data-enter>
+          <h2 class="h2 apply-form__title" id="apply-form-title">Apply for this position</h2>
+          <p class="caption apply-form__note">Required fields are marked with an asterisk.</p>
+        </div>
+
+        <div class="apply-form__main" data-form-wrap>
+          <form class="f" id="application-form" aria-label="Apply for this position" novalidate data-enter="rise">
+            <input type="hidden" name="role" value="" />
+
+            <div class="preview-note" data-preview-note hidden>
+              <span class="chip chip--sun preview-note__chip">Preview</span>
+              <p class="preview-note__text">Preview only: this form does not send applications. To apply, use <a class="preview-note__link" data-live-link href="https://carenbloom.com/careers">carenbloom.com</a>.</p>
+            </div>
+
+            <div class="f-summary" data-error-summary>
+              <div class="f-summary__clip">
+                <div class="f-summary__box" tabindex="-1" data-error-summary-box>
+                  <p class="f-summary__text" data-error-summary-text></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="f-grid">
+              <div class="field" data-field="first_name">
+                <label class="f-label" for="f-first-name"><span class="f-label__text">First name</span><span class="f-req" aria-hidden="true">*</span></label>
+                <input class="f-input" id="f-first-name" type="text" name="first_name" autocomplete="given-name" required />
+                <p class="f-error" id="f-first-name-error"></p>
+              </div>
+              <div class="field" data-field="last_name">
+                <label class="f-label" for="f-last-name"><span class="f-label__text">Last name</span><span class="f-req" aria-hidden="true">*</span></label>
+                <input class="f-input" id="f-last-name" type="text" name="last_name" autocomplete="family-name" required />
+                <p class="f-error" id="f-last-name-error"></p>
+              </div>
+            </div>
+
+            <div class="field" data-field="email">
+              <label class="f-label" for="f-email"><span class="f-label__text">Email</span><span class="f-req" aria-hidden="true">*</span></label>
+              <input class="f-input" id="f-email" type="email" name="email" autocomplete="email" inputmode="email" spellcheck="false" required />
+              <p class="f-error" id="f-email-error"></p>
+            </div>
+
+            <div class="f-grid f-grid--phone">
+              <div class="field" data-field="phone_country_code">
+                <label class="f-label" for="f-code"><span class="f-label__text">Country / area code</span><span class="f-req" aria-hidden="true">*</span></label>
+                <div class="f-select">
+                  <select class="f-input" id="f-code" name="phone_country_code" autocomplete="tel-country-code" required>
+                    <option value="">Choose code</option>
+                  </select>
+                </div>
+                <p class="f-error" id="f-code-error"></p>
+              </div>
+              <div class="field" data-field="phone_number">
+                <label class="f-label" for="f-phone"><span class="f-label__text">Phone number</span><span class="f-req" aria-hidden="true">*</span></label>
+                <input class="f-input" id="f-phone" type="tel" name="phone_number" autocomplete="tel-national" inputmode="tel" required />
+                <p class="f-error" id="f-phone-error"></p>
+              </div>
+            </div>
+
+            <div class="field" data-field="linkedin">
+              <label class="f-label" for="f-linkedin"><span class="f-label__text">LinkedIn (optional)</span></label>
+              <input class="f-input" id="f-linkedin" type="url" name="linkedin" autocomplete="url" inputmode="url" spellcheck="false" placeholder="https://www.linkedin.com/in/..." />
+              <p class="f-error" id="f-linkedin-error"></p>
+            </div>
+
+            <div class="field field--file" data-field="resume">
+              <label class="f-label" for="f-resume"><span class="f-label__text">Resume</span><span class="f-req" aria-hidden="true">*</span></label>
+              <div class="drop" data-drop>
+                <input class="drop__input" id="f-resume" type="file" name="resume" accept=".pdf,.doc,.docx,.odt,.txt,.rtf" required aria-describedby="f-resume-help" />
+                <div class="drop__rows">
+                  <div class="drop__row drop__row--empty"><div class="drop__clip">
+                    <span class="drop__btn" aria-hidden="true">Choose file</span>
+                    <span class="drop__caption" aria-hidden="true">No file chosen</span>
+                  </div></div>
+                  <div class="drop__row drop__row--file" inert><div class="drop__clip">
+                    <span class="drop__name" data-file-name></span>
+                    <span class="drop__actions">
+                      <button class="drop__act" type="button" data-file-replace>Replace</button>
+                      <button class="drop__act" type="button" data-file-remove>Remove</button>
+                    </span>
+                  </div></div>
+                </div>
+              </div>
+              <p class="f-help" id="f-resume-help">PDF, DOC, DOCX, ODT, TXT or RTF, under 4 MB.</p>
+              <p class="f-error" id="f-resume-error"></p>
+            </div>
+
+            <div class="field" data-field="intro_video_url">
+              <div class="f-label-row">
+                <label class="f-label" for="f-intro"><span class="f-label__text" data-intro-video-label>Intro video (optional)</span><span class="f-req" aria-hidden="true" data-intro-video-req hidden>*</span></label>
+                <span class="tip" data-tip>
+                  <button class="tip__btn" type="button" aria-label="About intro videos" aria-describedby="f-intro-tip" data-tip-btn>?</button>
+                  <span class="tip__panel" id="f-intro-tip" role="tooltip" data-tip-panel>We encourage applicants to share a two-minute Loom video so we can get to know you sooner. Applicants' Loom videos will be prioritized in their review.</span>
+                </span>
+              </div>
+              <input class="f-input" id="f-intro" type="url" name="intro_video_url" inputmode="url" spellcheck="false" placeholder="https://www.loom.com/share/..." aria-describedby="f-intro-help" />
+              <p class="f-help" id="f-intro-help" data-intro-video-help>Attach a short video (1-2 min) introducing yourself and why you are a great fit. <a class="f-help__link" href="https://www.loom.com/" target="_blank" rel="noopener">Loom.com</a> works well.</p>
+              <p class="f-error" id="f-intro-error"></p>
+            </div>
+
+            <div class="field" data-field="monthly_income_usd">
+              <label class="f-label" for="f-income"><span class="f-label__text">Most recent all-in monthly income (USD/month)</span><span class="f-req" aria-hidden="true">*</span></label>
+              <input class="f-input tnum" id="f-income" type="text" name="monthly_income_usd" inputmode="numeric" pattern="[0-9]*" placeholder="USD/month, numbers only" autocomplete="off" data-numeric-only required aria-describedby="f-income-help" />
+              <p class="f-help" id="f-income-help">Enter the full monthly amount in USD before taxes, bonuses included.</p>
+              <p class="f-error" id="f-income-error"></p>
+            </div>
+
+            <fieldset class="field field--choice" data-field="open_time_zone" aria-describedby="f-tz-help">
+              <legend class="f-label"><span class="f-label__text">What time zone are you open to work in?</span><span class="f-req" aria-hidden="true">*</span></legend>
+              <p class="f-help f-help--top" id="f-tz-help">Choose one or more.</p>
+              <div class="pills">
+                <label class="pill"><input class="pill__input" type="checkbox" name="open_time_zone" value="US" required /><span class="pill__face"><span class="pill__slot" aria-hidden="true"><svg class="pill__check" viewBox="0 0 12 12" focusable="false"><path d="M2.4 6.3 4.9 8.7 9.6 3.5" /></svg></span><span>US</span></span></label>
+                <label class="pill"><input class="pill__input" type="checkbox" name="open_time_zone" value="Europe" /><span class="pill__face"><span class="pill__slot" aria-hidden="true"><svg class="pill__check" viewBox="0 0 12 12" focusable="false"><path d="M2.4 6.3 4.9 8.7 9.6 3.5" /></svg></span><span>Europe</span></span></label>
+                <label class="pill"><input class="pill__input" type="checkbox" name="open_time_zone" value="Asia" /><span class="pill__face"><span class="pill__slot" aria-hidden="true"><svg class="pill__check" viewBox="0 0 12 12" focusable="false"><path d="M2.4 6.3 4.9 8.7 9.6 3.5" /></svg></span><span>Asia</span></span></label>
+              </div>
+              <p class="f-error" id="f-tz-error"></p>
+            </fieldset>
+
+            <div class="field" data-field="location">
+              <label class="f-label" for="f-location"><span class="f-label__text">Where are you based?</span><span class="f-req" aria-hidden="true">*</span></label>
+              <div class="f-select">
+                <select class="f-input" id="f-location" name="location" autocomplete="country-name" required>
+                  <option value="">Choose country</option>
+                </select>
+              </div>
+              <p class="f-error" id="f-location-error"></p>
+            </div>
+
+            <div class="f-part">
+              <h2 class="f-part__title">A few questions for you</h2>
+            </div>
+            <div class="f-questions" data-role-questions></div>
+
+            <div class="field field--file" data-field="additional_attachment">
+              <label class="f-label" for="f-attachment"><span class="f-label__text" data-attachment-label>Additional attachment (optional)</span><span class="f-req" aria-hidden="true" data-attachment-req hidden>*</span></label>
+              <div class="drop" data-drop>
+                <input class="drop__input" id="f-attachment" type="file" name="additional_attachment" aria-describedby="f-attachment-help" />
+                <div class="drop__rows">
+                  <div class="drop__row drop__row--empty"><div class="drop__clip">
+                    <span class="drop__btn" aria-hidden="true">Choose file</span>
+                    <span class="drop__caption" aria-hidden="true">No file chosen</span>
+                  </div></div>
+                  <div class="drop__row drop__row--file" inert><div class="drop__clip">
+                    <span class="drop__name" data-file-name></span>
+                    <span class="drop__actions">
+                      <button class="drop__act" type="button" data-file-replace>Replace</button>
+                      <button class="drop__act" type="button" data-file-remove>Remove</button>
+                    </span>
+                  </div></div>
+                </div>
+              </div>
+              <p class="f-help" id="f-attachment-help" data-attachment-help>Resume addendum, case study, or any supporting work. Under 4 MB.</p>
+              <p class="f-error" id="f-attachment-error"></p>
+            </div>
+
+            <div class="f-submit">
+              <button class="btn btn--ink btn--lg f-submit__btn" type="submit" data-submit>
+                <span class="f-submit__loader" data-submit-loader aria-hidden="true"></span>
+                <span class="f-swap"><span class="f-swap__a">Submit application</span><span class="f-swap__b" aria-hidden="true">Submitting…</span></span>
+              </button>
+              <div class="preview-note preview-note--inline" data-preview-note hidden>
+                <span class="chip chip--sun preview-note__chip">Preview</span>
+                <p class="preview-note__text">Preview only: this form does not send applications. To apply, use <a class="preview-note__link" data-live-link href="https://carenbloom.com/careers">carenbloom.com</a>.</p>
+              </div>
+            </div>
+          </form>
+          <p class="f-status" aria-live="polite" data-form-status></p>
+
+          <div class="apply-success" data-success hidden>
+            <span class="apply-success__mark" data-success-mark aria-hidden="true"></span>
+            <h2 class="h2 apply-success__title" tabindex="-1" data-success-title>Application received.</h2>
+            <p class="body apply-success__ref" data-success-ref></p>
+            <div class="apply-success__links">
+              <a class="dotlink" href="/careers"><span>See other open roles</span></a>
+              <a class="dotlink" href="/"><span>Back to home</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,63 @@
+<!-- hero: the manifesto. "Care &" top left, "Bloom" at the right edge, the
+     brand line beside it; the counter and record link docked at the
+     foot of the first screen; the hand and rose rising into "Bloom". The rose
+     and the dock hold still while the rose blooms over the first 40vh of
+     scroll (hero.ts + CSS sticky), then the hairline arrives under the wrist.
+     Everything here is visible without JS. -->
+<section id="top" class="section section--first hero" data-section="hero" aria-labelledby="hero-title">
+  <div class="wrap">
+    <div class="hero__stage">
+      <h1 class="display hero__title" id="hero-title" aria-label="Care &amp; Bloom">
+        <span class="hero__row" aria-hidden="true"><span class="hero__mask"><span class="hero__word">Care</span></span> <span class="hero__mask hero__mask--amp"><span class="hero__word"><span class="wink-amp hero__amp">&amp;</span></span></span></span>
+        <span class="hero__row" aria-hidden="true"><span class="hero__mask"><span class="hero__word">Bloom</span></span></span>
+      </h1>
+
+      <p class="hero__line">
+        <span class="hero__ln"><span>We move fast.</span></span>
+        <span class="hero__ln"><span>We experiment.</span></span>
+        <span class="hero__ln"><span>We build <span class="wink">enormous</span> brands.</span></span>
+      </p>
+
+      <div class="hero__dock">
+      <div class="hero__meta">
+        <div class="hero__counter" role="group" aria-label="1,000,000+ customers, about one more every 23 seconds">
+          <span class="hero__figrow">
+            <span class="hero__figure tnum" data-value="1,000,000+" aria-hidden="true">1,000,000+</span>
+            <span class="hero__live hero__beat">
+              <span class="live-dot hero__dot"></span>
+              <span class="hero__plus tnum" aria-hidden="true">+1</span>
+            </span>
+          </span>
+          <span class="hero__cap hero__beat" aria-hidden="true">
+            <span class="hero__cap-a">customers</span>
+            <span class="hero__cap-b tnum">+1 ≈ every 23 s</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="hero__go">
+        <a class="dotlink hero__link" href="#record"><span>See the record</span></a>
+      </div>
+      </div>
+
+      <div class="hero__mediacell">
+        <div class="hero__media" role="img" aria-label="A hand holds a blue halftone flower that opens from bud to full bloom.">
+          <div class="hero__media-inner">
+            <!-- one picture per theme; both lazy, so only the visible one loads. The head script of
+                 index.html preloads the active theme's still at high priority (the LCP) -->
+            <picture class="theme-only-light">
+              <source media="(prefers-reduced-motion: reduce)" type="image/webp" srcset="/img/hero-end-480.webp 480w, /img/hero-end-896.webp 896w" sizes="(min-width: 768px) 40vw, 64vw" />
+              <img class="hero__still" src="/img/hero-start-896.webp" srcset="/img/hero-start-480.webp 480w, /img/hero-start-896.webp 896w" sizes="(min-width: 768px) 40vw, 64vw" width="896" height="1200" alt="" loading="lazy" decoding="async" />
+            </picture>
+            <picture class="theme-only-violet">
+              <source media="(prefers-reduced-motion: reduce)" type="image/webp" srcset="/img/hero-end-violet-480.webp 480w, /img/hero-end-violet-896.webp 896w" sizes="(min-width: 768px) 40vw, 64vw" />
+              <img class="hero__still" src="/img/hero-start-violet-896.webp" srcset="/img/hero-start-violet-480.webp 480w, /img/hero-start-violet-896.webp 896w" sizes="(min-width: 768px) 40vw, 64vw" width="896" height="1200" alt="" loading="lazy" decoding="async" />
+            </picture>
+            <canvas class="hero__canvas" aria-hidden="true"></canvas>
+          </div>
+          <span class="hero__veil" aria-hidden="true"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

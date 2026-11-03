@@ -1,0 +1,125 @@
+/* Live tip (lib/livetip.ts): a small bubble on a live dot. Tokens only (themable). */
+.livetip-btn {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: help;
+  -webkit-tap-highlight-color: transparent;
+}
+/* a 32px target around the 8px dot */
+.livetip-btn::before {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+}
+.livetip-btn > .live-dot {
+  transition: scale var(--dur-spring) var(--spring);
+}
+@media (hover: hover) and (pointer: fine) {
+  .livetip-btn:hover > .live-dot {
+    scale: 1.4;
+  }
+}
+.livetip-btn[data-open] > .live-dot {
+  scale: 1.4;
+}
+.livetip-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+}
+
+.livetip {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: max-content;
+  max-width: min(300px, calc(100vw - 24px));
+  padding: 11px 14px 12px;
+  border-radius: 12px;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-family: var(--ff-sans);
+  font-size: var(--fs-caption);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-align: left;
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 2px 4px rgba(var(--shadow-rgb), 0.05),
+    0 14px 32px -14px rgba(var(--shadow-rgb), 0.22);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  scale: 0.92;
+  transform-origin: var(--origin-x, 50%) 100%;
+  /* exits take 40% of the entrance */
+  transition:
+    opacity 120ms var(--ease),
+    scale 170ms var(--ease),
+    visibility 0s linear 170ms;
+}
+.livetip[data-side="bottom"] {
+  transform-origin: var(--origin-x, 50%) 0%;
+}
+.livetip[data-open] {
+  opacity: 1;
+  visibility: visible;
+  scale: 1;
+  pointer-events: auto;
+  transition:
+    opacity 200ms var(--ease),
+    scale var(--dur-spring) var(--spring),
+    visibility 0s;
+}
+.livetip--still,
+.livetip--still[data-open] {
+  scale: 1;
+}
+.livetip__row {
+  white-space: nowrap;
+}
+.livetip__n {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.livetip__note {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: var(--fs-label);
+  line-height: 1.4;
+}
+/* the arrow: a square turned 45deg, hairline on its two outer sides */
+.livetip__arrow {
+  position: absolute;
+  top: 100%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  background: var(--paper-2);
+  box-shadow: 1px 1px 0 0 var(--line);
+  rotate: 45deg;
+}
+.livetip[data-side="bottom"] .livetip__arrow {
+  top: 0;
+  box-shadow: -1px -1px 0 0 var(--line);
+}
+@media print {
+  .livetip {
+    display: none;
+  }
+}

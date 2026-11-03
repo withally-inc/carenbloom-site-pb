@@ -1,3 +1,5 @@
-/talents /#careers 301
-/talents/ /#careers 301
+/talents /careers/ 301
+/talents/ /careers/ 301
 /talents/* /careers/:splat 301
+/pb-live / 308
+/pb-live/ / 308
