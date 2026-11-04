@@ -20,6 +20,7 @@ The v3 pages, tests and evidence remain in the Git history before this change.
 | `/` | Home |
 | `/careers/` | Open roles, listed from `/api/role-state` |
 | `/careers/apply/?role=<slug>` | Authoritative open, closed, unknown, or unavailable state for one canonical role, with its JobPosting metadata |
+| `/robots.txt` | Plain-text crawl policy for all user agents: allows `/` and disallows `/api/`; source: `site-src/public/robots.txt` |
 | `/api/role-state` | Non-cacheable canonical role lifecycle and open-role collection API |
 | `/api/applications` | Same-origin Cloudflare relay to the Vercel application intake API |
 | `/pb-live` and `/pb-live/` | Compatibility redirects to `/` |
@@ -140,7 +141,7 @@ Create the strict runtime deployment directory with:
 npm run package:deployment
 ```
 
-The generated `.vercel-deploy/` directory contains only runtime HTML, CSS, browser JavaScript, API files, fonts, favicons, icons, images, video, a minimal runtime package manifest, and Vercel configuration.
+The generated `.vercel-deploy/` directory contains only runtime HTML, CSS, browser JavaScript, API files, fonts, favicons, icons, images, video, `robots.txt`, a minimal runtime package manifest, and Vercel configuration.
 
 It excludes Git data, Vercel link state, tests, evidence, reports, environment files, local artifacts, and private material.
 
