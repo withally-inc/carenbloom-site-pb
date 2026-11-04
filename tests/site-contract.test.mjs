@@ -7,6 +7,14 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pages = ["index.html", "careers/index.html", "careers/apply/index.html", "404.html"];
 
+test("robots.txt is served as plain text with the public crawl policy", async () => {
+  const { baseUrl } = await import("./helpers/site-browser.mjs");
+  const response = await fetch(`${baseUrl}/robots.txt`);
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") || "", /^text\/plain(?:;|$)/i);
+  assert.equal(await response.text(), "User-agent: *\nAllow: /\nDisallow: /api/\n");
+});
+
 function localReferences(html) {
   const refs = new Set();
   for (const match of html.matchAll(/\b(?:href|src|content)="(\/[^"#?]*)/g)) {

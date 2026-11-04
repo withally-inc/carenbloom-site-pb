@@ -22,6 +22,7 @@ const runtimeAllowlist = [
   "og.png",
   "og-careers.png",
   "site.webmanifest",
+  "robots.txt",
   "scripts/careers-roles.js",
   "scripts/api-endpoints.js",
   "api/applications.js",
