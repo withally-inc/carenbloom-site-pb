@@ -81,9 +81,10 @@ They are seasonal guidance, not a November 2026 forecast.
 
 ## Publication and future cities
 
-The route is `/visit/hong-kong/`, with static `noindex, follow` and no inbound link from the shared chrome, home, careers or a sitemap.
+The [README route table](../../README.md#routes) owns the guide’s current route and visibility contract.
 Do not disallow the route in robots.txt: crawlers need access to see noindex.
 To make it public later, confirm the missing scenic hotel and recheck venue details, remove the robots noindex meta in `site-src/visit/hong-kong/index.html`, deliberately add the desired public navigation/sitemap links, update the visibility tests and rebuild.
 No automatic publication switch is enabled.
 Future cities can add `site-src/visit/<city>/index.html`, their own section partial and Vite entry, while reusing `src/pages/visit.ts`, `src/sections/visit.css` and the shared chrome.
+Register each new route in the local URL middleware in `site-src/vite.config.ts` and the strict runtime allowlist in `scripts/package-deployment.mjs`, and update the visibility tests.
 The “Soon” cities are plain text, not broken links.
