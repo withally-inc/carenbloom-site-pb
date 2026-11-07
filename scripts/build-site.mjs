@@ -66,7 +66,7 @@ if (check) {
   const cleanDist = path.join(cleanSource, "dist");
   try {
     mkdirSync(cleanSource);
-    for (const entry of ["package.json", "pnpm-lock.yaml", "tsconfig.json", "vite.config.ts", "index.html", "404.html", "careers", "src", "public"]) {
+    for (const entry of ["package.json", "pnpm-lock.yaml", "tsconfig.json", "vite.config.ts", "index.html", "404.html", "careers", "visit", "src", "public"]) {
       cpSync(path.join(source, entry), path.join(cleanSource, entry), { recursive: true });
     }
     pnpm(["install", "--frozen-lockfile", "--store-dir", path.join(cache, "pnpm-store")], cleanSource);

@@ -5,7 +5,7 @@ import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const pages = ["index.html", "careers/index.html", "careers/apply/index.html", "404.html"];
+const pages = ["index.html", "careers/index.html", "careers/apply/index.html", "visit/hong-kong/index.html", "404.html"];
 
 test("robots.txt is served as plain text with the public crawl policy", async () => {
   const { baseUrl } = await import("./helpers/site-browser.mjs");
@@ -79,4 +79,26 @@ test("the runtime owners stay in place beside the site", () => {
   ]) {
     assert.ok(existsSync(path.join(root, owner)), `${owner} should remain`);
   }
+});
+
+test("the visitor guide is a direct-link, noindex page with useful outbound links", async () => {
+  const { baseUrl } = await import("./helpers/site-browser.mjs");
+  const response = await fetch(`${baseUrl}/visit/hong-kong/`);
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /<meta name="robots" content="noindex, follow"/);
+  assert.match(html, /<link rel="canonical" href="https:\/\/carenbloom\.com\/visit\/hong-kong\/"/);
+  assert.match(html, /29 Wyndham Street/);
+  assert.equal((html.match(/data-hotel/g) || []).length, 7);
+  assert.equal((html.match(/data-place/g) || []).length, 8);
+  assert.equal((html.match(/https:\/\/www\.google\.com\/maps\/search\//g) || []).length, 16);
+  for (const host of ["iclub-hotels.com", "yingnflo.com", "butterflyhk.com", "ovolohotels.com", "theputman.com.hk", "mandarinoriental.com"]) {
+    assert.ok(html.includes(host), `${host} official hotel link is present`);
+  }
+  assert.doesNotMatch(html, /<iframe|<script[^>]+src="https?:|[\u2013\u2014]/);
+  for (const page of ["index.html", "careers/index.html", "careers/apply/index.html"]) {
+    assert.doesNotMatch(readFileSync(path.join(root, page), "utf8"), /href="\/visit\//, "guide stays out of existing public pages and chrome");
+  }
+  // The page must remain crawlable for its noindex directive to be discoverable.
+  assert.doesNotMatch(readFileSync(path.join(root, "robots.txt"), "utf8"), /Disallow:.*visit/);
 });

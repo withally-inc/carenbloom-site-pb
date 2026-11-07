@@ -47,6 +47,41 @@ try {
   await page.goto(`${baseUrl}/careers/apply?role=not-a-real-role`, { waitUntil: "load" });
   await page.getByText("Role not found").first().waitFor({ timeout: 15000 });
 
+  const visit = await page.goto(`${baseUrl}/visit/hong-kong/`, { waitUntil: "load" });
+  assert.equal(visit?.status(), 200);
+  await page.waitForFunction(() => document.documentElement.classList.contains("ready"));
+  assert.match(await page.title(), /Visit Hong Kong/);
+  assert.equal(await page.locator('meta[name="robots"]').getAttribute("content"), "noindex, follow");
+  assert.equal(await page.locator("main h1").count(), 1);
+  assert.equal(await page.locator("[data-hotel]").count(), 7);
+  assert.equal(await page.locator("[data-place]").count(), 8);
+  assert.equal(await page.locator("main iframe").count(), 0);
+  for (const link of await page.locator('main a[href^="#"]').all()) {
+    const hash = await link.getAttribute("href");
+    assert.equal(await page.locator(hash).count(), 1, `${hash} jump target exists`);
+  }
+  await page.getByRole("link", { name: "Where to stay" }).click();
+  await page.waitForFunction(() => document.activeElement?.id === "stay");
+  for (const width of [1440, 390, 320]) {
+    await page.setViewportSize({ width, height: 844 });
+    for (const theme of ["light", "violet"]) {
+      await page.evaluate((value) => document.documentElement.dataset.theme = value, theme);
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${width}px ${theme} has no horizontal overflow`);
+    }
+  }
+  // The full guide and navigation remain available when enhancement is unavailable.
+  const noScript = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+  try {
+    const staticPage = await noScript.newPage();
+    await staticPage.goto(`${baseUrl}/visit/hong-kong/`);
+    assert.equal(await staticPage.getByRole("heading", { name: "See you in Hong Kong." }).isVisible(), true);
+    assert.equal(await staticPage.locator("[data-hotel]").count(), 7);
+    await staticPage.getByRole("link", { name: "Lunch · 02" }).click();
+    assert.match(staticPage.url(), /#lunch$/);
+    assert.equal(await staticPage.locator("#lunch").isVisible(), true);
+  } finally {
+    await noScript.close();
+  }
   assert.deepEqual(pageErrors, [], "no page should throw");
   console.log("v4 site browser tests passed");
 } finally {

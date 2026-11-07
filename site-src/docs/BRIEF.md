@@ -98,12 +98,14 @@ See the [root README](../../README.md#canonical-role-data-and-lifecycle) for dep
 
 ## 8. Tech and repo layout
 
-Vite 8 + TypeScript + Tailwind v4 (`@tailwindcss/vite`) + GSAP + Lenis. Multi-page Vite (index.html, careers/index.html, careers/apply/index.html). No React. Static HTML first: every section's markup is in the HTML at build time (SEO, first paint), JS only enhances.
+Vite 8 + TypeScript + Tailwind v4 (`@tailwindcss/vite`) + GSAP + Lenis.
+Multi-page Vite; see [README routes](../../README.md#routes) for the current page inventory.
+No React.
+Static HTML first: every section's markup is in the HTML at build time (SEO, first paint), JS only enhances.
 
 ```
-site/
-  index.html                 home shell: <!-- @include sections/hero.html --> etc.
-  careers/index.html  careers/apply/index.html
+site-src/
+  ...                       HTML page shells: see README routes
   vite.config.ts             multi-page + tiny HTML include plugin (transformIndexHtml) + /api proxy
   vercel.json
   src/
@@ -111,7 +113,7 @@ site/
     lib/  lenis.ts motion.ts split.ts odometer.ts spring.ts glass.ts reveal.ts marquee.ts cursor.ts  (foundation owns)
     chrome/ nav.ts nav.css footer.html footer.ts footer.css preloader.ts  (foundation owns)
     sections/<name>.html <name>.ts <name>.css    (one owner per section)
-    pages/home.ts careers.ts apply.ts            (entry points; home.ts imports each section's init)
+    pages/                                      (entry points; home.ts imports each section's init)
   public/ fonts/ img/ brand/ favicon.svg og.png
   assets-src/                raw images, never shipped directly
   scripts/ smoke.mjs images.mjs

@@ -47,8 +47,9 @@ function htmlInclude(): Plugin {
 // serve their index.html (with appType 'mpa' there is no SPA fallback to the home
 // page), a page path with a trailing slash 308s to the bare path with its query
 // (/careers/apply/?role=x to /careers/apply?role=x), and any other page-like path
-// serves 404.html. The root README owns deployed route conventions.
-const PAGES = new Set(['/', '/careers', '/careers/apply', '/404'])
+// serves 404.html. Visitor guides preserve their trailing slash.
+// The root README owns deployed route conventions.
+const PAGES = new Set(['/', '/careers', '/careers/apply', '/visit/hong-kong', '/404'])
 function cleanUrls(): Plugin {
   type Next = () => void
   type Req = { url?: string; headers: Record<string, string | string[] | undefined> }
@@ -59,6 +60,17 @@ function cleanUrls(): Plugin {
     const raw = q < 0 ? url : url.slice(0, q)
     const path = raw.replace(/\/+$/, '') || '/'
     const query = q < 0 ? '' : url.slice(q)
+    if (path === '/visit/hong-kong') {
+      if (raw === path) {
+        res.statusCode = 308
+        res.setHeader('Location', path + '/' + query)
+        res.end()
+        return
+      }
+      req.url = `${path}/index.html${query}`
+      next()
+      return
+    }
     if (raw !== path && PAGES.has(path)) {
       res.statusCode = 308
       res.setHeader('Location', path + query)
@@ -94,6 +106,7 @@ export default defineConfig({
         home: resolve(root, 'index.html'),
         careers: resolve(root, 'careers/index.html'),
         apply: resolve(root, 'careers/apply/index.html'),
+        visitHongKong: resolve(root, 'visit/hong-kong/index.html'),
         notfound: resolve(root, '404.html'),
       },
     },
