@@ -20,6 +20,7 @@ The v3 pages, tests and evidence remain in the Git history before this change.
 | `/` | Home |
 | `/careers/` | Open roles, listed from `/api/role-state` |
 | `/careers/apply/?role=<slug>` | Authoritative open, closed, unknown, or unavailable state for one canonical role, with its JobPosting metadata |
+| `/visit/hong-kong/` | Unlisted Hong Kong visitor guide; static `noindex, follow`, absent from navigation and sitemaps |
 | `/robots.txt` | Plain-text crawl policy for all user agents: allows `/` and disallows `/api/`; source: `site-src/public/robots.txt` |
 | `/api/role-state` | Non-cacheable canonical role lifecycle and open-role collection API |
 | `/api/applications` | Same-origin Cloudflare relay to the Vercel application intake API |

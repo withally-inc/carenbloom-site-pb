@@ -1,0 +1,87 @@
+/* City guides share the v4 type, colour, motion and chrome tokens. */
+.visit-eyebrow,
+.visit-intro,
+.visit-section-head,
+.visit-colophon {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+.visit-eyebrow { align-items: center; }
+.visit-title { margin-block: 40px; font-size: clamp(64px, 10.5vw, 156px); }
+.visit-intro { align-items: end; margin-bottom: 48px; }
+.visit-intro .body { max-width: 42ch; }
+.visit-index { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--rule); }
+.visit-index a { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 76px; padding: 18px 24px; border-right: 1px solid var(--rule); font-weight: 600; color: var(--fg); }
+.visit-index a:first-child { padding-left: 0; }
+.visit-index a:last-child { border-right: 0; }
+.visit-index a:hover, .visit-index a:focus-visible { color: var(--accent); }
+.visit-count { font-variant-numeric: tabular-nums; color: var(--fg-muted); font-size: var(--fs-caption); }
+.visit-office { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 96px); }
+.visit-address { align-self: start; position: sticky; top: var(--nav-offset); }
+.visit-address h2 { margin-block: 20px 36px; }
+.visit-building { font-size: clamp(64px, 7vw, 100px); color: var(--fg); font-weight: 600; line-height: 1; letter-spacing: -.045em; }
+.visit-address .lede { margin-top: 20px; }
+.visit-address .small { margin-top: 8px; }
+.visit-address .btn { margin-block: 28px 18px; }
+.visit-directions { display: grid; gap: 32px; }
+.visit-directions article { border-top: 1px solid var(--rule); padding-top: 24px; }
+.visit-directions .body { margin-block: 12px 16px; }
+.visit-section-head { align-items: end; margin-bottom: 36px; }
+.visit-section-head .h2 { margin-top: 18px; }
+.visit-section-head > .body { max-width: 37ch; }
+.visit-note { border-left: 3px solid var(--accent); padding: 4px 0 4px 20px; margin-bottom: 36px; max-width: 85ch; }
+.visit-note .caption { margin-top: 8px; }
+.visit-hotel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, .65fr); gap: 32px; padding-block: 32px; border-top: 1px solid var(--rule); }
+.visit-hotel-main .h3 { margin-block: 10px 8px; }
+.visit-hotel-copy .small { margin-top: 10px; color: var(--fg-muted); }
+.visit-hotel-links { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+.visit-walk { font-weight: 600; color: var(--fg); }
+.visit-pending { display: grid; justify-items: start; gap: 14px; background: var(--mist); padding: clamp(24px, 4vw, 48px); border-radius: var(--radius); margin-top: 24px; }
+.visit-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+.visit-chips .btn { min-height: 44px; }
+.visit-food-note { max-width: 82ch; }
+.visit-food-group { margin-top: 40px; }
+.visit-food-group > .h3 { margin-bottom: 20px; }
+.visit-food-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.visit-card { display: flex; flex-direction: column; align-items: start; gap: 14px; padding: clamp(24px, 3vw, 40px); background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); }
+.visit-card-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; width: 100%; }
+.visit-card .h3 { font-size: clamp(26px, 2.6vw, 36px); }
+.visit-card .body { margin-block: 4px; }
+.visit-card-links { display: flex; flex-wrap: wrap; gap: 16px 28px; margin-top: auto; padding-top: 12px; }
+.visit-tips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 64px; }
+.visit-tips article { border-top: 1px solid var(--rule); padding-top: 24px; }
+.visit-tips .body { margin-block: 14px 18px; }
+.visit-cities { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+.visit-cities li { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; border-top: 1px solid var(--rule); padding-block: 22px; color: var(--fg); }
+.visit-cities [aria-current] { font-weight: 600; }
+.visit-colophon { align-items: baseline; margin-top: 36px; }
+.visit-colophon .caption { max-width: 65ch; }
+.visit-colophon a { flex-shrink: 0; }
+@media (max-width: 959px) {
+  .visit-intro, .visit-section-head { flex-direction: column; align-items: start; }
+  .visit-office { grid-template-columns: 1fr; }
+  .visit-address { position: static; }
+  .visit-hotel { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
+  .visit-hotel-links { grid-column: 2; flex-direction: row; flex-wrap: wrap; gap: 12px 24px; }
+  .visit-hotel-links .visit-walk { width: 100%; }
+  .visit-index { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .visit-index a { border-bottom: 1px solid var(--rule); }
+  .visit-index a:nth-child(odd) { padding-left: 0; }
+  .visit-index a:nth-child(even) { border-right: 0; }
+  .visit-cities { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 599px) {
+  .visit-eyebrow, .visit-colophon { flex-direction: column; align-items: start; gap: 12px; }
+  .visit-title { margin-block: 32px; }
+  .visit-hotel, .visit-food-grid, .visit-tips { grid-template-columns: 1fr; }
+  .visit-hotel { gap: 20px; }
+  .visit-hotel-links { grid-column: auto; }
+  .visit-index a { padding-right: 12px; font-size: var(--fs-small); }
+  .visit-index a:nth-child(even) { padding-left: 16px; }
+  .visit-card { gap: 12px; }
+}
+@media print {
+  .visit-address { position: static; }
+  .visit-hotel, .visit-card, .visit-tips article { break-inside: avoid; }
+}
