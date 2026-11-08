@@ -135,9 +135,5 @@ The captain can supply or approve venue photography to replace these substitutes
 
 ### Rebuilding the photos
 
-Cropped JPEG masters live in `site-src/assets-src/visit/hong-kong/`; these are build sources and are not served.
-Run `node site-src/scripts/visit-images.mjs` from the repository root to regenerate `site-src/public/img/visit/hong-kong/`.
-The full `pnpm images` pipeline also runs this step, and the base-image cleanup preserves the independently owned `visit/` folder.
-The script emits 384×288 and up to 768×576 WebP variants (the smaller Negroni original stops at 600×450), with no network calls or upscaling.
-Run `npm run build:site` afterwards to publish the assets through the normal site build.
+See [the asset guide](ASSETS.md#visitor-guide-photography) for master paths, rebuild commands, output sizes and publication steps.
 Every card supplies responsive `srcset`/`sizes`, intrinsic dimensions, lazy loading, asynchronous decoding and descriptive alt text.

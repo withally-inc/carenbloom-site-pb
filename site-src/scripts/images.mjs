@@ -23,8 +23,8 @@ const C = { paper: '#F4F6F8', mist: '#DCEDF5', ink: '#0A1220', cobalt: '#2331E4'
 
 if (SEQ_ONLY) fs.rmSync(path.join(OUT, 'bloom-seq'), { recursive: true, force: true });
 else {
-  // wipe what this script produces, keep folders other scripts own (values/ is built by scripts/values/build.mjs,
-  // companions/ by scripts/companions/build.py). The -violet files next to ours are rebuilt by
+  // Wipe what this script produces, preserving folders other generators own (docs/ASSETS.md).
+  // The -violet files next to ours are rebuilt by
   // scripts/halftone-dark.mjs afterwards: run the whole chain with `pnpm images` (scripts/pipeline.mjs).
   const KEEP = new Set(['values', 'companions', 'visit']);
   for (const e of fs.existsSync(OUT) ? fs.readdirSync(OUT) : []) if (!KEEP.has(e)) fs.rmSync(path.join(OUT, e), { recursive: true, force: true });
