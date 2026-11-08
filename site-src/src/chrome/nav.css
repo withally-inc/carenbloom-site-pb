@@ -386,6 +386,7 @@ html:not(.js) .nav__theme {
   .nav__cluster {
     display: flex;
     justify-content: space-between;
+    column-gap: 0;
   }
   .nav__right {
     flex: none;

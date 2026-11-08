@@ -106,6 +106,9 @@ try {
     for (const theme of ["light", "violet"]) {
       await page.evaluate((value) => document.documentElement.dataset.theme = value, theme);
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${width}px ${theme} has no horizontal overflow`);
+      const rolesLink = await page.locator('header .nav__roles').boundingBox();
+      assert.ok(rolesLink && rolesLink.x >= 0 && rolesLink.x + rolesLink.width <= width,
+        `${width}px ${theme}: the header's open-roles link must fit inside the viewport`);
     }
   }
   // The full guide and navigation remain available when enhancement is unavailable.
