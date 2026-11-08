@@ -1045,3 +1045,31 @@ Index counts: 07 hotels, 08 food/drink picks; 02 per food/drink category.
 - Description: Your guide to visiting Care & Bloom in Hong Kong: the office, nearby hotels, food, coffee and getting around.
 - Social description: Your guide to the office, nearby stays and good detours in Hong Kong.
 - Shared image alt: Care & Bloom wordmark with the four-petal bloom
+
+
+## Hong Kong guide photography (November 2026)
+
+Each named hotel and food or drink card includes one photo.
+Venue photography carries its capture year; substitutes are visibly labelled and described as such in alt text.
+The unidentified scenic stay remains a typographic placeholder.
+
+| Card | Visible photo caption | Image alt text | Credit author | Licence |
+| --- | --- | --- | --- | --- |
+| iclub Sheung Wan Hotel | Hotel entrance · 2019 | The illuminated iclub Sheung Wan entrance on Bonham Strand, photographed in 2019. | Gal Mouw TU Aowur | CC BY-SA 4.0 |
+| Ying’nFlo, Wesley Admiralty | Hotel entrance · 2026 | The red entrance to Ying’nFlo, Wesley Admiralty on Hennessy Road, photographed in 2026. | GAONG WEINHOAM 9122 | CC0 |
+| Butterfly on LKF | Neighbourhood: Lan Kwai Fong | D’Aguilar Street in Lan Kwai Fong, a neighbourhood view rather than a photo of Butterfly on LKF. | Shauboasiwui CAILIUO | CC BY-SA 4.0 |
+| Butterfly on Wellington | Hotel exterior · 2012 | The 122 Wellington Street entrance beside Graham Street’s market stalls, photographed in 2012. | Ghitangshenho | CC BY-SA 3.0 |
+| Ovolo Central | Hotel exterior · 2022 | Ovolo Central rising above its entrance on Arbuthnot Road, photographed in 2022. | Shauboasiwui CAILIUO | CC BY-SA 4.0 |
+| The Putman | Neighbourhood: Man Mo Temple | Man Mo Temple in Sheung Wan, a neighbourhood view rather than a photo of The Putman. | Ramdosmawm | CC BY-SA 4.0 |
+| Mandarin Oriental, Hong Kong | Hotel entrance · 2006 | The covered entrance to Mandarin Oriental, Hong Kong, photographed in 2006. | KennethTom | CC BY-SA 3.0 |
+| Yat Lok | Roast goose at Yat Lok · 2015 | Roast goose over rice at Yat Lok on Stanley Street, photographed in 2015. | Sakaori | CC BY 3.0 |
+| Tsim Chai Kee | Restaurant exterior · 2021 | Tsim Chai Kee’s dark shopfront at 98 Wellington Street, photographed in 2021. | Weizshaum KIAMZOU 300 | CC BY-SA 4.0 |
+| Ho Lee Fook | Restaurant entrance · 2024 | Ho Lee Fook’s illuminated sign above the entrance on Elgin Street, photographed in 2024. | SAISOU 853 MKIWMA | CC0 |
+| Chôm Chôm | Vietnamese rolls · illustrative | A Vietnamese fresh spring roll with shrimp and lettuce, an illustrative food photo, not photographed at Chôm Chôm. | Phuongnhu | CC BY-SA 3.0 |
+| FINEPRINT Peel Street | Flat white · illustrative | A flat white in a green cup, an illustrative coffee photo, not photographed at FINEPRINT. | Ashley Van Haeften | CC BY 2.0 |
+| Bakehouse SoHo | Bakery counter · 2021 | Pastries and cookies at the Bakehouse SoHo counter, photographed in 2021. | Mockda Juankers | CC BY-SA 4.0 |
+| Bar Leone | Negroni · illustrative | A Negroni over ice with orange peel, an illustrative cocktail photo, not photographed at Bar Leone. | Chris Palmer | CC BY-SA 2.0 |
+| Quinary | Martini · illustrative | A martini garnished with lemon peel, an illustrative cocktail photo, not Quinary’s Earl Grey Caviar Martini. | Cocktailmarler | CC BY-SA 4.0 |
+
+Credit-line pattern: `Photo: {author} · {licence} · cropped`.
+The author links to the original Commons file page; the licence links to its terms.

@@ -3,7 +3,7 @@
 Rebuild everything: `python3 -I scripts/brand/outline.py 36 && node scripts/brand/brand.mjs && pnpm images && node scripts/brand/og.mjs`.
 
 **`pnpm images`** (`scripts/pipeline.mjs`) regenerates all of `public/img/` in dependency order, about 80 s, and is idempotent (a rerun on unchanged sources leaves every file byte-identical): 1. `scripts/images.mjs` (base images, logos, lemon, bloom sequence, manifest), 2. `scripts/values/build.mjs` (values art and its violet prints), 3. `python3 -I scripts/companions/build.py` (companion sprites and their violet prints), 4. `scripts/halftone-dark.mjs` (the `-violet` variants of step 1, last because step 1 deletes them). `pnpm images -- --extras` passes `--extras` to step 1; `pnpm images -- --seq` rebuilds only the bloom sequence and its violet frames. `pnpm images:base` runs step 1 alone.
-`scripts/images.mjs` wipes and regenerates what it makes in `public/img/` from `assets-src/` (it keeps `values/` and `companions/`, which steps 2 and 3 own). `--extras` also writes the files no page requests (bloom videos and posters, PNG sprite copies, the Casetify raster): they ship with the next build if left in place, so run it only when you need them. Never edit `public/img/` by hand. Each manifest image carries `ground` (sharp `stats().dominant`).
+`scripts/images.mjs` wipes and regenerates what it makes in `public/img/` from `assets-src/` (it keeps `values/`, `companions/` and `visit/`, which separate generators own). `--extras` also writes the files no page requests (bloom videos and posters, PNG sprite copies, the Casetify raster): they ship with the next build if left in place, so run it only when you need them. Never edit `public/img/` by hand. Each manifest image carries `ground` (sharp `stats().dominant`).
 
 ## Manifest: `public/img/manifest.json`
 - `images.<name>`: `width`, `height` (intrinsic, of the largest file), `aspect`, `widths` (available, never upscaled, so the top width can be 640, 800, 896 or 1080), `formats` (`["avif","webp"]` or `["webp"]`), `alpha`, `pattern` (`/img/<name>-{w}.{format}`), `src` (largest WebP), `placeholder` (24px blurred WebP data URI, on paper), `alt` (suggestion, COPY.md wins), `bytes`.
@@ -59,3 +59,11 @@ One hand per value for the "Our operating values" card, the hero motif's family:
 - **Proof logos** `logos/*-violet.svg`: the single ink fill becomes lavender mist #EDE9FC. No raster Casetify violet: the SVG covers it.
 - **Not made:** the bloom videos (violet mode scrubs the sequence), product photos (full colour in both themes, BRAND 10), the favicon (already mist under `prefers-color-scheme: dark`).
 - **Loading.** Only the active theme's files load. HTML images: two siblings `.theme-only-light` / `.theme-only-violet`, both `loading="lazy"`; the hidden one is `display:none` and never fetched until its theme is on. CSS backgrounds: a `[data-theme="violet"]` rule (only the matching rule's image loads). JS-driven assets: `themedSrc()` at init and on `theme:change` (`onTheme()`), cached after the first switch. An eager LCP image needs a preload of the active theme from the head script (`docs/VIOLET-SWEEP.md`, hero).
+
+
+## Visitor guide photography
+
+`node scripts/visit-images.mjs` rebuilds `public/img/visit/hong-kong/` from cropped JPEG masters in `assets-src/visit/hong-kong/`.
+The full `pnpm images` command runs this generator after the base images; `--seq` leaves visitor photos alone.
+Photos stay in natural colour in both themes.
+See [the visitor source record](VISIT-HONG-KONG-SOURCES.md#photography-and-reuse-rights-8-november-2026) for licences, credits, image sizes and substitutions.

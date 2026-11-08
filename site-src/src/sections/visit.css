@@ -32,10 +32,17 @@
 .visit-section-head > .body { max-width: 37ch; }
 .visit-note { border-left: 3px solid var(--accent); padding: 4px 0 4px 20px; margin-bottom: 36px; max-width: 85ch; }
 .visit-note .caption { margin-top: 8px; }
-.visit-hotel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, .65fr); gap: 32px; padding-block: 32px; border-top: 1px solid var(--rule); }
+.visit-hotel { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1fr) minmax(0, 1.1fr); gap: 24px 32px; padding-block: 32px; border-top: 1px solid var(--rule); }
+.visit-photo { margin: 0; width: 100%; min-width: 0; }
+.visit-photo img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); background: var(--mist); }
+.visit-photo figcaption { display: grid; gap: 4px; margin-top: 10px; overflow-wrap: anywhere; }
+.visit-photo-credit { font-size: 11px; line-height: 1.5; }
+.visit-photo-credit a { text-decoration: underline; text-underline-offset: 3px; }
+.visit-photo-credit a:hover, .visit-photo-credit a:focus-visible { color: var(--accent); }
+.visit-hotel > .visit-photo { grid-row: span 2; }
 .visit-hotel-main .h3 { margin-block: 10px 8px; }
 .visit-hotel-copy .small { margin-top: 10px; color: var(--fg-muted); }
-.visit-hotel-links { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+.visit-hotel-links { grid-column: 2 / -1; display: flex; flex-wrap: wrap; align-items: center; align-self: end; gap: 14px 28px; }
 .visit-walk { font-weight: 600; color: var(--fg); }
 .visit-pending { display: grid; justify-items: start; gap: 14px; background: var(--mist); padding: clamp(24px, 4vw, 48px); border-radius: var(--radius); margin-top: 24px; }
 .visit-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
@@ -63,7 +70,9 @@
   .visit-office { grid-template-columns: 1fr; }
   .visit-address { position: static; }
   .visit-hotel { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
-  .visit-hotel-links { grid-column: 2; flex-direction: row; flex-wrap: wrap; gap: 12px 24px; }
+  .visit-hotel > .visit-photo { grid-row: span 3; }
+  .visit-hotel-copy, .visit-hotel-links { grid-column: 2; }
+  .visit-hotel-links { gap: 12px 24px; }
   .visit-hotel-links .visit-walk { width: 100%; }
   .visit-index { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .visit-index a { border-bottom: 1px solid var(--rule); }
@@ -76,7 +85,8 @@
   .visit-title { margin-block: 32px; }
   .visit-hotel, .visit-food-grid, .visit-tips { grid-template-columns: 1fr; }
   .visit-hotel { gap: 20px; }
-  .visit-hotel-links { grid-column: auto; }
+  .visit-hotel > .visit-photo { grid-row: auto; }
+  .visit-hotel-copy, .visit-hotel-links { grid-column: auto; }
   .visit-index a { padding-right: 12px; font-size: var(--fs-small); }
   .visit-index a:nth-child(even) { padding-left: 16px; }
   .visit-card { gap: 12px; }

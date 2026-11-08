@@ -55,6 +55,45 @@ try {
   assert.equal(await page.locator("main h1").count(), 1);
   assert.equal(await page.locator("[data-hotel]").count(), 7);
   assert.equal(await page.locator("[data-place]").count(), 8);
+  // Exercise the rendered image contract: each photo must actually decode when scrolled into view.
+  // This catches broken files and lazy-loading failures, not just the presence of image markup.
+  let photoBytes = 0;
+  const photoUrls = new Set();
+  for (const card of await page.locator("[data-hotel], [data-place]").all()) {
+    const photo = card.locator("figure img");
+    assert.equal(await photo.count(), 1, "each named venue has one photo");
+    assert.ok((await photo.getAttribute("alt"))?.trim().length > 20, "photos have descriptive alt text");
+    assert.equal(await photo.getAttribute("loading"), "lazy");
+    assert.equal(await photo.getAttribute("decoding"), "async");
+    await photo.scrollIntoViewIfNeeded();
+    await photo.evaluate((image) => image.decode());
+    const image = await photo.evaluate((element) => ({
+      width: element.naturalWidth, height: element.naturalHeight,
+      reservedWidth: Number(element.getAttribute("width")), reservedHeight: Number(element.getAttribute("height")),
+      url: element.currentSrc, candidates: element.srcset.split(",").map((entry) => entry.trim().split(/\s+/)[0]),
+    }));
+    // srcset density-corrects naturalWidth; check physical pixels below on the standalone file.
+    assert.ok(image.width > 0 && image.height > 0, "the rendered card photo decoded");
+    assert.ok(Math.abs(image.reservedWidth / image.reservedHeight - image.width / image.height) < 0.01, "intrinsic dimensions reserve the correct aspect ratio");
+    for (const url of [image.url, ...image.candidates]) photoUrls.add(new URL(url, baseUrl).href);
+    assert.equal(await card.locator('figcaption a[href^="https://commons.wikimedia.org/"]').count(), 1, "photo credit links to its source");
+    assert.equal(await card.locator('figcaption a[href^="https://creativecommons.org/"]').count(), 1, "photo credit links to its licence");
+  }
+  for (const url of photoUrls) {
+    assert.equal(new URL(url).origin, new URL(baseUrl).origin, "photos are self-hosted");
+    const response = await fetch(url);
+    assert.equal(response.status, 200, "every responsive variant is served");
+    assert.match(response.headers.get("content-type"), /image\/webp/);
+    photoBytes += (await response.arrayBuffer()).byteLength;
+    const pixels = await page.evaluate(async (src) => {
+      const image = new Image();
+      image.src = src;
+      await image.decode();
+      return { width: image.naturalWidth, height: image.naturalHeight };
+    }, url);
+    assert.ok(pixels.width >= 384 && pixels.height >= 288, "every responsive file has sufficient physical resolution");
+  }
+  assert.ok(photoBytes < 1.5 * 1024 * 1024, "all photo variants stay within a 1.5 MiB budget");
   assert.equal(await page.locator("main iframe").count(), 0);
   for (const link of await page.locator('main a[href^="#"]').all()) {
     const hash = await link.getAttribute("href");
@@ -76,6 +115,9 @@ try {
     await staticPage.goto(`${baseUrl}/visit/hong-kong/`);
     assert.equal(await staticPage.getByRole("heading", { name: "See you in Hong Kong." }).isVisible(), true);
     assert.equal(await staticPage.locator("[data-hotel]").count(), 7);
+    const staticPhoto = staticPage.locator("[data-hotel] img").first();
+    await staticPhoto.scrollIntoViewIfNeeded();
+    assert.ok(await staticPhoto.isVisible(), "venue photography is present without page JavaScript");
     await staticPage.getByRole("link", { name: "Lunch · 02" }).click();
     assert.match(staticPage.url(), /#lunch$/);
     assert.equal(await staticPage.locator("#lunch").isVisible(), true);

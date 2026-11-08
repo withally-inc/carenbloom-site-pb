@@ -25,6 +25,7 @@ const run = (label, cmd, argv) => {
 
 run('base images (images.mjs)', 'node', ['scripts/images.mjs', ...args])
 if (!seq) {
+  run('visitor photos (visit-images.mjs)', 'node', ['scripts/visit-images.mjs'])
   if (fs.existsSync(path.join(root, 'scripts/values/sources'))) run('values art (values/build.mjs)', 'node', ['scripts/values/build.mjs'])
   if (fs.existsSync(path.join(root, 'scripts/companions/build.py'))) run('companions (companions/build.py)', 'python3', ['-I', 'scripts/companions/build.py'])
 }
