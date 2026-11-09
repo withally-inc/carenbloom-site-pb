@@ -44,7 +44,6 @@
 .visit-hotel-copy .small { margin-top: 10px; color: var(--fg-muted); }
 .visit-hotel-links { grid-column: 2 / -1; display: flex; flex-wrap: wrap; align-items: center; align-self: end; gap: 14px 28px; }
 .visit-walk { font-weight: 600; color: var(--fg); }
-.visit-pending { display: grid; justify-items: start; gap: 14px; background: var(--mist); padding: clamp(24px, 4vw, 48px); border-radius: var(--radius); margin-top: 24px; }
 .visit-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
 .visit-chips .btn { min-height: 44px; }
 .visit-food-note { max-width: 82ch; }

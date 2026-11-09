@@ -643,7 +643,7 @@ Where to stay, what to eat and how to find us in Central.
 
 Find the office↗
 
-Where to stay07
+Where to stay08
 
 Eat & drink08
 
@@ -691,7 +691,7 @@ Taxi areas ↗
 Travel times are planning estimates, not live directions.
 The last stretch is uphill; a taxi is easier with luggage.
 
-Where to stay / 07 options
+Where to stay / 08 options
 
 Make yourself local.
 
@@ -797,12 +797,19 @@ An easy base for Central meetings and the Airport Express.
 
 8 to 12 min walk
 
-One more to come
-
 The scenic stay
 
-There is one more hotel recommendation on our list.
-Its link has not reached this guide yet, so we are keeping this spot open rather than guessing.
+Garden View Hong Kong
+
+Mid-Levels · $$
+
+For garden greenery and city views without going all out.
+
+At 1 MacDonnell Road, beside the Botanical Gardens.
+Check the room’s view category before booking.
+The return from the office is uphill; take a taxi with luggage.
+
+10 to 15 min walk
 
 Around the office / 08 picks
 
@@ -1027,7 +1034,7 @@ Confirm current details with each venue.
 Back to top ↑
 
 City names in the collection: Hong Kong, Shenzhen, London, San Francisco.
-Index counts: 07 hotels, 08 food/drink picks; 02 per food/drink category.
+Index counts: 08 hotels, 08 food/drink picks; 02 per food/drink category.
 
 ### Accessible labels
 
@@ -1051,7 +1058,7 @@ Index counts: 07 hotels, 08 food/drink picks; 02 per food/drink category.
 
 Each named hotel and food or drink card includes one photo.
 Venue photography carries its capture year; substitutes are visibly labelled and described as such in alt text.
-The unidentified scenic stay remains a typographic placeholder.
+Garden View Hong Kong fills the previously unidentified scenic-stay slot.
 
 | Card | Visible photo caption | Image alt text | Credit author | Licence |
 | --- | --- | --- | --- | --- |
@@ -1062,6 +1069,7 @@ The unidentified scenic stay remains a typographic placeholder.
 | Ovolo Central | Hotel exterior · 2022 | Ovolo Central rising above its entrance on Arbuthnot Road, photographed in 2022. | Shauboasiwui CAILIUO | CC BY-SA 4.0 |
 | The Putman | Neighbourhood: Man Mo Temple | Man Mo Temple in Sheung Wan, a neighbourhood view rather than a photo of The Putman. | Ramdosmawm | CC BY-SA 4.0 |
 | Mandarin Oriental, Hong Kong | Hotel entrance · 2006 | The covered entrance to Mandarin Oriental, Hong Kong, photographed in 2006. | KennethTom | CC BY-SA 3.0 |
+| Garden View Hong Kong | Hotel entrance · 2020 | The Garden View Hong Kong entrance at 1 MacDonnell Road, photographed in 2020. | Zytsndley Homea | CC BY-SA 4.0 |
 | Yat Lok | Roast goose at Yat Lok · 2015 | Roast goose over rice at Yat Lok on Stanley Street, photographed in 2015. | Sakaori | CC BY 3.0 |
 | Tsim Chai Kee | Restaurant exterior · 2021 | Tsim Chai Kee’s dark shopfront at 98 Wellington Street, photographed in 2021. | Weizshaum KIAMZOU 300 | CC BY-SA 4.0 |
 | Ho Lee Fook | Restaurant entrance · 2024 | Ho Lee Fook’s illuminated sign above the entrance on Elgin Street, photographed in 2024. | SAISOU 853 MKIWMA | CC0 |

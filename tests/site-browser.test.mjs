@@ -53,8 +53,16 @@ try {
   assert.match(await page.title(), /Visit Hong Kong/);
   assert.equal(await page.locator('meta[name="robots"]').getAttribute("content"), "noindex, follow");
   assert.equal(await page.locator("main h1").count(), 1);
-  assert.equal(await page.locator("[data-hotel]").count(), 7);
+  assert.equal(await page.locator("[data-hotel]").count(), 8);
   assert.equal(await page.locator("[data-place]").count(), 8);
+  const scenicHotel = page.locator("[data-hotel]").filter({ has: page.getByRole("heading", { name: "Garden View Hong Kong", exact: true }) });
+  assert.equal(await scenicHotel.count(), 1, "the supplied scenic hotel is a full hotel card");
+  assert.match(await scenicHotel.innerText(), /Mid-Levels/);
+  assert.match(await scenicHotel.innerText(), /10 to 15 min walk/);
+  assert.match(await scenicHotel.innerText(), /return from the office is uphill/);
+  assert.equal(await scenicHotel.getByRole("link", { name: "Official site" }).getAttribute("href"), "https://yhk.com.hk/templates/show.aspx?i=740");
+  assert.equal(await page.getByText("One more to come", { exact: true }).count(), 0);
+
   // Exercise the rendered image contract: each photo must actually decode when scrolled into view.
   // This catches broken files and lazy-loading failures, not just the presence of image markup.
   let photoBytes = 0;
@@ -117,7 +125,7 @@ try {
     const staticPage = await noScript.newPage();
     await staticPage.goto(`${baseUrl}/visit/hong-kong/`);
     assert.equal(await staticPage.getByRole("heading", { name: "See you in Hong Kong." }).isVisible(), true);
-    assert.equal(await staticPage.locator("[data-hotel]").count(), 7);
+    assert.equal(await staticPage.locator("[data-hotel]").count(), 8);
     const staticPhoto = staticPage.locator("[data-hotel] img").first();
     await staticPhoto.scrollIntoViewIfNeeded();
     assert.ok(await staticPhoto.isVisible(), "venue photography is present without page JavaScript");

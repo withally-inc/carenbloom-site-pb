@@ -1,9 +1,11 @@
 # Hong Kong visitor guide: source record
 
-Checked 7 November 2026 against the live sources below.
+Original recommendations checked 7 November 2026 against the live sources below.
+Garden View Hong Kong added and checked 9 November 2026.
 This is editorial curation, not a claim of personal visits or tested itineraries.
 Walking times are conservative planning estimates inferred from published addresses and Central’s street layout.
-They allow for hills and crossings but are not live routing results or step-free route guarantees.
+They allow for hills and crossings and are not step-free route guarantees.
+The Garden View estimate also uses the live walking route noted below; all times remain planning estimates.
 Price bands are relative editorial categories, not quoted rates or availability promises.
 The late-November booking note comes from the supplied brief, not a live rate survey.
 
@@ -15,8 +17,11 @@ The late-November booking note comes from the supplied brief, not a live rate su
 The second property is at 22 Hennessy Road, on the Admiralty / Wan Chai edge, despite the search originally being centred on Sai Ying Pun.
 The guide uses its verified location and does not mislabel it as a Sai Ying Pun hotel.
 Sai Ying Pun is two MTR stops from Central, so no extra hotel there is presented as satisfying the one-stop shortlist rule.
-The scenic hotel cannot be identified without the missing link.
-Its visible placeholder carries no guessed identity, price, location or booking link.
+The later supplied [Trip.com ID 532864](https://sg.trip.com/hotels/detail/?cityEnName=Hong+Kong&cityId=58&hotelId=532864) displayed **Garden View Hong Kong** in a live browser on 9 November 2026.
+Its official Y Hospitality page confirms 1 MacDonnell Road in Mid-Levels, beside the Hong Kong Zoological & Botanical Gardens, and city/garden views.
+It therefore fills the scenic-stay placeholder rather than adding another unresolved slot.
+The card advises checking the room’s view category; it does not promise every room the same view.
+The $$ band is an editorial comparison, not a live price or a promise of November value.
 
 ## Office and arrival
 
@@ -41,6 +46,11 @@ Suitability lines and price bands are editorial judgements.
 - [Ovolo Central](https://ovolohotels.com/ovolo/central/home/): 2 Arbuthnot Road; Central / SoHo edge.
 - [The Putman](https://www.theputman.com.hk/): 202 Queen’s Road Central; Sheung Wan / Central edge.
 - [Mandarin Oriental, Hong Kong](https://www.mandarinoriental.com/en/hong-kong/victoria-harbour): 5 Connaught Road Central; Central.
+
+- [Garden View Hong Kong, official Y Hospitality page](https://yhk.com.hk/templates/show.aspx?i=740): 1 MacDonnell Road; Mid-Levels; city and garden views.
+
+[Google Maps walking route, Garden View to LKF 29](https://www.google.com/maps/dir/?api=1&origin=Garden+View+Hong+Kong,+1+MacDonnell+Road&destination=LKF+29,+29+Wyndham+Street,+Hong+Kong&travelmode=walking) showed 700 m / 11 minutes via Albany Road on 9 November 2026.
+The card rounds this to 10 to 15 minutes and flags the uphill return; the route display showed about 59 m descent towards the office.
 
 ## Food and drink
 
@@ -83,7 +93,7 @@ They are seasonal guidance, not a November 2026 forecast.
 
 The [README route table](../../README.md#routes) owns the guide’s current route and visibility contract.
 Do not disallow the route in robots.txt: crawlers need access to see noindex.
-To make it public later, confirm the missing scenic hotel and recheck venue details, remove the robots noindex meta in `site-src/visit/hong-kong/index.html`, deliberately add the desired public navigation/sitemap links, update the visibility tests and rebuild.
+To make it public later, recheck venue details, remove the robots noindex meta in `site-src/visit/hong-kong/index.html`, deliberately add the desired public navigation/sitemap links, update the visibility tests and rebuild.
 No automatic publication switch is enabled.
 Future cities can add `site-src/visit/<city>/index.html`, their own section partial and Vite entry, while reusing `src/pages/visit.ts`, `src/sections/visit.css` and the shared chrome.
 Register each new route in the local URL middleware in `site-src/vite.config.ts` and the strict runtime allowlist in `scripts/package-deployment.mjs`, and update the visibility tests.
@@ -92,8 +102,9 @@ The “Soon” cities are plain text, not broken links.
 
 ## Photography and reuse rights (8 November 2026)
 
-All 15 photos are self-hosted derivatives of Wikimedia Commons files.
-The individual file records and their licence metadata were checked on 8 November 2026, and each selected image was visually reviewed.
+All 16 photos are self-hosted derivatives of Wikimedia Commons files.
+The original 15 file records and their licence metadata were checked on 8 November 2026; Garden View’s record was checked on 9 November 2026.
+Each selected image was visually reviewed.
 No booking-site, review-site, social-media or generated venue image is used.
 The author and licence links appear beside every photo on the page.
 Every derivative is cropped, resized, metadata-stripped and encoded as WebP; adaptations retain the source licence, including ShareAlike where applicable.
@@ -108,6 +119,7 @@ Photo dates describe the photograph, not a guarantee of the venue’s current ap
 | Ovolo Central / `ovolo` | [HK 中環 Central 亞畢諾道 2 Arbuthnot Road Ovolo Hotel May 2022 Px3 01.jpg](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%AD%E7%92%B0_Central_%E4%BA%9E%E7%95%A2%E8%AB%BE%E9%81%93_2_Arbuthnot_Road_Ovolo_Hotel_May_2022_Px3_01.jpg) | Shauboasiwui CAILIUO | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Hotel exterior · 2022 |
 | The Putman / `putman` | [HK 上環 Sheung Wan 荷李活道 Hollywood Road 文武廟 Man Mo Temple November 2017 IX1 01.jpg](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%8A%E7%92%B0_Sheung_Wan_%E8%8D%B7%E6%9D%8E%E6%B4%BB%E9%81%93_Hollywood_Road_%E6%96%87%E6%AD%A6%E5%BB%9F_Man_Mo_Temple_November_2017_IX1_01.jpg) | Ramdosmawm | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Neighbourhood: Man Mo Temple |
 | Mandarin Oriental, Hong Kong / `mandarin` | [HK Mandarine Oriental Hotel 610 wkw.jpg](https://commons.wikimedia.org/wiki/File:HK_Mandarine_Oriental_Hotel_610_wkw.jpg) | KennethTom | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) | Hotel entrance · 2006 |
+| Garden View Hong Kong / `garden-view` | [HK Central Macdonnel Road building near Garden Road YMCA HQ April 2020 SS2 03.jpg](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%AD%E7%92%B0_Central_%E9%BA%A5%E7%95%B6%E5%8B%9E%E9%81%93_Macdonnel_Road_building_near_Garden_Road_YMCA_HQ_April_2020_SS2_03.jpg) | Zytsndley Homea | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Hotel entrance · 2020 |
 | Yat Lok / `yat-lok` | [Roast goose in yat lok restaurant.JPG](https://commons.wikimedia.org/wiki/File:Roast_goose_in_yat_lok_restaurant.JPG) | Sakaori | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) | Roast goose at Yat Lok · 2015 |
 | Tsim Chai Kee / `tsim-chai-kee` | [HK 中環 Central 威靈頓街 98 Wellington Street Jade Centre shop Cochrane Street October 2021 SS2 04.jpg](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%AD%E7%92%B0_Central_%E5%A8%81%E9%9D%88%E9%A0%93%E8%A1%97_98_Wellington_Street_Jade_Centre_shop_Cochrane_Street_October_2021_SS2_04.jpg) | Weizshaum KIAMZOU 300 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Restaurant exterior · 2021 |
 | Ho Lee Fook / `ho-lee-fook` | [HK 中環 Central 蘇豪區 SOHO Elgin Street shop night March 2024 R12S 08.jpg](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%AD%E7%92%B0_Central_%E8%98%87%E8%B1%AA%E5%8D%80_SOHO_Elgin_Street_shop_night_March_2024_R12S_08.jpg) | SAISOU 853 MKIWMA | [CC0](https://creativecommons.org/publicdomain/zero/1.0/deed.en) | Restaurant entrance · 2024 |
@@ -130,7 +142,9 @@ Official press search results without an explicit licence for company-site reuse
 - **Bar Leone**: Negroni · illustrative.
 - **Quinary**: Martini · illustrative.
 
-The scenic hotel is still unidentified and has no image; its existing typographic slot remains.
+Garden View uses a licensed photograph of its actual entrance, with the Garden View sign and 1 MacDonnell Road visible.
+The Commons filename says YMCA, but the photographed building signage says YWCA and the Garden View name identifies the hotel.
+Its 2020 capture date is displayed; no current appearance or room-view guarantee is implied.
 The captain can supply or approve venue photography to replace these substitutes.
 
 ### Rebuilding the photos
