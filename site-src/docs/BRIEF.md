@@ -92,7 +92,10 @@ See the [root README](../../README.md#canonical-role-data-and-lifecycle) for dep
 
 ## 7. Content rules
 
-- Copy is **verbatim from the current site** (`docs/copy-current-site.txt`). Allowed: shortening, merging, reordering. Not allowed: new stats, new names, new claims, new testimonials.
+- Home, careers and apply copy is **verbatim from the current site** (`docs/copy-current-site.txt`).
+  Allowed: shortening, merging, reordering.
+  Not allowed: new stats, new names, new claims, new testimonials.
+  Visitor-guide copy is curated from the brief and verified sources; see [the source record](VISIT-HONG-KONG-SOURCES.md).
 - English. No em dashes or en dashes anywhere (copy, alt text, comments shown to users). A sentence stops once the information is given.
 - Section labels are words, not "(01)" numbering. Numbers appear only where the order is real (values 01–07).
 
@@ -122,7 +125,8 @@ site-src/
 
 **Ownership rule for parallel work:** edit only the files you own. If you need a change in a foundation file, add it in your own section file or write the request in `docs/HANDOFF.md` under your name. Section init contract: each `sections/<name>.ts` exports `init(root: HTMLElement): () => void` (returns cleanup); `pages/home.ts` calls them.
 
-Images: generate responsive webp + avif at 480/960/1600 widths into `public/img/` with `scripts/images.mjs` (sharp), always with width/height attributes, `loading="lazy"` below the fold, `fetchpriority="high"` on the hero image.
+Images: see [the asset guide](ASSETS.md) for generators, output formats and responsive sizes.
+Always use width/height attributes, `loading="lazy"` below the fold, and `fetchpriority="high"` on the hero image.
 
 ## 9. Quality bar and verification
 
