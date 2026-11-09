@@ -2,8 +2,20 @@
 
 Rebuild everything: `python3 -I scripts/brand/outline.py 36 && node scripts/brand/brand.mjs && pnpm images && node scripts/brand/og.mjs`.
 
-**`pnpm images`** (`scripts/pipeline.mjs`) regenerates all of `public/img/` in dependency order, about 80 s, and is idempotent (a rerun on unchanged sources leaves every file byte-identical): 1. `scripts/images.mjs` (base images, logos, lemon, bloom sequence, manifest), 2. `scripts/values/build.mjs` (values art and its violet prints), 3. `python3 -I scripts/companions/build.py` (companion sprites and their violet prints), 4. `scripts/halftone-dark.mjs` (the `-violet` variants of step 1, last because step 1 deletes them). `pnpm images -- --extras` passes `--extras` to step 1; `pnpm images -- --seq` rebuilds only the bloom sequence and its violet frames. `pnpm images:base` runs step 1 alone.
-`scripts/images.mjs` wipes and regenerates what it makes in `public/img/` from `assets-src/` (it keeps `values/` and `companions/`, which steps 2 and 3 own). `--extras` also writes the files no page requests (bloom videos and posters, PNG sprite copies, the Casetify raster): they ship with the next build if left in place, so run it only when you need them. Never edit `public/img/` by hand. Each manifest image carries `ground` (sharp `stats().dominant`).
+**`pnpm images`** (`scripts/pipeline.mjs`) regenerates `public/img/` in dependency order and is idempotent (a rerun on unchanged sources leaves every file byte-identical):
+
+1. `scripts/images.mjs`: base images, logos, lemon, bloom sequence and manifest.
+2. `scripts/visit-images.mjs`: visitor guide photos.
+3. `scripts/values/build.mjs`: values art and its violet prints, when its source directory exists.
+4. `python3 -I scripts/companions/build.py`: companion sprites and their violet prints, when the generator exists.
+5. `scripts/halftone-dark.mjs`: violet variants of the base images, last because the base generator deletes them.
+
+`pnpm images -- --extras` passes `--extras` to the base generator; `pnpm images -- --seq` rebuilds only the bloom sequence and its violet frames.
+`pnpm images:base` runs the base generator alone.
+`scripts/images.mjs` wipes and regenerates what it makes in `public/img/` from `assets-src/` (it keeps `values/`, `companions/` and `visit/`, which separate generators own).
+`--extras` also writes the files no page requests (bloom videos and posters, PNG sprite copies, the Casetify raster): they ship with the next build if left in place, so run it only when you need them.
+Never edit `public/img/` by hand.
+Each manifest image carries `ground` (sharp `stats().dominant`).
 
 ## Manifest: `public/img/manifest.json`
 - `images.<name>`: `width`, `height` (intrinsic, of the largest file), `aspect`, `widths` (available, never upscaled, so the top width can be 640, 800, 896 or 1080), `formats` (`["avif","webp"]` or `["webp"]`), `alpha`, `pattern` (`/img/<name>-{w}.{format}`), `src` (largest WebP), `placeholder` (24px blurred WebP data URI, on paper), `alt` (suggestion, COPY.md wins), `bytes`.
@@ -49,13 +61,26 @@ One hand per value for the "Our operating values" card, the hero motif's family:
 - Dots are locked to the rose as drawn: at 1440 the hero's 1200 px frame is 723 CSS px tall, so its 6 px cell is 3.6 CSS px. The card is 460 px tall and draws a hand at `scale` × 460, so each file's cell is 3.6 / (scale × 460) of its height (about 16.8 px in a 1200 px tall file). Change `scale` in `scripts/values/build.mjs`, never in the manifest alone, or the dots drift.
 - Tone: the hand is clipped to solid ink in the shadows and opens to paper in the lights (quantiles 0.04 / 0.97, S-curve, mean coverage 0.56); the object is cobalt dots opening to paper on its lit side (mean 0.60); parts thinner than a cell (stems, roots) print solid like the rose's stem; sun zones are placed per object (rocket nose and fin, key bow and bit, stopwatch crown and rim, pencil shaving and tip, three leaf tips, seed and first leaves, paper curl and handle).
 - Pipeline: Gemini photographs (`gemini-3-pro-image`, prompts in `scripts/values/prompts.json`, generator `scripts/values/generate.mjs`), a hand holding an object painted solid blue on white so it separates by hue; kept picks in `scripts/values/sources/`. `scripts/halftone.mjs` is the general treatment (options at the top of the file, BRAND-PROPOSALS item 10). Rebuild: `node scripts/values/build.mjs`. Contact sheet and a 1:1 crop against the hero hand: `node scripts/values/contact.mjs` (writes `.builds/values-contact.png` and `-crop.png`).
-- `scripts/images.mjs` keeps `public/img/values/` when it clears `public/img/`; `pnpm images` rebuilds it as step 2.
+- For full rebuilds and cleanup ownership, see the image pipeline above.
 
 ## Violet mode (`-violet` variants)
 - **Naming.** The violet file sits next to the light one, `-violet` inserted before the size or frame number, or before the extension: `hero-start-896.webp` → `hero-start-violet-896.webp`, `bloom-seq/bloom-07.webp` → `bloom-seq/bloom-violet-07.webp`, `logos/im8.svg` → `logos/im8-violet.svg`. A manifest pattern `/img/<name>-{w}.{format}` becomes `/img/<name>-violet-{w}.{format}`. In code, `themedSrc(url)` / `themedSrcset(srcset)` from `src/lib/theme.ts` apply the rule for the current theme. Companions (`bird-violet-120.webp`), the lemon (`lemon-sprite-violet-180.webp`) and the values art (`value-0N-violet-600.webp`) follow the same rule.
-- **Generator.** `node scripts/halftone-dark.mjs` (all), `--seq` (bloom frames only) or `node scripts/halftone-dark.mjs img/x.webp …` (some). It is step 4 of `pnpm images`; run alone only after changing one light halftone. The values art makes its own violet prints (`scripts/values/build.mjs`); this script is for files that only exist as light halftones.
+- **Generator.** `node scripts/halftone-dark.mjs` (all), `--seq` (bloom frames only) or `node scripts/halftone-dark.mjs img/x.webp …` (some).
+  For its place in a full rebuild, see the image pipeline above; run alone only after changing one light halftone.
+  The values art makes its own violet prints (`scripts/values/build.mjs`); this script is for files that only exist as light halftones.
 - **Halftone art** (hero stills, the 49-frame bloom sequence, the poster when `--extras` made it, lemon sprites, any ink + cobalt + sun halftone): each pixel is read over the old mist ground it was cut from, unmixed into ink, cobalt or sun, and highlight, then re-inked. Neutral art (the hand, the lemon): ink dots → lavender-mist dots #D9D2F5, highlights → transparent. Colour art (the flower), chosen by a blurred chroma mask: cobalt → #5F5BFF, sun → sun, highlights → lavender #DCD5F5, ink shadows → a deep shade of their colour. Alpha files are exact on the violet ground #160F2E and raised #201838; opaque sources (posters) are flattened onto #160F2E. Output is re-quantized to 48 colours and saved as lossless WebP like the light files (within a few KB of the originals; the sequence totals about 1.1 MB against 1.3 MB).
 - **Portraits** `portrait-*-ink-violet-*`: night #050310 to lavender #DCD5F5, the print for violet People at rest. `portrait-*-cobalt-violet-*`: violet-blue #5F5BFF to lavender, the hover print. AVIF q58 and WebP q80, same widths.
 - **Proof logos** `logos/*-violet.svg`: the single ink fill becomes lavender mist #EDE9FC. No raster Casetify violet: the SVG covers it.
 - **Not made:** the bloom videos (violet mode scrubs the sequence), product photos (full colour in both themes, BRAND 10), the favicon (already mist under `prefers-color-scheme: dark`).
 - **Loading.** Only the active theme's files load. HTML images: two siblings `.theme-only-light` / `.theme-only-violet`, both `loading="lazy"`; the hidden one is `display:none` and never fetched until its theme is on. CSS backgrounds: a `[data-theme="violet"]` rule (only the matching rule's image loads). JS-driven assets: `themedSrc()` at init and on `theme:change` (`onTheme()`), cached after the first switch. An eager LCP image needs a preload of the active theme from the head script (`docs/VIOLET-SWEEP.md`, hero).
+
+
+## Visitor guide photography
+
+`node scripts/visit-images.mjs` rebuilds `public/img/visit/hong-kong/` from cropped JPEG masters in `assets-src/visit/hong-kong/`.
+Run it inside `site-src/`; the masters are build sources and are not served.
+It emits 384×288 and up to 768×576 WebP variants (the smaller Negroni original stops at 600×450), with no network calls or upscaling.
+For full rebuilds and cleanup ownership, see the image pipeline above.
+Run `npm run build:site` from the repository root afterwards to publish the assets through the normal site build.
+Photos stay in natural colour in both themes.
+See [the visitor source record](VISIT-HONG-KONG-SOURCES.md#photography-and-reuse-rights-8-november-2026) for licences, credits and substitutions.

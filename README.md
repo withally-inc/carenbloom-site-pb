@@ -1,6 +1,6 @@
 # Care and Bloom site
 
-This repository is the canonical source for carenbloom.com: the home page, the careers page, the direct role application page, and the role-state and application APIs behind them.
+This repository is the canonical source for carenbloom.com: the home page, the careers page, the direct role application page, the Hong Kong visitor guide, and the role-state and application APIs.
 
 The v4 site (redesign by Melriver, November 2026) replaced the Pattern Breaking v3 front end.
 The v3 pages, tests and evidence remain in the Git history before this change.
@@ -10,7 +10,7 @@ The v3 pages, tests and evidence remain in the Git history before this change.
 | Path | Owner |
 | --- | --- |
 | `site-src/` | Source of the v4 site: Vite, TypeScript, Tailwind v4, GSAP. Sections live in `site-src/src/sections/`, copy decisions in `site-src/docs/COPY.md`. |
-| repository root (`index.html`, `careers/`, `404.html`, `assets/`, `img/`, `brand/`, `fonts/`, favicons, `og*.png`) | Built output of `site-src/`, served by Cloudflare Pages and Vercel. Never edit it by hand: change `site-src/` and run `npm run build:site`. |
+| repository root (`index.html`, `careers/`, `visit/`, `404.html`, `assets/`, `img/`, `brand/`, `fonts/`, favicons, `og*.png`) | Built output of `site-src/`, served by Cloudflare Pages and Vercel. Never edit it by hand: change `site-src/` and run `npm run build:site`. |
 | `api/`, `functions/api/`, `scripts/careers-roles.js`, `scripts/api-endpoints.js` | Role-state and application runtime, unchanged by the v4 front end. |
 
 ## Routes
@@ -20,6 +20,7 @@ The v3 pages, tests and evidence remain in the Git history before this change.
 | `/` | Home |
 | `/careers/` | Open roles, listed from `/api/role-state` |
 | `/careers/apply/?role=<slug>` | Authoritative open, closed, unknown, or unavailable state for one canonical role, with its JobPosting metadata |
+| `/visit/hong-kong/` | Unlisted Hong Kong visitor guide; static `noindex, follow`, absent from navigation and sitemaps |
 | `/robots.txt` | Plain-text crawl policy for all user agents: allows `/` and disallows `/api/`; source: `site-src/public/robots.txt` |
 | `/api/role-state` | Non-cacheable canonical role lifecycle and open-role collection API |
 | `/api/applications` | Same-origin Cloudflare relay to the Vercel application intake API |
@@ -28,6 +29,8 @@ The v3 pages, tests and evidence remain in the Git history before this change.
 | `/#careers` | Careers footer anchor with a direct link to openings |
 
 The application form submits only when served from `carenbloom.com` or `www.carenbloom.com`; on every other host it stays fail-closed and sends nothing.
+
+For the visitor guide’s research sources and publication checklist, see [the source record](site-src/docs/VISIT-HONG-KONG-SOURCES.md).
 
 ## Changing the site
 

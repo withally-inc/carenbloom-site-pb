@@ -618,3 +618,466 @@ The bloom icon (preloader, nav, footer) is `aria-hidden="true"` wherever the wor
 3. **Group intros** for Platform / Launch / Scale / Source & Build do not exist on the live site. The deck ships headings and counts only. Supply one line per group if you want them.
 4. **"<3 min"** sits next to the countdown on the live apply page with no explanation. I read it as the time to apply and wrote "<3 min to apply". Confirm.
 5. **404 headline**: "This page never *bloomed*." or plain "Page not found."
+
+
+## Visit Hong Kong (`/visit/hong-kong/`)
+
+Source: new visitor-guide copy from the brief and current sources in `VISIT-HONG-KONG-SOURCES.md`.
+Walking times and price bands are estimates, not measured journeys or live prices.
+Shared navigation, footer and theme controls reuse their existing copy above.
+Wink words, one per headline: Kong., middle., local., detour., basics., bloom.
+
+### Visible copy in reading order
+
+Care & Bloom / Visitor guide
+
+Hong Kong · November 2026
+
+See you in Hong Kong.
+
+Come for the conversation.
+Stay for the neighbourhood.
+
+An easy landing for candidates, partners, creators and podcast guests.
+Where to stay, what to eat and how to find us in Central.
+
+Find the office↗
+
+Where to stay08
+
+Eat & drink08
+
+The practical bits↓
+
+Your first stop
+
+Right in the middle.
+
+LKF 29
+
+29 Wyndham Street Central, Hong Kong
+
+中環雲咸街29號
+
+Open office in Maps ↗
+
+Your host will share arrival details before your visit.
+
+From Central MTR
+
+Use Exit D1 or D2 for the Queen’s Road Central side.
+Head west along Queen’s Road Central, then uphill on D’Aguilar Street to Wyndham Street and number 29.
+Allow about 7 to 10 minutes from the exit.
+
+Central station map ↗
+
+From the airport, by train
+
+Take the Airport Express to Hong Kong Station, about 24 minutes on the train.
+With bags, take a taxi from the station.
+Travelling light? Follow the pedestrian connection towards Central Station and the D exits, then the route above.
+Allow about 15 to 20 minutes on foot from Hong Kong Station.
+
+Airport Express ↗
+
+From the airport, by taxi
+
+Follow signs to the official taxi rank and choose a red urban taxi for Hong Kong Island.
+Show the driver “LKF 29, 29 Wyndham Street, Central”.
+Allow roughly 40 to 60 minutes, with extra time in traffic.
+
+Taxi areas ↗
+
+Travel times are planning estimates, not live directions.
+The last stretch is uphill; a taxi is easier with luggage.
+
+Where to stay / 08 options
+
+Make yourself local.
+
+Central keeps you close.
+Sheung Wan gives you a little breathing room.
+Admiralty puts another neighbourhood within reach.
+
+Book early for late November.
+Prices can run high.
+Compare your exact dates and cancellation terms before committing.
+
+Price bands are relative to this shortlist: $ budget-conscious, $$ mid-range, $$$ premium, $$$$ luxury.
+They are not live rates.
+All walks are approximate, hotel to office.
+
+Suggested stay
+
+iclub Sheung Wan Hotel
+
+Sheung Wan · $
+
+For a practical base and a little more room in the budget.
+
+One MTR stop from Sheung Wan to Central.
+
+15 to 20 min walk
+
+Official site ↗
+
+Maps ↗
+
+Ying’nFlo, Wesley Admiralty
+
+Admiralty / Wan Chai edge · $$
+
+For a simple, contemporary base with Wan Chai on the doorstep.
+
+Walk to Admiralty, then one MTR stop to Central.
+This hotel is in Admiralty, not Sai Ying Pun.
+
+25 to 30 min walk
+
+Closest to us
+
+Butterfly on LKF
+
+Central / Lan Kwai Fong · $$
+
+For the shortest commute and evenings right in the action.
+
+LKF is a nightlife district.
+Light sleeper?
+Ask about a quieter room.
+
+2 to 3 min walk
+
+Easy base
+
+Butterfly on Wellington
+
+Central / SoHo edge · $$
+
+For an easy first visit, with lunch options in every direction.
+
+Walk along Wellington Street towards Wyndham Street.
+
+7 to 10 min walk
+
+Design pick
+
+Ovolo Central
+
+Central / SoHo edge · $$$
+
+For a design-minded stay that keeps the office very close.
+
+Walk down to Wyndham Street.
+Ask about street noise before booking.
+
+2 to 4 min walk
+
+Settle in
+
+The Putman
+
+Sheung Wan / Central edge · $$$
+
+For a longer visit when an apartment-style base makes sense.
+
+Check the room category and its facilities before choosing.
+
+10 to 15 min walk
+
+Make a stay of it
+
+Mandarin Oriental, Hong Kong
+
+Central · $$$$
+
+For a full-service stay and a classic Hong Kong address.
+
+An easy base for Central meetings and the Airport Express.
+
+8 to 12 min walk
+
+The scenic stay
+
+Garden View Hong Kong
+
+Mid-Levels · $$
+
+For garden greenery and city views without going all out.
+
+At 1 MacDonnell Road, beside the Botanical Gardens.
+Check the room’s view category before booking.
+The return from the office is uphill; take a taxi with luggage.
+
+10 to 15 min walk
+
+Around the office / 08 picks
+
+A very good detour.
+
+A quick bowl before a meeting.
+A slower dinner afterwards.
+Start here and leave room for a discovery.
+
+Lunch · 02
+
+Dinner · 02
+
+Coffee · 02
+
+Drinks · 02
+
+$ everyday, $$ a little more, $$$ a proper evening out.
+Bands compare typical spend within each category.
+Menus and booking policies can change; check the venue before you go.
+
+Lunch near the office
+
+Lunch
+
+$
+
+Yat Lok
+
+34 to 38 Stanley Street, Central
+
+A roast-goose lunch worth making time for.
+
+Order: Roast goose with rice or noodles.
+
+Plan: Plan on a walk-in and allow time for a queue.
+
+Venue guide ↗
+
+Tsim Chai Kee
+
+98 Wellington Street, Central
+
+A short menu that makes a quick lunch decision very easy.
+
+Order: Wonton noodles.
+
+Plan: Walk in; expect shared tables when it is busy.
+Bring cash.
+
+Stay for dinner
+
+Dinner
+
+$$$
+
+Ho Lee Fook
+
+Elgin Street, SoHo
+
+Cantonese cooking for the dinner you leave the whole evening open for.
+
+Order: Choose a few plates to share.
+
+Plan: Book ahead, especially for a group.
+
+Menu & booking ↗
+
+$$
+
+Chôm Chôm
+
+58 to 60 Peel Street, SoHo
+
+Vietnamese plates and cocktails when dinner should turn into an evening.
+
+Order: Pho rolls.
+
+Plan: Reservations available; walk-ins also welcome.
+
+Coffee & a small reward
+
+Coffee
+
+FINEPRINT Peel Street
+
+38 Peel Street, SoHo
+
+Coffee, sourdough and a good excuse to pause on Peel Street.
+
+Order: A flat white and toast.
+
+Plan: Drop in; keep it casual rather than planning a large meeting.
+
+Coffee & a pastry
+
+Bakehouse SoHo
+
+5 Staunton Street, Central
+
+The pastry stop for your walk back to the office.
+
+Order: See what is fresh at the counter.
+
+Plan: Takeaway only.
+Allow time for a queue.
+
+After the conversation
+
+After-work drinks
+
+Bar Leone
+
+11 to 15 Bridges Street, Central
+
+An Italian-style neighbourhood bar for one very good round.
+
+Order: Ask the bar for a classic cocktail.
+
+Plan: No reservations.
+Go early and expect a wait.
+
+Quinary
+
+56 to 58 Hollywood Road, Central
+
+For the curious drinker who likes a little theatre in the glass.
+
+Order: Earl Grey Caviar Martini.
+
+Plan: Walk-ins only.
+Arrive early if you need seats together.
+
+A little local knowledge
+
+Arrive with the basics.
+
+Save the address.
+Charge your phone.
+The rest gets easier from here.
+
+Octopus & contactless
+
+Octopus is handy for public transport and small purchases.
+On the MTR, use a marked contactless gate with a supported bank card, and tap in and out with the same card or device.
+
+MTR payment guide ↗
+
+The MTR is your friend
+
+Central serves the Island and Tsuen Wan lines.
+Sheung Wan and Admiralty are one stop away in opposite directions.
+Sai Ying Pun is two stops west.
+Follow the exit letters, not just the station name.
+
+MTR network map ↗
+
+Taxis & ride-hailing
+
+Use a red urban taxi for Central, or choose the Taxi option in Uber.
+Show the driver the building address.
+Check the payment method before setting off and keep some Hong Kong dollars handy.
+
+Taxi options ↗
+
+Pack a layer
+
+November is usually mild; December is cooler.
+Average daily lows and highs are about 20 to 25°C in November and 16 to 20°C in December.
+Bring a light jacket and check the forecast before you fly.
+
+Seasonal weather ↗
+
+Plugs & power
+
+Bring a Type G adaptor, the three rectangular pins used in the UK.
+Hong Kong runs on 220V, 50Hz.
+Check that your devices support the voltage; an adaptor does not convert it.
+
+Plug guide ↗
+
+Stay connected
+
+Set up a Hong Kong SIM or eSIM for maps on the move.
+Check device compatibility and the provider’s activation steps.
+Local prepaid SIMs require registration.
+Airport and public Wi-Fi can help you get started.
+
+Connectivity guide ↗
+
+The bill, without the mystery
+
+Many restaurants add a 10% service charge.
+Check the bill before adding a tip.
+Extra tipping is your choice; at casual local cafés it is not expected.
+
+Tipping guide ↗
+
+A short walk can be uphill
+
+Central looks compact on a map.
+Slopes, steps and crossings add time.
+Wear shoes you can walk in, and take a taxi for the last stretch if luggage or mobility makes the hills inconvenient.
+
+Accessible MTR travel ↗
+
+The neighbourhood collection
+
+More places to bloom.
+
+One city at a time.
+Start with Hong Kong.
+
+You are here
+
+Soon
+
+Checked November 2026.
+Walking times and price bands are estimates.
+Confirm current details with each venue.
+
+Back to top ↑
+
+City names in the collection: Hong Kong, Shenzhen, London, San Francisco.
+Index counts: 08 hotels, 08 food/drink picks; 02 per food/drink category.
+
+### Accessible labels
+
+- On this page
+- Price band $
+- Price band $$
+- Price band $$$
+- Price band $$$$
+- Eat and drink categories
+- Office city guides
+
+### Metadata
+
+- Title, og:title and twitter:title: Visit Hong Kong | Care & Bloom
+- Description: Your guide to visiting Care & Bloom in Hong Kong: the office, nearby hotels, food, coffee and getting around.
+- Social description: Your guide to the office, nearby stays and good detours in Hong Kong.
+- Shared image alt: Care & Bloom wordmark with the four-petal bloom
+
+
+## Hong Kong guide photography (November 2026)
+
+Each named hotel and food or drink card includes one photo.
+Venue photography carries its capture year; substitutes are visibly labelled and described as such in alt text.
+Garden View Hong Kong fills the previously unidentified scenic-stay slot.
+
+| Card | Visible photo caption | Image alt text | Credit author | Licence |
+| --- | --- | --- | --- | --- |
+| iclub Sheung Wan Hotel | Hotel entrance · 2019 | The illuminated iclub Sheung Wan entrance on Bonham Strand, photographed in 2019. | Gal Mouw TU Aowur | CC BY-SA 4.0 |
+| Ying’nFlo, Wesley Admiralty | Hotel entrance · 2026 | The red entrance to Ying’nFlo, Wesley Admiralty on Hennessy Road, photographed in 2026. | GAONG WEINHOAM 9122 | CC0 |
+| Butterfly on LKF | Neighbourhood: Lan Kwai Fong | D’Aguilar Street in Lan Kwai Fong, a neighbourhood view rather than a photo of Butterfly on LKF. | Shauboasiwui CAILIUO | CC BY-SA 4.0 |
+| Butterfly on Wellington | Hotel exterior · 2012 | The 122 Wellington Street entrance beside Graham Street’s market stalls, photographed in 2012. | Ghitangshenho | CC BY-SA 3.0 |
+| Ovolo Central | Hotel exterior · 2022 | Ovolo Central rising above its entrance on Arbuthnot Road, photographed in 2022. | Shauboasiwui CAILIUO | CC BY-SA 4.0 |
+| The Putman | Neighbourhood: Man Mo Temple | Man Mo Temple in Sheung Wan, a neighbourhood view rather than a photo of The Putman. | Ramdosmawm | CC BY-SA 4.0 |
+| Mandarin Oriental, Hong Kong | Hotel entrance · 2006 | The covered entrance to Mandarin Oriental, Hong Kong, photographed in 2006. | KennethTom | CC BY-SA 3.0 |
+| Garden View Hong Kong | Hotel entrance · 2020 | The Garden View Hong Kong entrance at 1 MacDonnell Road, photographed in 2020. | Zytsndley Homea | CC BY-SA 4.0 |
+| Yat Lok | Roast goose at Yat Lok · 2015 | Roast goose over rice at Yat Lok on Stanley Street, photographed in 2015. | Sakaori | CC BY 3.0 |
+| Tsim Chai Kee | Restaurant exterior · 2021 | Tsim Chai Kee’s dark shopfront at 98 Wellington Street, photographed in 2021. | Weizshaum KIAMZOU 300 | CC BY-SA 4.0 |
+| Ho Lee Fook | Restaurant entrance · 2024 | Ho Lee Fook’s illuminated sign above the entrance on Elgin Street, photographed in 2024. | SAISOU 853 MKIWMA | CC0 |
+| Chôm Chôm | Vietnamese rolls · illustrative | A Vietnamese fresh spring roll with shrimp and lettuce, an illustrative food photo, not photographed at Chôm Chôm. | Phuongnhu | CC BY-SA 3.0 |
+| FINEPRINT Peel Street | Flat white · illustrative | A flat white in a green cup, an illustrative coffee photo, not photographed at FINEPRINT. | Ashley Van Haeften | CC BY 2.0 |
+| Bakehouse SoHo | Bakery counter · 2021 | Pastries and cookies at the Bakehouse SoHo counter, photographed in 2021. | Mockda Juankers | CC BY-SA 4.0 |
+| Bar Leone | Negroni · illustrative | A Negroni over ice with orange peel, an illustrative cocktail photo, not photographed at Bar Leone. | Chris Palmer | CC BY-SA 2.0 |
+| Quinary | Martini · illustrative | A martini garnished with lemon peel, an illustrative cocktail photo, not Quinary’s Earl Grey Caviar Martini. | Cocktailmarler | CC BY-SA 4.0 |
+
+Credit-line pattern: `Photo: {author} · {licence} · cropped`.
+The author links to the original Commons file page; the licence links to its terms.

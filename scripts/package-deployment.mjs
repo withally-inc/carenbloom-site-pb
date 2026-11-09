@@ -10,6 +10,7 @@ const runtimeAllowlist = [
   "index.html",
   "404.html",
   "careers",
+  "visit/hong-kong/index.html",
   "assets",
   "brand",
   "fonts",

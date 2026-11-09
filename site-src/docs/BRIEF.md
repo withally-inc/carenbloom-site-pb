@@ -92,18 +92,23 @@ See the [root README](../../README.md#canonical-role-data-and-lifecycle) for dep
 
 ## 7. Content rules
 
-- Copy is **verbatim from the current site** (`docs/copy-current-site.txt`). Allowed: shortening, merging, reordering. Not allowed: new stats, new names, new claims, new testimonials.
+- Home, careers and apply copy is **verbatim from the current site** (`docs/copy-current-site.txt`).
+  Allowed: shortening, merging, reordering.
+  Not allowed: new stats, new names, new claims, new testimonials.
+  Visitor-guide copy is curated from the brief and verified sources; see [the source record](VISIT-HONG-KONG-SOURCES.md).
 - English. No em dashes or en dashes anywhere (copy, alt text, comments shown to users). A sentence stops once the information is given.
 - Section labels are words, not "(01)" numbering. Numbers appear only where the order is real (values 01–07).
 
 ## 8. Tech and repo layout
 
-Vite 8 + TypeScript + Tailwind v4 (`@tailwindcss/vite`) + GSAP + Lenis. Multi-page Vite (index.html, careers/index.html, careers/apply/index.html). No React. Static HTML first: every section's markup is in the HTML at build time (SEO, first paint), JS only enhances.
+Vite 8 + TypeScript + Tailwind v4 (`@tailwindcss/vite`) + GSAP + Lenis.
+Multi-page Vite; see [README routes](../../README.md#routes) for the current page inventory.
+No React.
+Static HTML first: every section's markup is in the HTML at build time (SEO, first paint), JS only enhances.
 
 ```
-site/
-  index.html                 home shell: <!-- @include sections/hero.html --> etc.
-  careers/index.html  careers/apply/index.html
+site-src/
+  ...                       HTML page shells: see README routes
   vite.config.ts             multi-page + tiny HTML include plugin (transformIndexHtml) + /api proxy
   vercel.json
   src/
@@ -111,7 +116,7 @@ site/
     lib/  lenis.ts motion.ts split.ts odometer.ts spring.ts glass.ts reveal.ts marquee.ts cursor.ts  (foundation owns)
     chrome/ nav.ts nav.css footer.html footer.ts footer.css preloader.ts  (foundation owns)
     sections/<name>.html <name>.ts <name>.css    (one owner per section)
-    pages/home.ts careers.ts apply.ts            (entry points; home.ts imports each section's init)
+    pages/                                      (entry points; home.ts imports each section's init)
   public/ fonts/ img/ brand/ favicon.svg og.png
   assets-src/                raw images, never shipped directly
   scripts/ smoke.mjs images.mjs
@@ -120,7 +125,8 @@ site/
 
 **Ownership rule for parallel work:** edit only the files you own. If you need a change in a foundation file, add it in your own section file or write the request in `docs/HANDOFF.md` under your name. Section init contract: each `sections/<name>.ts` exports `init(root: HTMLElement): () => void` (returns cleanup); `pages/home.ts` calls them.
 
-Images: generate responsive webp + avif at 480/960/1600 widths into `public/img/` with `scripts/images.mjs` (sharp), always with width/height attributes, `loading="lazy"` below the fold, `fetchpriority="high"` on the hero image.
+Images: see [the asset guide](ASSETS.md) for generators, output formats and responsive sizes.
+Always use width/height attributes, `loading="lazy"` below the fold, and `fetchpriority="high"` on the hero image.
 
 ## 9. Quality bar and verification
 
