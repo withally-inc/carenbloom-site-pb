@@ -44,7 +44,7 @@ Suitability lines and price bands are editorial judgements.
 - [Butterfly on LKF](https://www.butterflyhk.com/en/butterfly-on-lkf): 23 D’Aguilar Street; Central / Lan Kwai Fong.
 - [Butterfly on Wellington](https://www.butterflyhk.com/en/butterfly-on-wellington): 122 Wellington Street; Central / SoHo edge.
 - [Ovolo Central](https://ovolohotels.com/ovolo/central/home/): 2 Arbuthnot Road; Central / SoHo edge.
-- [The Putman](https://www.theputman.com.hk/): 202 Queen’s Road Central; Sheung Wan / Central edge.
+- [The Putman](https://www.theputman.com/): 202 Queen’s Road Central; Sheung Wan / Central edge.
 - [Mandarin Oriental, Hong Kong](https://www.mandarinoriental.com/en/hong-kong/victoria-harbour): 5 Connaught Road Central; Central.
 
 - [Garden View Hong Kong, official Y Hospitality page](https://yhk.com.hk/templates/show.aspx?i=740): 1 MacDonnell Road; Mid-Levels; city and garden views.
@@ -102,22 +102,25 @@ The “Soon” cities are plain text, not broken links.
 
 ## Photography and reuse rights (8 November 2026)
 
-All 16 photos are self-hosted derivatives of Wikimedia Commons files.
+Fourteen photos come from Wikimedia Commons.
+Mini Central, Butterfly on LKF and The Putman supplied the photos on their official websites, checked on 22 November 2026.
 The original 15 file records and their licence metadata were checked on 8 November 2026; Garden View’s record was checked on 9 November 2026.
 Each selected image was visually reviewed.
 No booking-site, review-site, social-media or generated venue image is used.
-The author and licence links appear beside every photo on the page.
+Commons photos link to their authors and licences.
+Official hotel photos link to the source page.
 Every derivative is cropped, resized, metadata-stripped and encoded as WebP; adaptations retain the source licence, including ShareAlike where applicable.
 Photo dates describe the photograph, not a guarantee of the venue’s current appearance or menu.
 
 | Card / asset stem | Source file | Author | Licence | Depiction and date |
 | --- | --- | --- | --- | --- |
+| Mini Central / `mini-central` | [Hotel photography](https://www.minicentral.hk/) | Mini Central | Official hotel photo | Lobby |
 | iclub Sheung Wan Hotel / `iclub` | [HK Sheung Wan hotel IClub Bonham Strand entrance evening 2019-08-31 01.jpg](https://commons.wikimedia.org/wiki/File:HK_Sheung_Wan_hotel_IClub_Bonham_Strand_entrance_evening_2019-08-31_01.jpg) | Gal Mouw TU Aowur | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Hotel entrance · 2019 |
 | Ying’nFlo, Wesley Admiralty / `yingnflo` | [HK WC Wan Chai Hennessy Road hotel Ying n flour red January 2026 N13P 01.jpg](https://commons.wikimedia.org/wiki/File:HK_WC_Wan_Chai_Hennessy_Road_hotel_Ying_n_flour_red_January_2026_N13P_01.jpg) | GAONG WEINHOAM 9122 | [CC0](https://creativecommons.org/publicdomain/zero/1.0/deed.en) | Hotel entrance · 2026 |
-| Butterfly on LKF / `butterfly-lkf` | [HK 中環 Central 蘭桂坊 Lan Kwai Fong 德己立街 D'Aguilar Street May 2022 SS2 17.jpg](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%AD%E7%92%B0_Central_%E8%98%AD%E6%A1%82%E5%9D%8A_Lan_Kwai_Fong_%E5%BE%B7%E5%B7%B1%E7%AB%8B%E8%A1%97_D%27Aguilar_Street_May_2022_SS2_17.jpg) | Shauboasiwui CAILIUO | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Neighbourhood: Lan Kwai Fong |
+| Butterfly on LKF / `butterfly-lkf` | [Hotel photography](https://www.butterflyhk.com/en/butterfly-on-lkf) | Butterfly on LKF | Official hotel photo | Superior room |
 | Butterfly on Wellington / `butterfly-wellington` | [HK Central Butterfly on 122 Wellington Street Graham Street fruit stall Nov-2012.JPG](https://commons.wikimedia.org/wiki/File:HK_Central_Butterfly_on_122_Wellington_Street_Graham_Street_fruit_stall_Nov-2012.JPG) | Ghitangshenho | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) | Hotel exterior · 2012 |
 | Ovolo Central / `ovolo` | [HK 中環 Central 亞畢諾道 2 Arbuthnot Road Ovolo Hotel May 2022 Px3 01.jpg](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%AD%E7%92%B0_Central_%E4%BA%9E%E7%95%A2%E8%AB%BE%E9%81%93_2_Arbuthnot_Road_Ovolo_Hotel_May_2022_Px3_01.jpg) | Shauboasiwui CAILIUO | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Hotel exterior · 2022 |
-| The Putman / `putman` | [HK 上環 Sheung Wan 荷李活道 Hollywood Road 文武廟 Man Mo Temple November 2017 IX1 01.jpg](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%8A%E7%92%B0_Sheung_Wan_%E8%8D%B7%E6%9D%8E%E6%B4%BB%E9%81%93_Hollywood_Road_%E6%96%87%E6%AD%A6%E5%BB%9F_Man_Mo_Temple_November_2017_IX1_01.jpg) | Ramdosmawm | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Neighbourhood: Man Mo Temple |
+| The Putman / `putman` | [Hotel photography](https://www.theputman.com/) | The Putman | Official hotel photo | Full Floor Suite |
 | Mandarin Oriental, Hong Kong / `mandarin` | [HK Mandarine Oriental Hotel 610 wkw.jpg](https://commons.wikimedia.org/wiki/File:HK_Mandarine_Oriental_Hotel_610_wkw.jpg) | KennethTom | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) | Hotel entrance · 2006 |
 | Garden View Hong Kong / `garden-view` | [HK Central Macdonnel Road building near Garden Road YMCA HQ April 2020 SS2 03.jpg](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%AD%E7%92%B0_Central_%E9%BA%A5%E7%95%B6%E5%8B%9E%E9%81%93_Macdonnel_Road_building_near_Garden_Road_YMCA_HQ_April_2020_SS2_03.jpg) | Zytsndley Homea | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Hotel entrance · 2020 |
 | Yat Lok / `yat-lok` | [Roast goose in yat lok restaurant.JPG](https://commons.wikimedia.org/wiki/File:Roast_goose_in_yat_lok_restaurant.JPG) | Sakaori | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) | Roast goose at Yat Lok · 2015 |
@@ -135,8 +138,6 @@ Venue-specific images with confirmed reuse permission were not found for the fol
 These use clearly labelled substitutes rather than implying that the pictured scene or dish belongs to the venue.
 Official press search results without an explicit licence for company-site reuse were not treated as permission.
 
-- **Butterfly on LKF**: Neighbourhood: Lan Kwai Fong.
-- **The Putman**: Neighbourhood: Man Mo Temple.
 - **Chôm Chôm**: Vietnamese rolls · illustrative.
 - **FINEPRINT Peel Street**: Flat white · illustrative.
 - **Bar Leone**: Negroni · illustrative.

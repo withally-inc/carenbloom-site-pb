@@ -36,9 +36,6 @@
 .visit-more summary { cursor: pointer; margin-block: 8px 24px; }
 .visit-more summary::-webkit-details-marker { display: none; }
 .visit-more:not([open]) .visit-collapse, .visit-more[open] .visit-expand { display: none; }
-@media (min-width: 600px) {
-  .visit-hotel--text .visit-hotel-copy { grid-column: 2 / -1; }
-}
 .visit-photo { margin: 0; width: 100%; min-width: 0; }
 .visit-photo img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); background: var(--mist); }
 .visit-photo figcaption { display: grid; gap: 4px; margin-top: 10px; overflow-wrap: anywhere; }

@@ -92,7 +92,7 @@ test("the visitor guide is a direct-link, noindex page with useful outbound link
   assert.equal((html.match(/data-hotel/g) || []).length, 9);
   assert.equal((html.match(/data-place/g) || []).length, 8);
   assert.equal((html.match(/https:\/\/www\.google\.com\/maps\/search\//g) || []).length, 18);
-  for (const host of ["iclub-hotels.com", "yingnflo.com", "butterflyhk.com", "ovolohotels.com", "theputman.com.hk", "mandarinoriental.com", "yhk.com.hk", "minicentral.hk"]) {
+  for (const host of ["iclub-hotels.com", "yingnflo.com", "butterflyhk.com", "ovolohotels.com", "theputman.com", "mandarinoriental.com", "yhk.com.hk", "minicentral.hk"]) {
     assert.ok(html.includes(host), `${host} official hotel link is present`);
   }
   assert.doesNotMatch(html, /<iframe|<script[^>]+src="https?:|[\u2013\u2014]/);

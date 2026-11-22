@@ -56,6 +56,7 @@ try {
   assert.equal(await page.locator("[data-hotel]").count(), 9);
   assert.equal(await page.locator("[data-place]").count(), 8);
   assert.equal(await page.locator("[data-hotel]:visible").count(), 3);
+  assert.deepEqual(await page.locator("[data-hotel]:visible h3").allTextContents(), ["Mini Central", "Garden View Hong Kong", "iclub Sheung Wan Hotel"]);
   await page.locator(".visit-more summary").focus();
   await page.keyboard.press("Enter");
   assert.equal(await page.locator("[data-hotel]:visible").count(), 9);
@@ -74,10 +75,14 @@ try {
 
   // Exercise the rendered image contract: each photo must actually decode when scrolled into view.
   // This catches broken files and lazy-loading failures, not just the presence of image markup.
+  const officialPhotoSources = new Map([
+    ["Mini Central", "https://www.minicentral.hk/"],
+    ["Butterfly on LKF", "https://www.butterflyhk.com/en/butterfly-on-lkf"],
+    ["The Putman", "https://www.theputman.com/"],
+  ]);
   let photoBytes = 0;
   const photoUrls = new Set();
   for (const card of await page.locator("[data-hotel], [data-place]").all()) {
-    if (await card.getByRole("heading", { name: "Mini Central", exact: true }).count()) continue;
     const photo = card.locator("figure img");
     assert.equal(await photo.count(), 1, "each named venue has one photo");
     assert.ok((await photo.getAttribute("alt"))?.trim().length > 20, "photos have descriptive alt text");
@@ -94,8 +99,13 @@ try {
     assert.ok(image.width > 0 && image.height > 0, "the rendered card photo decoded");
     assert.ok(Math.abs(image.reservedWidth / image.reservedHeight - image.width / image.height) < 0.01, "intrinsic dimensions reserve the correct aspect ratio");
     for (const url of [image.url, ...image.candidates]) photoUrls.add(new URL(url, baseUrl).href);
-    assert.equal(await card.locator('figcaption a[href^="https://commons.wikimedia.org/"]').count(), 1, "photo credit links to its source");
-    assert.equal(await card.locator('figcaption a[href^="https://creativecommons.org/"]').count(), 1, "photo credit links to its licence");
+    const officialPhoto = officialPhotoSources.get(await card.locator("h3, h4").innerText());
+    if (officialPhoto) {
+      assert.equal(await card.locator("figcaption a").getAttribute("href"), officialPhoto);
+    } else {
+      assert.equal(await card.locator('figcaption a[href^="https://commons.wikimedia.org/"]').count(), 1, "photo credit links to its source");
+      assert.equal(await card.locator('figcaption a[href^="https://creativecommons.org/"]').count(), 1, "photo credit links to its licence");
+    }
   }
   await page.locator(".visit-more summary").focus();
   await page.keyboard.press("Space");

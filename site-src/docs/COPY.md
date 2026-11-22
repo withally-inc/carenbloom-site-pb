@@ -1062,12 +1062,13 @@ Garden View Hong Kong fills the previously unidentified scenic-stay slot.
 
 | Card | Visible photo caption | Image alt text | Credit author | Licence |
 | --- | --- | --- | --- | --- |
+| Mini Central | Lobby | A blue neon Mini Central sign lights the lobby seating area. | Mini Central | Official hotel photo |
 | iclub Sheung Wan Hotel | Hotel entrance · 2019 | The illuminated iclub Sheung Wan entrance on Bonham Strand, photographed in 2019. | Gal Mouw TU Aowur | CC BY-SA 4.0 |
 | Ying’nFlo, Wesley Admiralty | Hotel entrance · 2026 | The red entrance to Ying’nFlo, Wesley Admiralty on Hennessy Road, photographed in 2026. | GAONG WEINHOAM 9122 | CC0 |
-| Butterfly on LKF | Neighbourhood: Lan Kwai Fong | D’Aguilar Street in Lan Kwai Fong, a neighbourhood view rather than a photo of Butterfly on LKF. | Shauboasiwui CAILIUO | CC BY-SA 4.0 |
+| Butterfly on LKF | Superior room | Twin beds beside the window in a superior room at Butterfly on LKF. | Butterfly on LKF | Official hotel photo |
 | Butterfly on Wellington | Hotel exterior · 2012 | The 122 Wellington Street entrance beside Graham Street’s market stalls, photographed in 2012. | Ghitangshenho | CC BY-SA 3.0 |
 | Ovolo Central | Hotel exterior · 2022 | Ovolo Central rising above its entrance on Arbuthnot Road, photographed in 2022. | Shauboasiwui CAILIUO | CC BY-SA 4.0 |
-| The Putman | Neighbourhood: Man Mo Temple | Man Mo Temple in Sheung Wan, a neighbourhood view rather than a photo of The Putman. | Ramdosmawm | CC BY-SA 4.0 |
+| The Putman | Full Floor Suite | A white sofa faces the windows in the living room of a Full Floor Suite at The Putman. | The Putman | Official hotel photo |
 | Mandarin Oriental, Hong Kong | Hotel entrance · 2006 | The covered entrance to Mandarin Oriental, Hong Kong, photographed in 2006. | KennethTom | CC BY-SA 3.0 |
 | Garden View Hong Kong | Hotel entrance · 2020 | The Garden View Hong Kong entrance at 1 MacDonnell Road, photographed in 2020. | Zytsndley Homea | CC BY-SA 4.0 |
 | Yat Lok | Roast goose at Yat Lok · 2015 | Roast goose over rice at Yat Lok on Stanley Street, photographed in 2015. | Sakaori | CC BY 3.0 |
