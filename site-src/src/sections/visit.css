@@ -33,6 +33,12 @@
 .visit-note { border-left: 3px solid var(--accent); padding: 4px 0 4px 20px; margin-bottom: 36px; max-width: 85ch; }
 .visit-note .caption { margin-top: 8px; }
 .visit-hotel { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1fr) minmax(0, 1.1fr); gap: 24px 32px; padding-block: 32px; border-top: 1px solid var(--rule); }
+.visit-more summary { cursor: pointer; margin-block: 8px 24px; }
+.visit-more summary::-webkit-details-marker { display: none; }
+.visit-more:not([open]) .visit-collapse, .visit-more[open] .visit-expand { display: none; }
+@media (min-width: 600px) {
+  .visit-hotel--text .visit-hotel-copy { grid-column: 2 / -1; }
+}
 .visit-photo { margin: 0; width: 100%; min-width: 0; }
 .visit-photo img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius); background: var(--mist); }
 .visit-photo figcaption { display: grid; gap: 4px; margin-top: 10px; overflow-wrap: anywhere; }

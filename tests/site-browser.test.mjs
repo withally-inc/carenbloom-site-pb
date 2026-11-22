@@ -53,8 +53,17 @@ try {
   assert.match(await page.title(), /Visit Hong Kong/);
   assert.equal(await page.locator('meta[name="robots"]').getAttribute("content"), "noindex, follow");
   assert.equal(await page.locator("main h1").count(), 1);
-  assert.equal(await page.locator("[data-hotel]").count(), 8);
+  assert.equal(await page.locator("[data-hotel]").count(), 9);
   assert.equal(await page.locator("[data-place]").count(), 8);
+  assert.equal(await page.locator("[data-hotel]:visible").count(), 3);
+  await page.locator(".visit-more summary").focus();
+  await page.keyboard.press("Enter");
+  assert.equal(await page.locator("[data-hotel]:visible").count(), 9);
+  for (const hotel of await page.locator("[data-hotel]").all()) {
+    for (const provider of ["Expedia", "Booking.com", "Trip.com"]) {
+      assert.equal(await hotel.getByRole("link", { name: provider }).count(), 1);
+    }
+  }
   const scenicHotel = page.locator("[data-hotel]").filter({ has: page.getByRole("heading", { name: "Garden View Hong Kong", exact: true }) });
   assert.equal(await scenicHotel.count(), 1, "the supplied scenic hotel is a full hotel card");
   assert.match(await scenicHotel.innerText(), /Mid-Levels/);
@@ -68,6 +77,7 @@ try {
   let photoBytes = 0;
   const photoUrls = new Set();
   for (const card of await page.locator("[data-hotel], [data-place]").all()) {
+    if (await card.getByRole("heading", { name: "Mini Central", exact: true }).count()) continue;
     const photo = card.locator("figure img");
     assert.equal(await photo.count(), 1, "each named venue has one photo");
     assert.ok((await photo.getAttribute("alt"))?.trim().length > 20, "photos have descriptive alt text");
@@ -87,6 +97,9 @@ try {
     assert.equal(await card.locator('figcaption a[href^="https://commons.wikimedia.org/"]').count(), 1, "photo credit links to its source");
     assert.equal(await card.locator('figcaption a[href^="https://creativecommons.org/"]').count(), 1, "photo credit links to its licence");
   }
+  await page.locator(".visit-more summary").focus();
+  await page.keyboard.press("Space");
+  assert.equal(await page.locator("[data-hotel]:visible").count(), 3);
   for (const url of photoUrls) {
     assert.equal(new URL(url).origin, new URL(baseUrl).origin, "photos are self-hosted");
     const response = await fetch(url);
@@ -125,7 +138,7 @@ try {
     const staticPage = await noScript.newPage();
     await staticPage.goto(`${baseUrl}/visit/hong-kong/`);
     assert.equal(await staticPage.getByRole("heading", { name: "See you in Hong Kong." }).isVisible(), true);
-    assert.equal(await staticPage.locator("[data-hotel]").count(), 8);
+    assert.equal(await staticPage.locator("[data-hotel]").count(), 9);
     const staticPhoto = staticPage.locator("[data-hotel] img").first();
     await staticPhoto.scrollIntoViewIfNeeded();
     assert.ok(await staticPhoto.isVisible(), "venue photography is present without page JavaScript");
