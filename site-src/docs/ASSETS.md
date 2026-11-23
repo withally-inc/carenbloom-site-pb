@@ -80,6 +80,7 @@ One hand per value for the "Our operating values" card, the hero motif's family:
 `node scripts/visit-images.mjs` rebuilds `public/img/visit/hong-kong/` from cropped JPEG masters in `assets-src/visit/hong-kong/`.
 Run it inside `site-src/`; the masters are build sources and are not served.
 It emits 384×288 and up to 768×576 WebP variants (the smaller Negroni original stops at 600×450), with no network calls or upscaling.
+When replacing a photo, use a new asset stem in both `src` and `srcset` so the browser fetches the replacement alongside its updated caption and credit.
 For full rebuilds and cleanup ownership, see the image pipeline above.
 Run `npm run build:site` from the repository root afterwards to publish the assets through the normal site build.
 Photos stay in natural colour in both themes.

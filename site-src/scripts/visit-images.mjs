@@ -1,4 +1,4 @@
-// Licensed guide photos. Sources, credits and permitted reuse: docs/VISIT-HONG-KONG-SOURCES.md.
+// Guide photo sources and credits: docs/VISIT-HONG-KONG-SOURCES.md.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';

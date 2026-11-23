@@ -1,0 +1,1 @@
+import{t as e}from"./boot-Hvq2JB23.js";var t=document.querySelector(`.visit-more`);if(t&&!CSS.supports(`selector(::details-content)`)){let e=!1;window.addEventListener(`print:before`,()=>{t.open||(t.open=!0,e=!0)}),window.addEventListener(`print:after`,()=>{e&&=(t.open=!1,!1)})}e();

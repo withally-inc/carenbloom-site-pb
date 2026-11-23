@@ -699,13 +699,43 @@ Central keeps you close.
 Sheung Wan gives you a little breathing room.
 Admiralty puts another neighbourhood within reach.
 
-Book early for late November.
-Prices can run high.
-Compare your exact dates and cancellation terms before committing.
+**Compare rates for your dates.**
+Each hotel has links to Expedia, Booking.com and Trip.com.
+Use them to compare the total for your stay, including taxes and fees.
 
 Price bands are relative to this shortlist: $ budget-conscious, $$ mid-range, $$$ premium, $$$$ luxury.
 They are not live rates.
 All walks are approximate, hotel to office.
+
+Each card uses the link labels Official site ↗, Maps ↗, Expedia ↗, Booking.com ↗ and Trip.com ↗.
+See the [hotel cards](../src/sections/visit-hong-kong.html#stay) for their destinations.
+
+Budget pick
+
+Mini Central
+
+Central / Lan Kwai Fong · $
+
+A small room on Ice House Street, a short walk from the office.
+
+Rooms are compact.
+Pack light for the steps around Lan Kwai Fong.
+
+3 to 5 min walk
+
+The scenic stay
+
+Garden View Hong Kong
+
+Mid-Levels · $$
+
+For garden greenery and city views without going all out.
+
+At 1 MacDonnell Road, beside the Botanical Gardens.
+Check the room’s view category before booking.
+The return from the office is uphill; take a taxi with luggage.
+
+10 to 15 min walk
 
 Suggested stay
 
@@ -719,9 +749,11 @@ One MTR stop from Sheung Wan to Central.
 
 15 to 20 min walk
 
-Official site ↗
+Expand more
 
-Maps ↗
+Show less
+
+Suggested stay
 
 Ying’nFlo, Wesley Admiralty
 
@@ -760,19 +792,6 @@ Walk along Wellington Street towards Wyndham Street.
 
 7 to 10 min walk
 
-Design pick
-
-Ovolo Central
-
-Central / SoHo edge · $$$
-
-For a design-minded stay that keeps the office very close.
-
-Walk down to Wyndham Street.
-Ask about street noise before booking.
-
-2 to 4 min walk
-
 Settle in
 
 The Putman
@@ -796,20 +815,6 @@ For a full-service stay and a classic Hong Kong address.
 An easy base for Central meetings and the Airport Express.
 
 8 to 12 min walk
-
-The scenic stay
-
-Garden View Hong Kong
-
-Mid-Levels · $$
-
-For garden greenery and city views without going all out.
-
-At 1 MacDonnell Road, beside the Botanical Gardens.
-Check the room’s view category before booking.
-The return from the office is uphill; take a taxi with luggage.
-
-10 to 15 min walk
 
 Around the office / 08 picks
 
@@ -1057,27 +1062,29 @@ Index counts: 08 hotels, 08 food/drink picks; 02 per food/drink category.
 ## Hong Kong guide photography (November 2026)
 
 Each named hotel and food or drink card includes one photo.
-Venue photography carries its capture year; substitutes are visibly labelled and described as such in alt text.
-Garden View Hong Kong fills the previously unidentified scenic-stay slot.
+Dated venue photos show their capture year, and illustrative photos are identified in the caption and alt text.
+Use the [visitor guide source record](VISIT-HONG-KONG-SOURCES.md#photography-and-reuse-rights-8-november-2026) for each photo’s attribution and licence.
 
-| Card | Visible photo caption | Image alt text | Credit author | Licence |
-| --- | --- | --- | --- | --- |
-| iclub Sheung Wan Hotel | Hotel entrance · 2019 | The illuminated iclub Sheung Wan entrance on Bonham Strand, photographed in 2019. | Gal Mouw TU Aowur | CC BY-SA 4.0 |
-| Ying’nFlo, Wesley Admiralty | Hotel entrance · 2026 | The red entrance to Ying’nFlo, Wesley Admiralty on Hennessy Road, photographed in 2026. | GAONG WEINHOAM 9122 | CC0 |
-| Butterfly on LKF | Neighbourhood: Lan Kwai Fong | D’Aguilar Street in Lan Kwai Fong, a neighbourhood view rather than a photo of Butterfly on LKF. | Shauboasiwui CAILIUO | CC BY-SA 4.0 |
-| Butterfly on Wellington | Hotel exterior · 2012 | The 122 Wellington Street entrance beside Graham Street’s market stalls, photographed in 2012. | Ghitangshenho | CC BY-SA 3.0 |
-| Ovolo Central | Hotel exterior · 2022 | Ovolo Central rising above its entrance on Arbuthnot Road, photographed in 2022. | Shauboasiwui CAILIUO | CC BY-SA 4.0 |
-| The Putman | Neighbourhood: Man Mo Temple | Man Mo Temple in Sheung Wan, a neighbourhood view rather than a photo of The Putman. | Ramdosmawm | CC BY-SA 4.0 |
-| Mandarin Oriental, Hong Kong | Hotel entrance · 2006 | The covered entrance to Mandarin Oriental, Hong Kong, photographed in 2006. | KennethTom | CC BY-SA 3.0 |
-| Garden View Hong Kong | Hotel entrance · 2020 | The Garden View Hong Kong entrance at 1 MacDonnell Road, photographed in 2020. | Zytsndley Homea | CC BY-SA 4.0 |
-| Yat Lok | Roast goose at Yat Lok · 2015 | Roast goose over rice at Yat Lok on Stanley Street, photographed in 2015. | Sakaori | CC BY 3.0 |
-| Tsim Chai Kee | Restaurant exterior · 2021 | Tsim Chai Kee’s dark shopfront at 98 Wellington Street, photographed in 2021. | Weizshaum KIAMZOU 300 | CC BY-SA 4.0 |
-| Ho Lee Fook | Restaurant entrance · 2024 | Ho Lee Fook’s illuminated sign above the entrance on Elgin Street, photographed in 2024. | SAISOU 853 MKIWMA | CC0 |
-| Chôm Chôm | Vietnamese rolls · illustrative | A Vietnamese fresh spring roll with shrimp and lettuce, an illustrative food photo, not photographed at Chôm Chôm. | Phuongnhu | CC BY-SA 3.0 |
-| FINEPRINT Peel Street | Flat white · illustrative | A flat white in a green cup, an illustrative coffee photo, not photographed at FINEPRINT. | Ashley Van Haeften | CC BY 2.0 |
-| Bakehouse SoHo | Bakery counter · 2021 | Pastries and cookies at the Bakehouse SoHo counter, photographed in 2021. | Mockda Juankers | CC BY-SA 4.0 |
-| Bar Leone | Negroni · illustrative | A Negroni over ice with orange peel, an illustrative cocktail photo, not photographed at Bar Leone. | Chris Palmer | CC BY-SA 2.0 |
-| Quinary | Martini · illustrative | A martini garnished with lemon peel, an illustrative cocktail photo, not Quinary’s Earl Grey Caviar Martini. | Cocktailmarler | CC BY-SA 4.0 |
+| Card | Visible photo caption | Image alt text |
+| --- | --- | --- |
+| Mini Central | Lobby | A blue neon Mini Central sign lights the lobby seating area. |
+| Garden View Hong Kong | Hotel entrance · 2020 | The Garden View Hong Kong entrance at 1 MacDonnell Road, photographed in 2020. |
+| iclub Sheung Wan Hotel | Hotel entrance · 2019 | The illuminated iclub Sheung Wan entrance on Bonham Strand, photographed in 2019. |
+| Ying’nFlo, Wesley Admiralty | Hotel entrance · 2026 | The red entrance to Ying’nFlo, Wesley Admiralty on Hennessy Road, photographed in 2026. |
+| Butterfly on LKF | Hotel exterior · 2022 | Rows of square lights on the Butterfly on LKF façade at 23 D’Aguilar Street, photographed in 2022. |
+| Butterfly on Wellington | Hotel exterior · 2012 | The 122 Wellington Street entrance beside Graham Street’s market stalls, photographed in 2012. |
+| The Putman | Full Floor Suite | A white sofa faces the windows in the living room of a Full Floor Suite at The Putman. |
+| Mandarin Oriental, Hong Kong | Hotel entrance · 2006 | The covered entrance to Mandarin Oriental, Hong Kong, photographed in 2006. |
+| Yat Lok | Roast goose at Yat Lok · 2015 | Roast goose over rice at Yat Lok on Stanley Street, photographed in 2015. |
+| Tsim Chai Kee | Restaurant exterior · 2021 | Tsim Chai Kee’s dark shopfront at 98 Wellington Street, photographed in 2021. |
+| Ho Lee Fook | Restaurant entrance · 2024 | Ho Lee Fook’s illuminated sign above the entrance on Elgin Street, photographed in 2024. |
+| Chôm Chôm | Vietnamese rolls · illustrative | A Vietnamese fresh spring roll with shrimp and lettuce, an illustrative food photo, not photographed at Chôm Chôm. |
+| FINEPRINT Peel Street | Flat white · illustrative | A flat white in a green cup, an illustrative coffee photo, not photographed at FINEPRINT. |
+| Bakehouse SoHo | Bakery counter · 2021 | Pastries and cookies at the Bakehouse SoHo counter, photographed in 2021. |
+| Bar Leone | Negroni · illustrative | A Negroni over ice with orange peel, an illustrative cocktail photo, not photographed at Bar Leone. |
+| Quinary | Martini · illustrative | A martini garnished with lemon peel, an illustrative cocktail photo, not Quinary’s Earl Grey Caviar Martini. |
 
-Credit-line pattern: `Photo: {author} · {licence} · cropped`.
-The author links to the original Commons file page; the licence links to its terms.
+For Wikimedia Commons photos, use `Photo: {author} · {licence} · cropped`.
+Link the author’s name to the original Commons file page and the licence name to its terms.
+
+For the Mini Central and The Putman promotional photos, use `Photo: {hotel name}` and link the name to the hotel’s official site.
