@@ -7,12 +7,13 @@ Walking times are conservative planning estimates inferred from published addres
 They allow for hills and crossings and are not step-free route guarantees.
 The Garden View estimate also uses the live walking route noted below; all times remain planning estimates.
 Price bands are relative editorial categories, not quoted rates or availability promises.
-The late-November booking note comes from the supplied brief, not a live rate survey.
+The shortlist uses a curated order and links to individual properties on Expedia, Booking.com and Trip.com for rate comparisons.
 
 ## Trip.com identity resolution
 
 - [Trip.com ID 968753](https://www.trip.com/hotels/hong-kong-hotel-detail-968753/) displayed **iclub Sheung Wan Hotel** in a live browser.
 - [Trip.com ID 110421339](https://www.trip.com/hotels/hong-kong-hotel-detail-110421339/) displayed **YING’nFLO, Wesley Admiralty, Hong Kong (Langham Hospitality Group)** in a live browser.
+- [Trip.com ID 370823](https://us.trip.com/hotels/hong-kong-hotel-detail-370823/mini-hotel-central/) identifies **Mini Central**.
 
 The second property is at 22 Hennessy Road, on the Admiralty / Wan Chai edge, despite the search originally being centred on Sai Ying Pun.
 The guide uses its verified location and does not mislabel it as a Sai Ying Pun hotel.
@@ -30,7 +31,6 @@ The $$ band is an editorial comparison, not a live price or a promise of Novembe
 - [Butterfly’s official LKF directions](https://www.butterflyhk.com/wp-content/uploads/pdf/BOL_ENG.pdf): Central D2, Queen’s Road Central, D’Aguilar Street and Wyndham Street.
 - [MTR Airport Express](https://www.mtr.com.hk/en/customer/services/airport_express_index.html): airport to Hong Kong Station in about 24 minutes.
 - [Transport Department taxi areas](https://www.td.gov.hk/en/transport_in_hong_kong/public_transport/taxi/details_of_taxi_operating_areas_/index.html): red urban taxi coverage.
-- [Ovolo Central directions](https://ovolohotels.com/collaterals/CUSoon/pdf/CUsoon_Central.pdf): nearby hotel’s airport taxi estimate of 40 minutes; guide allows 40 to 60 minutes plus traffic.
 
 No office floor or unit is published.
 
@@ -39,15 +39,14 @@ No office floor or unit is published.
 Official pages establish each hotel’s identity, address and accommodation positioning.
 Suitability lines and price bands are editorial judgements.
 
+- [Mini Central](https://www.minicentral.hk/) is at 38 Ice House Street in Lan Kwai Fong.
+- [Garden View Hong Kong, official Y Hospitality page](https://yhk.com.hk/templates/show.aspx?i=740): 1 MacDonnell Road; Mid-Levels; city and garden views.
 - [iclub Sheung Wan Hotel](https://www.iclub-hotels.com/en/iclub-sheung-wan-hotel/About): 138 Bonham Strand; Sheung Wan.
 - [Ying’nFlo, Wesley Admiralty](https://www.yingnflo.com/en/locations/hong-kong-admiralty/): 22 Hennessy Road; Admiralty / Wan Chai edge.
 - [Butterfly on LKF](https://www.butterflyhk.com/en/butterfly-on-lkf): 23 D’Aguilar Street; Central / Lan Kwai Fong.
 - [Butterfly on Wellington](https://www.butterflyhk.com/en/butterfly-on-wellington): 122 Wellington Street; Central / SoHo edge.
-- [Ovolo Central](https://ovolohotels.com/ovolo/central/home/): 2 Arbuthnot Road; Central / SoHo edge.
 - [The Putman](https://www.theputman.com/): 202 Queen’s Road Central; Sheung Wan / Central edge.
 - [Mandarin Oriental, Hong Kong](https://www.mandarinoriental.com/en/hong-kong/victoria-harbour): 5 Connaught Road Central; Central.
-
-- [Garden View Hong Kong, official Y Hospitality page](https://yhk.com.hk/templates/show.aspx?i=740): 1 MacDonnell Road; Mid-Levels; city and garden views.
 
 [Google Maps walking route, Garden View to LKF 29](https://www.google.com/maps/dir/?api=1&origin=Garden+View+Hong+Kong,+1+MacDonnell+Road&destination=LKF+29,+29+Wyndham+Street,+Hong+Kong&travelmode=walking) showed 700 m / 11 minutes via Albany Road on 9 November 2026.
 The card rounds this to 10 to 15 minutes and flags the uphill return; the route display showed about 59 m descent towards the office.
@@ -103,26 +102,27 @@ The “Soon” cities are plain text, not broken links.
 ## Photography and reuse rights (8 November 2026)
 
 Fourteen photos come from Wikimedia Commons.
-Mini Central, Butterfly on LKF and The Putman supplied the photos on their official websites, checked on 22 November 2026.
-The original 15 file records and their licence metadata were checked on 8 November 2026; Garden View’s record was checked on 9 November 2026.
+The captain decided on 2026-11-23 to use promotional photos from the official Mini Central and The Putman websites with attribution and a link back to each source.
+No formal reuse licence is recorded for those two photos.
+The guide will honour removal requests from rights holders.
+Commons records were checked on 8 November 2026, with Garden View checked on 9 November and Butterfly on LKF checked on 23 November.
 Each selected image was visually reviewed.
 No booking-site, review-site, social-media or generated venue image is used.
 Commons photos link to their authors and licences.
-Official hotel photos link to the source page.
-Every derivative is cropped, resized, metadata-stripped and encoded as WebP; adaptations retain the source licence, including ShareAlike where applicable.
+Every published variant is cropped, resized, stripped of metadata and encoded as WebP.
+Commons adaptations retain the source licence, including ShareAlike where applicable.
 Photo dates describe the photograph, not a guarantee of the venue’s current appearance or menu.
 
 | Card / asset stem | Source file | Author | Licence | Depiction and date |
 | --- | --- | --- | --- | --- |
-| Mini Central / `mini-central` | [Hotel photography](https://www.minicentral.hk/) | Mini Central | Official hotel photo | Lobby |
+| Mini Central / `mini-central` | [Hotel photography](https://www.minicentral.hk/) | Mini Central | No formal licence recorded | Lobby |
+| Garden View Hong Kong / `garden-view` | [HK Central Macdonnel Road building near Garden Road YMCA HQ April 2020 SS2 03.jpg](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%AD%E7%92%B0_Central_%E9%BA%A5%E7%95%B6%E5%8B%9E%E9%81%93_Macdonnel_Road_building_near_Garden_Road_YMCA_HQ_April_2020_SS2_03.jpg) | Zytsndley Homea | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Hotel entrance · 2020 |
 | iclub Sheung Wan Hotel / `iclub` | [HK Sheung Wan hotel IClub Bonham Strand entrance evening 2019-08-31 01.jpg](https://commons.wikimedia.org/wiki/File:HK_Sheung_Wan_hotel_IClub_Bonham_Strand_entrance_evening_2019-08-31_01.jpg) | Gal Mouw TU Aowur | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Hotel entrance · 2019 |
 | Ying’nFlo, Wesley Admiralty / `yingnflo` | [HK WC Wan Chai Hennessy Road hotel Ying n flour red January 2026 N13P 01.jpg](https://commons.wikimedia.org/wiki/File:HK_WC_Wan_Chai_Hennessy_Road_hotel_Ying_n_flour_red_January_2026_N13P_01.jpg) | GAONG WEINHOAM 9122 | [CC0](https://creativecommons.org/publicdomain/zero/1.0/deed.en) | Hotel entrance · 2026 |
-| Butterfly on LKF / `butterfly-lkf` | [Hotel photography](https://www.butterflyhk.com/en/butterfly-on-lkf) | Butterfly on LKF | Official hotel photo | Superior room |
+| Butterfly on LKF / `butterfly-lkf` | [HK 中環 Central 蘭桂坊 Lan Kwai Fong 德己立街 D'Aguilar Street May 2022 SS2 35.jpg](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%AD%E7%92%B0_Central_%E8%98%AD%E6%A1%82%E5%9D%8A_Lan_Kwai_Fong_%E5%BE%B7%E5%B7%B1%E7%AB%8B%E8%A1%97_D%27Aguilar_Street_May_2022_SS2_35.jpg) | Shauboasiwui CAILIUO | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Hotel exterior · 2022 |
 | Butterfly on Wellington / `butterfly-wellington` | [HK Central Butterfly on 122 Wellington Street Graham Street fruit stall Nov-2012.JPG](https://commons.wikimedia.org/wiki/File:HK_Central_Butterfly_on_122_Wellington_Street_Graham_Street_fruit_stall_Nov-2012.JPG) | Ghitangshenho | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) | Hotel exterior · 2012 |
-| Ovolo Central / `ovolo` | [HK 中環 Central 亞畢諾道 2 Arbuthnot Road Ovolo Hotel May 2022 Px3 01.jpg](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%AD%E7%92%B0_Central_%E4%BA%9E%E7%95%A2%E8%AB%BE%E9%81%93_2_Arbuthnot_Road_Ovolo_Hotel_May_2022_Px3_01.jpg) | Shauboasiwui CAILIUO | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Hotel exterior · 2022 |
-| The Putman / `putman` | [Hotel photography](https://www.theputman.com/) | The Putman | Official hotel photo | Full Floor Suite |
+| The Putman / `putman` | [Hotel photography](https://www.theputman.com/) | The Putman | No formal licence recorded | Full Floor Suite |
 | Mandarin Oriental, Hong Kong / `mandarin` | [HK Mandarine Oriental Hotel 610 wkw.jpg](https://commons.wikimedia.org/wiki/File:HK_Mandarine_Oriental_Hotel_610_wkw.jpg) | KennethTom | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) | Hotel entrance · 2006 |
-| Garden View Hong Kong / `garden-view` | [HK Central Macdonnel Road building near Garden Road YMCA HQ April 2020 SS2 03.jpg](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%AD%E7%92%B0_Central_%E9%BA%A5%E7%95%B6%E5%8B%9E%E9%81%93_Macdonnel_Road_building_near_Garden_Road_YMCA_HQ_April_2020_SS2_03.jpg) | Zytsndley Homea | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Hotel entrance · 2020 |
 | Yat Lok / `yat-lok` | [Roast goose in yat lok restaurant.JPG](https://commons.wikimedia.org/wiki/File:Roast_goose_in_yat_lok_restaurant.JPG) | Sakaori | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) | Roast goose at Yat Lok · 2015 |
 | Tsim Chai Kee / `tsim-chai-kee` | [HK 中環 Central 威靈頓街 98 Wellington Street Jade Centre shop Cochrane Street October 2021 SS2 04.jpg](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%AD%E7%92%B0_Central_%E5%A8%81%E9%9D%88%E9%A0%93%E8%A1%97_98_Wellington_Street_Jade_Centre_shop_Cochrane_Street_October_2021_SS2_04.jpg) | Weizshaum KIAMZOU 300 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Restaurant exterior · 2021 |
 | Ho Lee Fook / `ho-lee-fook` | [HK 中環 Central 蘇豪區 SOHO Elgin Street shop night March 2024 R12S 08.jpg](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%AD%E7%92%B0_Central_%E8%98%87%E8%B1%AA%E5%8D%80_SOHO_Elgin_Street_shop_night_March_2024_R12S_08.jpg) | SAISOU 853 MKIWMA | [CC0](https://creativecommons.org/publicdomain/zero/1.0/deed.en) | Restaurant entrance · 2024 |
@@ -136,7 +136,6 @@ Photo dates describe the photograph, not a guarantee of the venue’s current ap
 
 Venue-specific images with confirmed reuse permission were not found for the following cards.
 These use clearly labelled substitutes rather than implying that the pictured scene or dish belongs to the venue.
-Official press search results without an explicit licence for company-site reuse were not treated as permission.
 
 - **Chôm Chôm**: Vietnamese rolls · illustrative.
 - **FINEPRINT Peel Street**: Flat white · illustrative.

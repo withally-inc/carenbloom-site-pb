@@ -699,13 +699,52 @@ Central keeps you close.
 Sheung Wan gives you a little breathing room.
 Admiralty puts another neighbourhood within reach.
 
-Book early for late November.
-Prices can run high.
-Compare your exact dates and cancellation terms before committing.
+**Compare rates for your dates.**
+Each hotel has links to Expedia, Booking.com and Trip.com.
+Use them to compare the total for your stay, including taxes and fees.
 
 Price bands are relative to this shortlist: $ budget-conscious, $$ mid-range, $$$ premium, $$$$ luxury.
 They are not live rates.
 All walks are approximate, hotel to office.
+
+Budget pick
+
+Mini Central
+
+Central / Lan Kwai Fong · $
+
+A small room on Ice House Street, a short walk from the office.
+
+Rooms are compact.
+Pack light for the steps around Lan Kwai Fong.
+
+3 to 5 min walk
+
+- [Official site ↗](https://www.minicentral.hk/)
+- [Maps ↗](https://www.google.com/maps/search/?api=1&query=Mini%20Central%2C%2038%20Ice%20House%20Street%2C%20Hong%20Kong)
+- [Expedia ↗](https://www.expedia.com/Hong-Kong-Hotels-Mini-Hotel-Central.h2818982.Hotel-Information)
+- [Booking.com ↗](https://www.booking.com/hotel/hk/mini.html)
+- [Trip.com ↗](https://us.trip.com/hotels/hong-kong-hotel-detail-370823/mini-hotel-central/)
+
+The scenic stay
+
+Garden View Hong Kong
+
+Mid-Levels · $$
+
+For garden greenery and city views without going all out.
+
+At 1 MacDonnell Road, beside the Botanical Gardens.
+Check the room’s view category before booking.
+The return from the office is uphill; take a taxi with luggage.
+
+10 to 15 min walk
+
+- [Official site ↗](https://yhk.com.hk/templates/show.aspx?i=740)
+- [Maps ↗](https://www.google.com/maps/search/?api=1&query=Garden%20View%20Hong%20Kong%2C%201%20MacDonnell%20Road%2C%20Hong%20Kong)
+- [Expedia ↗](https://www.expedia.com/Hong-Kong-Hotels-Garden-View-Hong-Kong.h1999095.Hotel-Information)
+- [Booking.com ↗](https://www.booking.com/hotel/hk/the-garden-view-ywca.html)
+- [Trip.com ↗](https://us.trip.com/hotels/hong-kong-hotel-detail-532864/garden-view-hong-kong/)
 
 Suggested stay
 
@@ -719,9 +758,17 @@ One MTR stop from Sheung Wan to Central.
 
 15 to 20 min walk
 
-Official site ↗
+- [Official site ↗](https://www.iclub-hotels.com/en/iclub-sheung-wan-hotel/About)
+- [Maps ↗](https://www.google.com/maps/search/?api=1&query=iclub%20Sheung%20Wan%20Hotel%2C%20138%20Bonham%20Strand%2C%20Hong%20Kong)
+- [Expedia ↗](https://www.expedia.com/Hong-Kong-Hotels-Iclub-Sheung-Wan-Hotel.h7593728.Hotel-Information)
+- [Booking.com ↗](https://www.booking.com/hotel/hk/iclub-sheung-wan.html)
+- [Trip.com ↗](https://us.trip.com/hotels/hong-kong-hotel-detail-968753/iclub-sheung-wan-hotel/)
 
-Maps ↗
+Expand more
+
+Show less
+
+Suggested stay
 
 Ying’nFlo, Wesley Admiralty
 
@@ -733,6 +780,12 @@ Walk to Admiralty, then one MTR stop to Central.
 This hotel is in Admiralty, not Sai Ying Pun.
 
 25 to 30 min walk
+
+- [Official site ↗](https://www.yingnflo.com/en/locations/hong-kong-admiralty/)
+- [Maps ↗](https://www.google.com/maps/search/?api=1&query=Ying%E2%80%99nFlo%2C%20Wesley%20Admiralty%2C%2022%20Hennessy%20Road%2C%20Hong%20Kong)
+- [Expedia ↗](https://www.expedia.com/Hong-Kong-Hotels-YingnFlo.h22825.Hotel-Information)
+- [Booking.com ↗](https://www.booking.com/hotel/hk/ying-39-nflo-wesley-admiralty-hong-kong.html)
+- [Trip.com ↗](https://us.trip.com/hotels/hong-kong-hotel-detail-110421339/yingnflo-wesley-admiralty-hong-kong/)
 
 Closest to us
 
@@ -748,6 +801,12 @@ Ask about a quieter room.
 
 2 to 3 min walk
 
+- [Official site ↗](https://www.butterflyhk.com/en/butterfly-on-lkf)
+- [Maps ↗](https://www.google.com/maps/search/?api=1&query=Butterfly%20on%20LKF%2C%2023%20D%E2%80%99Aguilar%20Street%2C%20Hong%20Kong)
+- [Expedia ↗](https://www.expedia.com/Hong-Kong-Hotels-Butterfly-On-LKF-Boutique-Hotel-Central.h31351916.Hotel-Information)
+- [Booking.com ↗](https://www.booking.com/hotel/hk/butterfly-on-lkf.html)
+- [Trip.com ↗](https://us.trip.com/hotels/hong-kong-hotel-detail-24640469/butterfly-on-lkf-central/)
+
 Easy base
 
 Butterfly on Wellington
@@ -760,18 +819,11 @@ Walk along Wellington Street towards Wyndham Street.
 
 7 to 10 min walk
 
-Design pick
-
-Ovolo Central
-
-Central / SoHo edge · $$$
-
-For a design-minded stay that keeps the office very close.
-
-Walk down to Wyndham Street.
-Ask about street noise before booking.
-
-2 to 4 min walk
+- [Official site ↗](https://www.butterflyhk.com/en/butterfly-on-wellington)
+- [Maps ↗](https://www.google.com/maps/search/?api=1&query=Butterfly%20on%20Wellington%2C%20122%20Wellington%20Street%2C%20Hong%20Kong)
+- [Expedia ↗](https://www.expedia.com/Hong-Kong-Hotels-Butterfly-On-Wellington-Boutique-Hotel-Central.h3849819.Hotel-Information)
+- [Booking.com ↗](https://www.booking.com/hotel/hk/butterfly-on-wellington.html)
+- [Trip.com ↗](https://us.trip.com/hotels/hong-kong-hotel-detail-392662/butterfly-on-wellington-central/)
 
 Settle in
 
@@ -785,6 +837,12 @@ Check the room category and its facilities before choosing.
 
 10 to 15 min walk
 
+- [Official site ↗](https://www.theputman.com/)
+- [Maps ↗](https://www.google.com/maps/search/?api=1&query=The%20Putman%2C%20202%20Queen%E2%80%99s%20Road%20Central%2C%20Hong%20Kong)
+- [Expedia ↗](https://www.expedia.com/Hong-Kong-Hotels-The-Putman.h8841142.Hotel-Information)
+- [Booking.com ↗](https://www.booking.com/hotel/hk/the-putman.html)
+- [Trip.com ↗](https://us.trip.com/hotels/hong-kong-hotel-detail-6639482/the-putman/)
+
 Make a stay of it
 
 Mandarin Oriental, Hong Kong
@@ -797,19 +855,11 @@ An easy base for Central meetings and the Airport Express.
 
 8 to 12 min walk
 
-The scenic stay
-
-Garden View Hong Kong
-
-Mid-Levels · $$
-
-For garden greenery and city views without going all out.
-
-At 1 MacDonnell Road, beside the Botanical Gardens.
-Check the room’s view category before booking.
-The return from the office is uphill; take a taxi with luggage.
-
-10 to 15 min walk
+- [Official site ↗](https://www.mandarinoriental.com/en/hong-kong/victoria-harbour)
+- [Maps ↗](https://www.google.com/maps/search/?api=1&query=Mandarin%20Oriental%2C%20Hong%20Kong%2C%205%20Connaught%20Road%20Central%2C%20Hong%20Kong)
+- [Expedia ↗](https://www.expedia.com/Hong-Kong-Hotels-Mandarin-Oriental.h6095.Hotel-Information)
+- [Booking.com ↗](https://www.booking.com/hotel/hk/mandarin-oriental-hong-kong.html)
+- [Trip.com ↗](https://us.trip.com/hotels/hong-kong-hotel-detail-344946/mandarin-oriental-hong-kong/)
 
 Around the office / 08 picks
 
@@ -1057,20 +1107,19 @@ Index counts: 08 hotels, 08 food/drink picks; 02 per food/drink category.
 ## Hong Kong guide photography (November 2026)
 
 Each named hotel and food or drink card includes one photo.
-Venue photography carries its capture year; substitutes are visibly labelled and described as such in alt text.
-Garden View Hong Kong fills the previously unidentified scenic-stay slot.
+Dated venue photos show their capture year, and illustrative photos are identified in the caption and alt text.
+Mini Central and The Putman use hotel promotional photos with attribution and a link to each hotel’s site, as recorded in the [visitor guide source record](VISIT-HONG-KONG-SOURCES.md#photography-and-reuse-rights-8-november-2026).
 
 | Card | Visible photo caption | Image alt text | Credit author | Licence |
 | --- | --- | --- | --- | --- |
-| Mini Central | Lobby | A blue neon Mini Central sign lights the lobby seating area. | Mini Central | Official hotel photo |
+| Mini Central | Lobby | A blue neon Mini Central sign lights the lobby seating area. | [Mini Central](https://www.minicentral.hk/) | No formal licence recorded |
+| Garden View Hong Kong | Hotel entrance · 2020 | The Garden View Hong Kong entrance at 1 MacDonnell Road, photographed in 2020. | Zytsndley Homea | CC BY-SA 4.0 |
 | iclub Sheung Wan Hotel | Hotel entrance · 2019 | The illuminated iclub Sheung Wan entrance on Bonham Strand, photographed in 2019. | Gal Mouw TU Aowur | CC BY-SA 4.0 |
 | Ying’nFlo, Wesley Admiralty | Hotel entrance · 2026 | The red entrance to Ying’nFlo, Wesley Admiralty on Hennessy Road, photographed in 2026. | GAONG WEINHOAM 9122 | CC0 |
-| Butterfly on LKF | Superior room | Twin beds beside the window in a superior room at Butterfly on LKF. | Butterfly on LKF | Official hotel photo |
+| Butterfly on LKF | Hotel exterior · 2022 | Rows of square lights on the Butterfly on LKF façade at 23 D’Aguilar Street, photographed in 2022. | [Shauboasiwui CAILIUO](https://commons.wikimedia.org/wiki/File:HK_%E4%B8%AD%E7%92%B0_Central_%E8%98%AD%E6%A1%82%E5%9D%8A_Lan_Kwai_Fong_%E5%BE%B7%E5%B7%B1%E7%AB%8B%E8%A1%97_D%27Aguilar_Street_May_2022_SS2_35.jpg) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
 | Butterfly on Wellington | Hotel exterior · 2012 | The 122 Wellington Street entrance beside Graham Street’s market stalls, photographed in 2012. | Ghitangshenho | CC BY-SA 3.0 |
-| Ovolo Central | Hotel exterior · 2022 | Ovolo Central rising above its entrance on Arbuthnot Road, photographed in 2022. | Shauboasiwui CAILIUO | CC BY-SA 4.0 |
-| The Putman | Full Floor Suite | A white sofa faces the windows in the living room of a Full Floor Suite at The Putman. | The Putman | Official hotel photo |
+| The Putman | Full Floor Suite | A white sofa faces the windows in the living room of a Full Floor Suite at The Putman. | [The Putman](https://www.theputman.com/) | No formal licence recorded |
 | Mandarin Oriental, Hong Kong | Hotel entrance · 2006 | The covered entrance to Mandarin Oriental, Hong Kong, photographed in 2006. | KennethTom | CC BY-SA 3.0 |
-| Garden View Hong Kong | Hotel entrance · 2020 | The Garden View Hong Kong entrance at 1 MacDonnell Road, photographed in 2020. | Zytsndley Homea | CC BY-SA 4.0 |
 | Yat Lok | Roast goose at Yat Lok · 2015 | Roast goose over rice at Yat Lok on Stanley Street, photographed in 2015. | Sakaori | CC BY 3.0 |
 | Tsim Chai Kee | Restaurant exterior · 2021 | Tsim Chai Kee’s dark shopfront at 98 Wellington Street, photographed in 2021. | Weizshaum KIAMZOU 300 | CC BY-SA 4.0 |
 | Ho Lee Fook | Restaurant entrance · 2024 | Ho Lee Fook’s illuminated sign above the entrance on Elgin Street, photographed in 2024. | SAISOU 853 MKIWMA | CC0 |

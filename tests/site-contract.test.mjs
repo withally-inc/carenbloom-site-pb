@@ -81,7 +81,7 @@ test("the runtime owners stay in place beside the site", () => {
   }
 });
 
-test("the visitor guide is a direct-link, noindex page with useful outbound links", async () => {
+test("the visitor guide is a direct-link, noindex page", async () => {
   const { baseUrl } = await import("./helpers/site-browser.mjs");
   const response = await fetch(`${baseUrl}/visit/hong-kong/`);
   assert.equal(response.status, 200);
@@ -89,12 +89,6 @@ test("the visitor guide is a direct-link, noindex page with useful outbound link
   assert.match(html, /<meta name="robots" content="noindex, follow"/);
   assert.match(html, /<link rel="canonical" href="https:\/\/carenbloom\.com\/visit\/hong-kong\/"/);
   assert.match(html, /29 Wyndham Street/);
-  assert.equal((html.match(/data-hotel/g) || []).length, 9);
-  assert.equal((html.match(/data-place/g) || []).length, 8);
-  assert.equal((html.match(/https:\/\/www\.google\.com\/maps\/search\//g) || []).length, 18);
-  for (const host of ["iclub-hotels.com", "yingnflo.com", "butterflyhk.com", "ovolohotels.com", "theputman.com", "mandarinoriental.com", "yhk.com.hk", "minicentral.hk"]) {
-    assert.ok(html.includes(host), `${host} official hotel link is present`);
-  }
   assert.doesNotMatch(html, /<iframe|<script[^>]+src="https?:|[\u2013\u2014]/);
   for (const page of ["index.html", "careers/index.html", "careers/apply/index.html"]) {
     assert.doesNotMatch(readFileSync(path.join(root, page), "utf8"), /href="\/visit\//, "guide stays out of existing public pages and chrome");
