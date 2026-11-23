@@ -1129,5 +1129,7 @@ Mini Central and The Putman use hotel promotional photos with attribution and a 
 | Bar Leone | Negroni · illustrative | A Negroni over ice with orange peel, an illustrative cocktail photo, not photographed at Bar Leone. | Chris Palmer | CC BY-SA 2.0 |
 | Quinary | Martini · illustrative | A martini garnished with lemon peel, an illustrative cocktail photo, not Quinary’s Earl Grey Caviar Martini. | Cocktailmarler | CC BY-SA 4.0 |
 
-Credit-line pattern: `Photo: {author} · {licence} · cropped`.
-The author links to the original Commons file page; the licence links to its terms.
+For Wikimedia Commons photos, use `Photo: {author} · {licence} · cropped`.
+Link the author’s name to the original Commons file page and the licence name to its terms.
+
+For the Mini Central and The Putman promotional photos, use `Photo: {hotel name}` and link the name to the hotel’s official site.

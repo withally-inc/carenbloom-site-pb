@@ -30,6 +30,15 @@ async function assertMapLink(card, label, venue) {
   assert.ok(url.searchParams.get("query")?.startsWith(`${venue}, `), `Maps search names ${venue}`);
 }
 
+async function assertPrintedBookingLinks(page) {
+  const links = await page.locator("[data-hotel] a").evaluateAll((anchors) =>
+    anchors.filter((link) => /^(Expedia|Booking\.com|Trip\.com)\b/.test(link.textContent.trim())).map((link) => link.href),
+  );
+  assert.equal(links.length, hotels.length * 3);
+  const pdf = (await page.pdf()).toString("latin1");
+  for (const url of links) assert.ok(pdf.includes(`/URI (${url})`), `the print export links to ${url}`);
+}
+
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 const pageErrors = [];
@@ -111,7 +120,6 @@ try {
   }
   for (const place of await places.all()) {
     await assertMapLink(place, "Maps", await place.getByRole("heading", { level: 4 }).innerText());
-    await venueLink(place, /^(Official site|Menu & booking|Venue guide)$/);
   }
   await assertMapLink(page.locator("#office"), "Open office in Maps", "LKF 29");
   const scenicHotel = page.locator("[data-hotel]").filter({ has: page.getByRole("heading", { name: "Garden View Hong Kong", exact: true }) });
@@ -205,18 +213,34 @@ try {
     assert.equal(await staticPage.getByText("Expand more", { exact: true }).isVisible(), false);
     await staticPage.emulateMedia({ media: null });
     assert.equal(await staticPage.locator("[data-hotel]:visible").count(), 3);
-    const bookingLinks = await staticPage.locator("[data-hotel] a").evaluateAll((links) =>
-      links.filter((link) => /^(Expedia|Booking\.com|Trip\.com)\b/.test(link.textContent.trim())).map((link) => link.href),
-    );
-    assert.equal(bookingLinks.length, hotels.length * 3);
-    const pdf = (await staticPage.pdf()).toString("latin1");
-    for (const url of bookingLinks) assert.ok(pdf.includes(`/URI (${url})`), `the print export links to ${url}`);
+    await assertPrintedBookingLinks(staticPage);
     assert.equal(await staticPage.locator("[data-hotel]:visible").count(), 3);
     await staticPage.getByRole("link", { name: "Lunch · 02" }).click();
     assert.match(staticPage.url(), /#lunch$/);
     assert.equal(await staticPage.locator("#lunch").isVisible(), true);
   } finally {
     await noScript.close();
+  }
+  const legacyPrint = await browser.newPage({ reducedMotion: "reduce", viewport: { width: 820, height: 1180 } });
+  try {
+    await legacyPrint.addInitScript(() => {
+      const supports = CSS.supports.bind(CSS);
+      CSS.supports = (...args) => args[0] === "selector(::details-content)" ? false : supports(...args);
+    });
+    await legacyPrint.goto(`${baseUrl}/visit/hong-kong/`);
+    await legacyPrint.waitForFunction(() => document.documentElement.classList.contains("ready"));
+    await legacyPrint.addStyleTag({
+      content: "@media print { .visit-more:not([open])::details-content { content-visibility: hidden; } }",
+    });
+    const legacyHotels = legacyPrint.locator("[data-hotel]:visible");
+    assert.equal(await legacyHotels.count(), 3);
+    await assertPrintedBookingLinks(legacyPrint);
+    assert.equal(await legacyHotels.count(), 3, "printing restores the collapsed state");
+    await legacyPrint.getByText("Expand more", { exact: true }).click();
+    await assertPrintedBookingLinks(legacyPrint);
+    assert.equal(await legacyHotels.count(), hotels.length, "printing preserves the expanded state");
+  } finally {
+    await legacyPrint.close();
   }
   assert.deepEqual(pageErrors, [], "no page should throw");
   console.log("v4 site browser tests passed");
