@@ -140,12 +140,12 @@ try {
     const image = await photo.evaluate((element) => ({
       width: element.naturalWidth, height: element.naturalHeight,
       reservedWidth: Number(element.getAttribute("width")), reservedHeight: Number(element.getAttribute("height")),
-      url: element.currentSrc, candidates: element.srcset.split(",").map((entry) => entry.trim().split(/\s+/)[0]),
+      url: element.currentSrc, fallback: element.src, candidates: element.srcset.split(",").map((entry) => entry.trim().split(/\s+/)[0]),
     }));
     // srcset density-corrects naturalWidth; check physical pixels below on the standalone file.
     assert.ok(image.width > 0 && image.height > 0, "the rendered card photo decoded");
     assert.ok(Math.abs(image.reservedWidth / image.reservedHeight - image.width / image.height) < 0.01, "intrinsic dimensions reserve the correct aspect ratio");
-    for (const url of [image.url, ...image.candidates]) photoUrls.add(new URL(url, baseUrl).href);
+    for (const url of [image.url, image.fallback, ...image.candidates]) photoUrls.add(new URL(url, baseUrl).href);
     const promotionalPhoto = hotelPromotionalPhotoSources.get(await card.locator("h3, h4").innerText());
     if (promotionalPhoto) {
       assert.equal(await card.locator("figcaption a").getAttribute("href"), promotionalPhoto);
@@ -199,6 +199,19 @@ try {
     const staticPhoto = staticPage.locator("[data-hotel] img").first();
     await staticPhoto.scrollIntoViewIfNeeded();
     assert.ok(await staticPhoto.isVisible(), "venue photography is present without page JavaScript");
+    await staticPage.emulateMedia({ media: "print" });
+    const printedStay = (await staticPage.locator("#stay").innerText()).split("\n");
+    assert.deepEqual(printedStay.filter((line) => hotelNames.includes(line)), hotelNames, "the collapsed guide prints every hotel");
+    assert.equal(await staticPage.getByText("Expand more", { exact: true }).isVisible(), false);
+    await staticPage.emulateMedia({ media: null });
+    assert.equal(await staticPage.locator("[data-hotel]:visible").count(), 3);
+    const bookingLinks = await staticPage.locator("[data-hotel] a").evaluateAll((links) =>
+      links.filter((link) => /^(Expedia|Booking\.com|Trip\.com)\b/.test(link.textContent.trim())).map((link) => link.href),
+    );
+    assert.equal(bookingLinks.length, hotels.length * 3);
+    const pdf = (await staticPage.pdf()).toString("latin1");
+    for (const url of bookingLinks) assert.ok(pdf.includes(`/URI (${url})`), `the print export links to ${url}`);
+    assert.equal(await staticPage.locator("[data-hotel]:visible").count(), 3);
     await staticPage.getByRole("link", { name: "Lunch · 02" }).click();
     assert.match(staticPage.url(), /#lunch$/);
     assert.equal(await staticPage.locator("#lunch").isVisible(), true);

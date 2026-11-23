@@ -95,5 +95,7 @@
 }
 @media print {
   .visit-address { position: static; }
+  .visit-more > summary { display: none; }
+  .visit-more::details-content { content-visibility: visible; }
   .visit-hotel, .visit-card, .visit-tips article { break-inside: avoid; }
 }
