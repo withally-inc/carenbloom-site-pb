@@ -30,6 +30,9 @@ The v3 pages, tests and evidence remain in the Git history before this change.
 
 The application form submits only when served from `carenbloom.com` or `www.carenbloom.com`; on every other host it stays fail-closed and sends nothing.
 
+The visitor guide shows three hotel cards by default.
+Select **Expand more** for the rest of the shortlist.
+Use the booking links on each card to compare rates for your dates.
 For the visitor guide’s research sources and publication checklist, see [the source record](site-src/docs/VISIT-HONG-KONG-SOURCES.md).
 
 ## Changing the site

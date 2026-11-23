@@ -7,7 +7,7 @@ Walking times are conservative planning estimates inferred from published addres
 They allow for hills and crossings and are not step-free route guarantees.
 The Garden View estimate also uses the live walking route noted below; all times remain planning estimates.
 Price bands are relative editorial categories, not quoted rates or availability promises.
-The shortlist uses a curated order and links to individual properties on Expedia, Booking.com and Trip.com for rate comparisons.
+The one-time search returned no rates, so the shortlist uses an editorial order.
 
 ## Trip.com identity resolution
 
