@@ -197,7 +197,7 @@ try {
     }, url);
     assert.ok(pixels.width >= 384 && pixels.height >= 288, "every responsive file has sufficient physical resolution");
   }
-  assert.ok(photoBytes < 2 * 1024 * 1024, "all photo variants stay within a 2 MiB budget");
+  assert.ok(photoBytes < 1.5 * 1024 * 1024, "all photo variants stay within a 1.5 MiB budget");
   assert.equal(await page.locator("main iframe").count(), 0);
   for (const link of await page.locator('main a[href^="#"]').all()) {
     const hash = await link.getAttribute("href");
@@ -215,7 +215,6 @@ try {
         `${width}px ${theme}: the header's open-roles link must fit inside the viewport`);
     }
   }
-  await page.close();
   // The full guide and navigation remain available when enhancement is unavailable.
   const noScript = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
   try {
