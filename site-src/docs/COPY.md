@@ -1200,7 +1200,6 @@ Confirm current details with each venue.
 Back to top ↑
 
 City names in the collection: Hong Kong, Shenzhen, London, San Francisco.
-Index counts: 08 hotels, 18 food/drink picks across lunch (4), dinner (6), coffee (4) and drinks (4).
 
 ### Accessible labels
 
@@ -1224,7 +1223,7 @@ Index counts: 08 hotels, 18 food/drink picks across lunch (4), dinner (6), coffe
 
 Each named hotel and food or drink card includes one photo.
 Dated venue photos show their capture year, and illustrative photos are identified in the caption and alt text.
-Use the [visitor guide source record](VISIT-HONG-KONG-SOURCES.md#photography-and-reuse-rights-8-november-2026) for each photo’s attribution and licence.
+Use the [visitor guide source record](VISIT-HONG-KONG-SOURCES.md#photography-and-reuse-rights) for each photo’s attribution and licence.
 
 | Card | Visible photo caption | Image alt text |
 | --- | --- | --- |

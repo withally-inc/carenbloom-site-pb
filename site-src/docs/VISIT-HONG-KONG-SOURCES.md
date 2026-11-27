@@ -53,7 +53,8 @@ The card rounds this to 10 to 15 minutes and flags the uphill return; the route 
 
 ## Food and drink
 
-Each card links to its live venue source as well as a Google Maps destination.
+Each card links to a venue source and Google Maps.
+The 27 November additions use supplied Maps pins.
 Booking instructions for cafés and quick lunches are planning recommendations, not guaranteed seating.
 
 - [Yat Lok](https://guide.michelin.com/en/hong-kong-region/hong-kong/restaurant/yat-lok): 34 to 38 Stanley Street, Central; menu/category and current venue listing.
@@ -92,7 +93,6 @@ Ho Lan Jeng occupies the second floor of that building.
 
 The Islet card follows the supplied pin at 8 to 10 On Lan Street; the café’s own branch directory identifies the Central location by street.
 The food details for SERVO and Il Presidente are also described in [Time Out’s SERVO opening report](https://www.timeout.com/hong-kong/news/servo-hong-kong-new-casual-dining-spot-inspired-by-aussie-pit-stops-opens-in-central-031725) and [SCMP’s Il Presidente opening report](https://www.scmp.com/postmag/food-drink/article/3365862/hong-kongs-hottest-new-openings-italian-eatery-il-presidente-fujian-cuisine-hotspot-quan).
-The ten additions use illustrative food and drink photos, with the subject and Commons licence listed below.
 
 ## Practical guidance
 
@@ -121,9 +121,8 @@ Register each new route in the local URL middleware in `site-src/vite.config.ts`
 The “Soon” cities are plain text, not broken links.
 
 
-## Photography and reuse rights (8 November 2026)
+## Photography and reuse rights
 
-Twenty-four photos come from Wikimedia Commons.
 The captain decided on 2026-11-23 to use promotional photos from the official Mini Central and The Putman websites with attribution and a link back to each source.
 No formal reuse licence is recorded for those two photos.
 The guide will honour removal requests from rights holders.
@@ -165,15 +164,11 @@ Photo dates describe the photograph, not a guarantee of the venue’s current ap
 | Il Presidente / `il-presidente` | [Agnolotti piemontesi.jpg](https://commons.wikimedia.org/wiki/File:Agnolotti_piemontesi.jpg) | Frukko Andrea Marchisio | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) | Agnolotti · illustrative |
 | Ninetta / `ninetta` | [Tagliatelle al ragu (Bologna, Italia 2025).jpg](https://commons.wikimedia.org/wiki/File:Tagliatelle_al_ragu_(Bologna,_Italia_2025).jpg) | Paul Arps | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) | Tagliatelle · illustrative |
 
-### Photo gaps
+### Photo substitutions
 
-Venue-specific images with confirmed reuse permission were not found for the following cards.
-These use clearly labelled substitutes rather than implying that the pictured scene or dish belongs to the venue.
-
-- **Chôm Chôm**: Vietnamese rolls · illustrative.
-- **FINEPRINT Peel Street**: Flat white · illustrative.
-- **Bar Leone**: Negroni · illustrative.
-- **Quinary**: Martini · illustrative.
+The original shortlist uses substitutes where venue-specific photos with confirmed reuse permission were unavailable.
+The table marks all substitutes as illustrative.
+See the [copy deck](COPY.md#hong-kong-guide-photography-november-2026) for their captions and alt text.
 
 Garden View uses a licensed photograph of its actual entrance, with the Garden View sign and 1 MacDonnell Road visible.
 The Commons filename says YMCA, but the photographed building signage says YWCA and the Garden View name identifies the hotel.
