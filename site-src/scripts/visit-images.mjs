@@ -6,9 +6,23 @@ import sharp from 'sharp';
 const root = path.resolve(import.meta.dirname, '..');
 const source = path.join(root, 'assets-src/visit/hong-kong');
 const output = path.join(root, 'public/img/visit/hong-kong');
+const compactPhotos = new Set([
+  'banh-mi-nem',
+  'carbone',
+  'duddells',
+  'gokan',
+  'ho-lan-jeng',
+  'il-presidente',
+  'islet-central',
+  'ninetta',
+  'samsen-central',
+  'servo',
+]);
 await fs.mkdir(output, { recursive: true });
 let bytes = 0;
 for (const file of (await fs.readdir(source)).filter((name) => name.endsWith('.jpg')).sort()) {
+  const stem = path.parse(file).name;
+  const quality = compactPhotos.has(stem) ? 50 : 78;
   const input = path.join(source, file);
   const { width, height } = await sharp(input).metadata();
   if (width < 384 || height < 288) throw new Error(`${file} is too small for a card`);
@@ -16,8 +30,8 @@ for (const file of (await fs.readdir(source)).filter((name) => name.endsWith('.j
   for (const size of new Set([384, largest])) {
     const result = await sharp(input)
       .resize(size, size * 3 / 4, { fit: 'cover', withoutEnlargement: true })
-      .webp({ quality: 78, effort: 6 })
-      .toFile(path.join(output, `${path.parse(file).name}-${size}.webp`));
+      .webp({ quality, effort: 6 })
+      .toFile(path.join(output, `${stem}-${size}.webp`));
     bytes += result.size;
   }
 }

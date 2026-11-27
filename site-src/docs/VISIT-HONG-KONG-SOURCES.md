@@ -53,7 +53,8 @@ The card rounds this to 10 to 15 minutes and flags the uphill return; the route 
 
 ## Food and drink
 
-Each card links to its live venue source as well as an address-specific Google Maps search.
+Each card links to a venue source and Google Maps.
+The 27 November additions use supplied Maps pins.
 Booking instructions for cafés and quick lunches are planning recommendations, not guaranteed seating.
 
 - [Yat Lok](https://guide.michelin.com/en/hong-kong-region/hong-kong/restaurant/yat-lok): 34 to 38 Stanley Street, Central; menu/category and current venue listing.
@@ -71,6 +72,27 @@ Bar Leone and Quinary explicitly say no reservations / walk-ins only.
 Bakehouse’s SoHo location explicitly says takeaway only.
 MICHELIN provides current listings for Yat Lok and Tsim Chai Kee, which do not have a verified standalone official site in this research.
 No awards, opening hours or exact meal prices are repeated.
+
+### Additions checked 27 November 2026
+
+All ten supplied Google Maps links resolved to distinct venues in Central.
+The link accompanying the office reference resolves to Bánh Mì Nếm.
+Walking estimates use the entrance at LKF 29 as their starting point.
+Ho Lan Jeng occupies the second floor of that building.
+
+- [Duddell’s](https://duddells.co/) at 3/F and 4/F, 1 Duddell Street, Central ([supplied Maps pin](https://maps.app.goo.gl/gETM5swXms4UXNVQ6)).
+- [Carbone Hong Kong](https://blacksheeprestaurants.com/restaurants/carbone/) at 9/F, 33 Wyndham Street, Central ([supplied Maps pin](https://maps.app.goo.gl/sYyUYSssFFwuaGVe8)).
+- [Bánh Mì Nếm](https://www.openrice.com/en/hongkong/r-banh-mi-n-m-central-vietnamese-sandwich-r894821) at G/F, 3 Chiu Lung Street, Central ([supplied Maps pin](https://maps.app.goo.gl/styPRqpF2uSni5q86)).
+- [Samsen Central](https://www.samsen-hk.com/samsen-central) at G/F, 18 On Lan Street, Central ([supplied Maps pin](https://maps.app.goo.gl/3UvW7P93iJ2cLh4YA)).
+- [Ho Lan Jeng](https://www.timeout.com/hong-kong/bars-and-pubs/ho-lan-jeng) at 2/F, LKF 29, 29 Wyndham Street, Central ([supplied Maps pin](https://maps.app.goo.gl/PXCCR2XaEcrS7MKCA)).
+- [Islet Coffee Lab (Central)](https://linktr.ee/Isletcoffee) at G/F, 8 to 10 On Lan Street, Central ([supplied Maps pin](https://maps.app.goo.gl/VGzvBi1qfxEKHjjX9)).
+- [GOKAN](https://www.mehongkong.com/eng/home/mice-ideas/detail/gokan.html) at G/F, 30 Ice House Street, Central ([supplied Maps pin](https://maps.app.goo.gl/HcsYdxpXFdTVbbKL7)).
+- [SERVO](https://www.servo-hk.com/) at G/F, Kowloon Dairy Building, 17 to 19 On Lan Street, Central ([supplied Maps pin](https://maps.app.goo.gl/rEDMRQy6PwYx54B97)).
+- [Il Presidente](https://www.ilpresidentehk.com/about-1) at Shop M2, Baskerville House, 13 Duddell Street, Central ([supplied Maps pin](https://maps.app.goo.gl/2KaiSEtfEMoKiZSq8)).
+- [Ninetta](https://www.ninetta.hk/) at 3/F, M88, 2 to 8 Wellington Street, Central ([supplied Maps pin](https://maps.app.goo.gl/kmt9h5jnTbtvLu2R7)).
+
+The Islet card follows the supplied pin at 8 to 10 On Lan Street; the café’s own branch directory identifies the Central location by street.
+The food details for SERVO and Il Presidente are also described in [Time Out’s SERVO opening report](https://www.timeout.com/hong-kong/news/servo-hong-kong-new-casual-dining-spot-inspired-by-aussie-pit-stops-opens-in-central-031725) and [SCMP’s Il Presidente opening report](https://www.scmp.com/postmag/food-drink/article/3365862/hong-kongs-hottest-new-openings-italian-eatery-il-presidente-fujian-cuisine-hotspot-quan).
 
 ## Practical guidance
 
@@ -99,13 +121,13 @@ Register each new route in the local URL middleware in `site-src/vite.config.ts`
 The “Soon” cities are plain text, not broken links.
 
 
-## Photography and reuse rights (8 November 2026)
+## Photography and reuse rights
 
-Fourteen photos come from Wikimedia Commons.
 The captain decided on 2026-11-23 to use promotional photos from the official Mini Central and The Putman websites with attribution and a link back to each source.
 No formal reuse licence is recorded for those two photos.
 The guide will honour removal requests from rights holders.
 Commons records were checked on 8 November 2026, with Garden View checked on 9 November and Butterfly on LKF checked on 23 November.
+The ten additional Commons records were checked on 27 November 2026.
 Each selected image was visually reviewed.
 No booking-site, review-site, social-media or generated venue image is used.
 Commons photos link to their authors and licences.
@@ -131,16 +153,22 @@ Photo dates describe the photograph, not a guarantee of the venue’s current ap
 | Bakehouse SoHo / `bakehouse` | [HK Central 中環 SoHo 蘇豪 Staunton Street 士丹頓街 Bakehouse Bakery food display March 2021 SS2 02.jpg](https://commons.wikimedia.org/wiki/File:HK_Central_%E4%B8%AD%E7%92%B0_SoHo_%E8%98%87%E8%B1%AA_Staunton_Street_%E5%A3%AB%E4%B8%B9%E9%A0%93%E8%A1%97_Bakehouse_Bakery_food_display_March_2021_SS2_02.jpg) | Mockda Juankers | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Bakery counter · 2021 |
 | Bar Leone / `bar-leone` | [Negroni.jpg](https://commons.wikimedia.org/wiki/File:Negroni.jpg) | Chris Palmer | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) | Negroni · illustrative |
 | Quinary / `quinary` | [Martini Cocktail.JPG](https://commons.wikimedia.org/wiki/File:Martini_Cocktail.JPG) | Cocktailmarler | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Martini · illustrative |
+| Duddell’s / `duddells` | [Har Gow at Canal Luna restaurant, InterContinental Guangzhou Exhibition Center (20180923125523).jpg](https://commons.wikimedia.org/wiki/File:Har_Gow_at_Canal_Luna_restaurant,_InterContinental_Guangzhou_Exhibition_Center_(20180923125523).jpg) | N509FZ | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Dim sum · illustrative |
+| Carbone Hong Kong / `carbone` | [Liat Portal for Foodie Disorder - Rigatoni Bolognese.jpg](https://commons.wikimedia.org/wiki/File:Liat_Portal_for_Foodie_Disorder_-_Rigatoni_Bolognese.jpg) | HaJunkiyada | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Rigatoni · illustrative |
+| Bánh Mì Nếm / `banh-mi-nem` | [Vietnamese Bánh mì (Banh Mi) Sandwich.jpg](https://commons.wikimedia.org/wiki/File:Vietnamese_B%C3%A1nh_m%C3%AC_(Banh_Mi)_Sandwich.jpg) | Jimmy Chen | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Bánh mì · illustrative |
+| Samsen Central / `samsen-central` | [Bowl of boat noodles.jpg](https://commons.wikimedia.org/wiki/File:Bowl_of_boat_noodles.jpg) | Emppowering | [CC0](https://creativecommons.org/publicdomain/zero/1.0/deed.en) | Thai boat noodles · illustrative |
+| Ho Lan Jeng / `ho-lan-jeng` | [Pork Belly Char Siu with Rice.jpg](https://commons.wikimedia.org/wiki/File:Pork_Belly_Char_Siu_with_Rice.jpg) | Ceeseven | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Char siu · illustrative |
+| Islet Coffee Lab (Central) / `islet-central` | [Espresso Coffee 01.jpg](https://commons.wikimedia.org/wiki/File:Espresso_Coffee_01.jpg) | Jubair1985 | [CC0](https://creativecommons.org/publicdomain/zero/1.0/deed.en) | Espresso · illustrative |
+| GOKAN / `gokan` | [Torys Highball at Ebisu, Nishiogikubo south (29740423022).jpg](https://commons.wikimedia.org/wiki/File:Torys_Highball_at_Ebisu,_Nishiogikubo_south_(29740423022).jpg) | nakashi | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) | Highball · illustrative |
+| SERVO / `servo` | [Colorful Avocado Toast with Onion, Tomato, and Lemon on Sourdough Bread.jpg](https://commons.wikimedia.org/wiki/File:Colorful_Avocado_Toast_with_Onion,_Tomato,_and_Lemon_on_Sourdough_Bread.jpg) | Srujanabotcha | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | Avocado toast · illustrative |
+| Il Presidente / `il-presidente` | [Agnolotti piemontesi.jpg](https://commons.wikimedia.org/wiki/File:Agnolotti_piemontesi.jpg) | Frukko Andrea Marchisio | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) | Agnolotti · illustrative |
+| Ninetta / `ninetta` | [Tagliatelle al ragu (Bologna, Italia 2025).jpg](https://commons.wikimedia.org/wiki/File:Tagliatelle_al_ragu_(Bologna,_Italia_2025).jpg) | Paul Arps | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) | Tagliatelle · illustrative |
 
-### Photo gaps
+### Photo substitutions
 
-Venue-specific images with confirmed reuse permission were not found for the following cards.
-These use clearly labelled substitutes rather than implying that the pictured scene or dish belongs to the venue.
-
-- **Chôm Chôm**: Vietnamese rolls · illustrative.
-- **FINEPRINT Peel Street**: Flat white · illustrative.
-- **Bar Leone**: Negroni · illustrative.
-- **Quinary**: Martini · illustrative.
+The original shortlist uses substitutes where venue-specific photos with confirmed reuse permission were unavailable.
+The table marks all substitutes as illustrative.
+See the [copy deck](COPY.md#hong-kong-guide-photography-november-2026) for their captions and alt text.
 
 Garden View uses a licensed photograph of its actual entrance, with the Garden View sign and 1 MacDonnell Road visible.
 The Commons filename says YMCA, but the photographed building signage says YWCA and the Garden View name identifies the hotel.

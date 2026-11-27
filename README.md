@@ -33,6 +33,7 @@ The application form submits only when served from `carenbloom.com` or `www.care
 The visitor guide shows three hotel cards by default.
 Select **Expand more** for the rest of the shortlist.
 Use the booking links on each card to compare rates for your dates.
+In **Eat & drink**, jump to lunch, dinner, coffee or drinks and use the **Maps** link on each card for its location.
 For the visitor guide’s research sources and publication checklist, see [the source record](site-src/docs/VISIT-HONG-KONG-SOURCES.md).
 
 ## Changing the site

@@ -15,6 +15,19 @@ const hotels = [
 ];
 const hotelNames = hotels.map(([name]) => name);
 
+const suppliedPins = new Map([
+  ["Duddell’s", "gETM5swXms4UXNVQ6"],
+  ["Carbone Hong Kong", "sYyUYSssFFwuaGVe8"],
+  ["Bánh Mì Nếm", "styPRqpF2uSni5q86"],
+  ["Samsen Central", "3UvW7P93iJ2cLh4YA"],
+  ["Ho Lan Jeng", "PXCCR2XaEcrS7MKCA"],
+  ["Islet Coffee Lab (Central)", "VGzvBi1qfxEKHjjX9"],
+  ["GOKAN", "HcsYdxpXFdTVbbKL7"],
+  ["SERVO", "rEDMRQy6PwYx54B97"],
+  ["Il Presidente", "2KaiSEtfEMoKiZSq8"],
+  ["Ninetta", "kmt9h5jnTbtvLu2R7"],
+]);
+
 async function venueLink(card, label) {
   const link = card.getByRole("link", { name: label, exact: true });
   assert.equal(await link.count(), 1, `the venue has one ${label} link`);
@@ -94,7 +107,7 @@ try {
   const disclosure = page.locator(".visit-more summary");
   const places = page.locator("[data-place]");
   const stayJump = page.getByRole("link", { name: /^Where to stay/ });
-  assert.equal(await places.count(), 8);
+  assert.equal(await places.count(), 8 + suppliedPins.size);
   assert.equal(await stayJump.getByText("08", { exact: true }).isVisible(), true);
   assert.equal(await page.getByText("Where to stay / 08 options", { exact: true }).count(), 1);
   assert.deepEqual(await visibleHotelNames.allTextContents(), hotelNames.slice(0, 3));
@@ -119,7 +132,12 @@ try {
     assert.ok(trip.pathname.startsWith(`/hotels/hong-kong-hotel-detail-${tripId}/`), `Trip.com links to ${name}`);
   }
   for (const place of await places.all()) {
-    await assertMapLink(place, "Maps", await place.getByRole("heading", { level: 4 }).innerText());
+    const name = await place.getByRole("heading", { level: 4 }).innerText();
+    if (!suppliedPins.has(name)) await assertMapLink(place, "Maps", name);
+  }
+  for (const [name, pin] of suppliedPins) {
+    const card = places.filter({ has: page.getByRole("heading", { name, exact: true }) });
+    assert.equal((await venueLink(card, "Maps")).href, `https://maps.app.goo.gl/${pin}`);
   }
   await assertMapLink(page.locator("#office"), "Open office in Maps", "LKF 29");
   const scenicHotel = page.locator("[data-hotel]").filter({ has: page.getByRole("heading", { name: "Garden View Hong Kong", exact: true }) });
@@ -215,7 +233,7 @@ try {
     assert.equal(await staticPage.locator("[data-hotel]:visible").count(), 3);
     await assertPrintedBookingLinks(staticPage);
     assert.equal(await staticPage.locator("[data-hotel]:visible").count(), 3);
-    await staticPage.getByRole("link", { name: "Lunch · 02" }).click();
+    await staticPage.getByRole("link", { name: "Lunch · 04" }).click();
     assert.match(staticPage.url(), /#lunch$/);
     assert.equal(await staticPage.locator("#lunch").isVisible(), true);
   } finally {
