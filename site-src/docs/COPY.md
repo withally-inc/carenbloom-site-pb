@@ -645,7 +645,7 @@ Find the office↗
 
 Where to stay08
 
-Eat & drink08
+Eat & drink18
 
 The practical bits↓
 
@@ -816,7 +816,7 @@ An easy base for Central meetings and the Airport Express.
 
 8 to 12 min walk
 
-Around the office / 08 picks
+Around the office / 18 picks
 
 A very good detour.
 
@@ -824,13 +824,13 @@ A quick bowl before a meeting.
 A slower dinner afterwards.
 Start here and leave room for a discovery.
 
-Lunch · 02
+Lunch · 04
 
-Dinner · 02
+Dinner · 06
 
-Coffee · 02
+Coffee · 04
 
-Drinks · 02
+Drinks · 04
 
 $ everyday, $$ a little more, $$$ a proper evening out.
 Bands compare typical spend within each category.
@@ -865,6 +865,38 @@ Order: Wonton noodles.
 Plan: Walk in; expect shared tables when it is busy.
 Bring cash.
 
+Lunch
+
+$$$
+
+Duddell’s
+
+3/F and 4/F, 1 Duddell Street, Central
+
+Cantonese cooking in an art-filled dining room above Duddell Street.
+
+Order: Dim sum to share.
+
+Plan: 5 to 8 minutes on foot from the office.
+
+Venue guide ↗
+
+Lunch
+
+$
+
+Bánh Mì Nếm
+
+G/F, 3 Chiu Lung Street, Central
+
+A Vietnamese sandwich counter for lunch on the go.
+
+Order: Bánh mì with grilled pork skewers and pickles.
+
+Plan: 5 to 8 minutes on foot from the office.
+
+Venue guide ↗
+
 Stay for dinner
 
 Dinner
@@ -895,6 +927,70 @@ Order: Pho rolls.
 
 Plan: Reservations available; walk-ins also welcome.
 
+Dinner
+
+$$$
+
+Carbone Hong Kong
+
+9/F, 33 Wyndham Street, Central
+
+A New York Italian-American dining room just along Wyndham Street.
+
+Order: Spicy rigatoni vodka.
+
+Plan: 1 to 3 minutes on foot from the office, plus the lift.
+
+Venue guide ↗
+
+Dinner
+
+$$
+
+Samsen Central
+
+G/F, 18 On Lan Street, Central
+
+Thai street food on On Lan Street, from boat noodles to wok-fried rice.
+
+Order: Beef boat noodles.
+
+Plan: 3 to 6 minutes on foot from the office.
+
+Venue guide ↗
+
+Dinner
+
+$$$
+
+Il Presidente
+
+Shop M2, Baskerville House, 13 Duddell Street, Central
+
+At the top of the Duddell Street steps, settle in for Italian classics and an aperitivo.
+
+Order: Agnolotti filled with ossobuco.
+
+Plan: 5 to 8 minutes on foot from the office.
+
+Venue guide ↗
+
+Dinner
+
+$$$
+
+Ninetta
+
+3/F, M88, 2 to 8 Wellington Street, Central
+
+An Italian trattoria for a table that likes to pass dishes around.
+
+Order: Split an antipasto and a plate of handmade pasta.
+
+Plan: 3 to 5 minutes on foot from the office.
+
+Venue guide ↗
+
 Coffee & a small reward
 
 Coffee
@@ -922,6 +1018,38 @@ Order: See what is fresh at the counter.
 Plan: Takeaway only.
 Allow time for a queue.
 
+Coffee
+
+$
+
+Islet Coffee Lab (Central)
+
+G/F, 8 to 10 On Lan Street, Central
+
+A coffee stop on the way back from lunch on On Lan Street.
+
+Order: Ask what beans are on the bar.
+
+Plan: 3 to 6 minutes on foot from the office.
+
+Venue guide ↗
+
+Coffee & brunch
+
+$$
+
+SERVO
+
+G/F, Kowloon Dairy Building, 17 to 19 On Lan Street, Central
+
+An Australian neighbourhood restaurant on the corner of On Lan Street.
+
+Order: Smashed avocado on sourdough.
+
+Plan: 3 to 6 minutes on foot from the office.
+
+Venue guide ↗
+
 After the conversation
 
 After-work drinks
@@ -947,6 +1075,39 @@ Order: Earl Grey Caviar Martini.
 
 Plan: Walk-ins only.
 Arrive early if you need seats together.
+
+After-work drinks
+
+$$
+
+Ho Lan Jeng
+
+2/F, LKF 29, 29 Wyndham Street, Central
+
+A place for Hong Kong craft beer and Cantonese bar food without leaving the building.
+
+Order: Char siu and a local beer.
+
+Plan: In the office building.
+Take the lift to 2/F.
+
+Venue guide ↗
+
+After-work drinks
+
+$$$
+
+GOKAN
+
+G/F, 30 Ice House Street, Central
+
+A Japanese cocktail bar where you can choose a drink by taste, from sweet to savoury.
+
+Order: Try a highball with Japanese bar bites.
+
+Plan: 3 to 5 minutes on foot from the office.
+
+Venue guide ↗
 
 A little local knowledge
 
@@ -1039,7 +1200,7 @@ Confirm current details with each venue.
 Back to top ↑
 
 City names in the collection: Hong Kong, Shenzhen, London, San Francisco.
-Index counts: 08 hotels, 08 food/drink picks; 02 per food/drink category.
+Index counts: 08 hotels, 18 food/drink picks across lunch (4), dinner (6), coffee (4) and drinks (4).
 
 ### Accessible labels
 
@@ -1083,6 +1244,16 @@ Use the [visitor guide source record](VISIT-HONG-KONG-SOURCES.md#photography-and
 | Bakehouse SoHo | Bakery counter · 2021 | Pastries and cookies at the Bakehouse SoHo counter, photographed in 2021. |
 | Bar Leone | Negroni · illustrative | A Negroni over ice with orange peel, an illustrative cocktail photo, not photographed at Bar Leone. |
 | Quinary | Martini · illustrative | A martini garnished with lemon peel, an illustrative cocktail photo, not Quinary’s Earl Grey Caviar Martini. |
+| Duddell’s | Dim sum · illustrative | Shrimp dumplings in a bamboo steamer, an illustrative photo. |
+| Carbone Hong Kong | Rigatoni · illustrative | Tubes of rigatoni topped with ragù, an illustrative photo. |
+| Bánh Mì Nếm | Bánh mì · illustrative | A filled baguette wrapped in paper, an illustrative photo. |
+| Samsen Central | Thai boat noodles · illustrative | Boat noodles served in a dark bowl, an illustrative photo. |
+| Ho Lan Jeng | Char siu · illustrative | Slices of char siu beside a mound of rice, an illustrative photo. |
+| Islet Coffee Lab (Central) | Espresso · illustrative | An espresso in a white cup seen from above, an illustrative photo. |
+| GOKAN | Highball · illustrative | A tall highball glass filled with ice, an illustrative photo. |
+| SERVO | Avocado toast · illustrative | Sliced avocado on sourdough toast, an illustrative photo. |
+| Il Presidente | Agnolotti · illustrative | Filled agnolotti on a white plate, an illustrative photo. |
+| Ninetta | Tagliatelle · illustrative | Ribbons of tagliatelle coated in ragù, an illustrative photo. |
 
 For Wikimedia Commons photos, use `Photo: {author} · {licence} · cropped`.
 Link the author’s name to the original Commons file page and the licence name to its terms.
